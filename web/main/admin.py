@@ -1,3 +1,4 @@
+from allauth.account.models import EmailAddress
 from django.contrib import admin
 from django.conf import settings
 from django.contrib.auth.admin import UserAdmin
@@ -8,10 +9,24 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class EmailsInline(admin.TabularInline):
+    """Class for inherit emails table to UserAdmin"""
+    model = EmailAddress
+    can_delete = False
+    extra = 1
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj):
+        return False if obj else True
+
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     ordering = ('-id',)
-    list_display = ('email', 'full_name', 'is_active')
+    list_display = ('email', 'full_name', 'is_active', 'email_verified')
+    inlines = (EmailsInline,)
 
     fieldsets = (
         (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email')}),

@@ -56,3 +56,6 @@ sentry-sdk==1.0.0
 
 # MicroService Requests
 django-microservice-request>=0.1.2.1
+
+# TextEditor
+django-summernote==0.8.11.6
