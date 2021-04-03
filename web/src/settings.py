@@ -7,6 +7,9 @@ from .additional_settings.swagger_settings import *
 from .additional_settings.cacheops_settings import *
 from .additional_settings.logging_settings import *
 from .additional_settings.celery_settings import *
+from .additional_settings.allauth_settings import *
+from .additional_settings.jwt_settings import *
+from .additional_settings.summernote_settings import *
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +43,7 @@ API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
+SITE_ID = 1
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,20 +52,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
 ]
 
 THIRD_PARTY_APPS = [
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'rest_framework_simplejwt.token_blacklist',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'defender',
     'rest_framework',
     'drf_yasg',
     'corsheaders',
     'rosetta',
+
 ]
 
 LOCAL_APPS = [
     'main.apps.MainConfig',
-
+    'auth_app.apps.AuthAppConfig',
+    'blog.apps.BlogConfig',
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS

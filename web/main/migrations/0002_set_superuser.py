@@ -17,6 +17,7 @@ def set_superuser(apps, schema_editor):
         password=make_password(settings.SUPERUSER_PASSWORD)
     )
     user.save()
+    user.emailaddress_set.create(email=user.email, verified=True, primary=True)
 
 
 class Migration(migrations.Migration):
