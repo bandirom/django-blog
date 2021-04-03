@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 from . import managers
@@ -10,6 +11,8 @@ User = get_user_model()
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
+    objects = models.Manager()
 
     def __str__(self):
         return self.name
@@ -17,6 +20,10 @@ class Category(models.Model):
     class Meta:
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
+
+    def save(self, **kwargs):
+        self.slug = slugify(self.name, allow_unicode=True)
+        return super().save(**kwargs)
 
 
 class Article(models.Model):
@@ -38,6 +45,10 @@ class Article(models.Model):
     def __str__(self):
         return '{title} - {author}'.format(title=self.short_title, author=self.author)
 
+    def save(self, **kwargs):
+        self.slug = slugify(self.title, allow_unicode=True)
+        return super().save(**kwargs)
+
     class Meta:
         verbose_name = _('Article')
         verbose_name_plural = _('Articles')
@@ -49,6 +60,8 @@ class Comment(models.Model):
     content = models.TextField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
 
     class Meta:
         verbose_name = _('Comment')

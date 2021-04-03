@@ -1,7 +1,14 @@
 from django.conf import settings
 
-from . import models
+from .models import Category, Article, Comment
 
 
 class BlogService:
-    pass
+
+    @staticmethod
+    def category_queryset():
+        return Category.objects.all()
+
+    @staticmethod
+    def article_queryset():
+        return Article.objects.all()
