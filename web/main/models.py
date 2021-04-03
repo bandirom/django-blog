@@ -24,3 +24,7 @@ class User(AbstractUser):
 
     def full_name(self):
         return super().get_full_name()
+
+    def email_verified(self):
+        return self.emailaddress_set.get(primary=True).verified
+    email_verified.boolean = True
