@@ -9,7 +9,7 @@ app_name = 'contact_us'
 router = DefaultRouter()
 
 urlpatterns = [
-
+    path('feedback/', views.FeedbackView.as_view(), name='feedback')
 ]
 
 urlpatterns += router.urls

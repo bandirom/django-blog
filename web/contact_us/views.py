@@ -1,13 +1,12 @@
 import logging
-from django.utils.translation import gettext_lazy as _
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
-from rest_framework import status
 
-from . import services
-from . import serializers
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny
+from .serializers import FeedbackSerializer
 
 logger = logging.getLogger(__name__)
 
-# Create your views here.
+
+class FeedbackView(CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = FeedbackSerializer
