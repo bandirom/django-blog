@@ -21,7 +21,7 @@ urlpatterns += [
     path('sign-up/verify/', views.VerifyEmailView.as_view()),
     path('password/reset/', views.PasswordResetView.as_view()),
     path('password/reset/confirm/', views.PasswordResetConfirmView.as_view()),
-    path('logout/', views.LogoutView.as_view()),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
 ]
 
 urlpatterns += router.urls

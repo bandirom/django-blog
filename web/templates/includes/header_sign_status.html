@@ -1,0 +1,23 @@
+{% load i18n %}
+{% if user.is_authenticated %}
+
+<form id="logoutForm ajax-post" action="{% url 'auth_app:logout' %}" method="post" >
+    {% csrf_token %}
+    <ul class="nav navbar-nav navbar-right">
+        <li><span class="navbar-brand">
+            {% if user.is_staff %}
+            <a target="_blank" style="text-decoration: none" href="{% url 'admin:index' %}"> {% trans 'Hello' %} {{ user.full_name }}!</a>
+            {% else %}
+                Hello {{ user.full_name }}!
+            {% endif %}
+            <a href="#"><i class="fas fa-user-circle"></i>{% trans 'Profile' %} </a>
+        </span></li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">{% trans 'Log off' %}</a></li>
+    </ul>
+</form>
+{% else %}
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="#">{% trans 'Sign in' %}</a></li>
+    <li><a href="#">{% trans 'Sign up' %}</a></li>
+</ul>
+{% endif %}

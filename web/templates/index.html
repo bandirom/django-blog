@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block active_index %}class="active"{% endblock active_index %}
+{% block title %}Main Page{% endblock title%}
+{% block head %}{% endblock head %}
+
+{% block header %}
+{% include 'includes/header.html'  with selected='index' %}
+{% endblock header %}
+
+{% block container %}
+<div class="jumbotron">
+  <h1>Lorem!</h1>
+  <p class="lead">{% trans 'Lorem ' %}</p>
+  <p><a href="#" class="btn btn-primary btn-large">{% trans 'Learn more' %} &raquo;</a></p>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h2>{% trans 'Lorem.' %}</h2>
+    <p align="justify">{% blocktrans %}
+      Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor
+      {% endblocktrans %}
+    </p>
+    <p><a class="btn btn-default" href="#">{% trans 'Learn more' %} &raquo;</a></p>
+  </div>
+  <div class="col-md-6">
+    <h2>{% trans 'Lorem' %}</h2>
+    <p align="justify">{% blocktrans %}
+      Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor
+      {% endblocktrans %}
+    </p>
+    <p><a class="btn btn-default" href="#">{% trans 'Learn more' %} &raquo;</a></p>
+  </div>
+
+</div>
+
+{% endblock container %}
