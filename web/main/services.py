@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 
 from auth_app.utils import get_activate_key
 from main.decorators import except_shell
+from src.celery import app
 
 User = get_user_model()
 

@@ -17,7 +17,7 @@
 </form>
 {% else %}
 <ul class="nav navbar-nav navbar-right">
-    <li><a href="#">{% trans 'Sign in' %}</a></li>
-    <li><a href="#">{% trans 'Sign up' %}</a></li>
+    <li><a href="{% url 'auth_app:login' %}">{% trans 'Sign in' %}</a></li>
+    <li><a href="{% url 'auth_app:sign_up' %}">{% trans 'Sign up' %}</a></li>
 </ul>
 {% endif %}

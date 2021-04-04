@@ -45,6 +45,18 @@ API_KEY = os.environ.get('API_KEY')
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
 SITE_ID = 1
 
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS")
+DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_DEFAULT")
+EMAIL_TIMEOUT = 15
+# EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
+
+
+USER_AVATAR_MAX_SIZE = 4.0  #
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
