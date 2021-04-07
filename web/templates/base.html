@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load static main %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <title>{% block title %} Blog Post {% endblock title%} </title>
+  <!-- Add custom CSS here -->
+  <link href="{% static 'blog/css/blog.css' %}" rel="stylesheet">
+  <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  {% block head %}{% endblock head %}
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  {% block header %}
+  {% include 'includes/header.html' %}
+  {% endblock header %}
+</nav>
+
+<div class="container">
+  {% block container %}
+  {% endblock container %}
+  <hr>
+  {% include 'includes/footer.html' %}
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function(){
+      {% block jquery %} {% endblock jquery %}
+})
+</script>
+
+{% block script %}
+{% endblock script %}
+
+
+</body>
+
+</html>
