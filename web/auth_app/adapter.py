@@ -2,18 +2,11 @@ import logging
 
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.models import EmailAddress
-from allauth.account.utils import setup_user_email
 from allauth.socialaccount import app_settings
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.socialaccount.models import SocialApp
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter as _GoogleOAuth2Adapter
 from django.conf import settings
-from django.contrib.auth.hashers import (
-    UNUSABLE_PASSWORD_PREFIX,
-    UNUSABLE_PASSWORD_SUFFIX_LENGTH,
-    make_password,
-)
-from django.utils.crypto import get_random_string
+
 from rest_framework.reverse import reverse_lazy
 
 
@@ -51,12 +44,9 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         - social account has no email or email is unknown, just go on
         - social account's email exists, link social account to existing user
         """
-        logging.warning(f"sociallogin.is_existing: {sociallogin.is_existing}")
         # Ignore existing social accounts, just do this stuff for new ones
         if sociallogin.is_existing:
             return
-        logging.warning(f"'email' not in {sociallogin.account.extra_data}")
-
         # some social logins don't have an email address, e.g. facebook accounts
         # with mobile numbers only, but allauth takes care of this case so just
         # ignore it
@@ -76,7 +66,6 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
 
         # if it does, connect this new social login to the existing user
         user = email_address.user
-        logging.warning(f'Pre User, {user}, active {user.is_active}')
         sociallogin.connect(request, user)
 
     def save_user(self, request, sociallogin, form=None):
@@ -99,23 +88,3 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         else:
             app = SocialApp.objects.get_current(provider, request)
         return app
-
-
-class GoogleOAuth2Adapter(_GoogleOAuth2Adapter):
-    def complete_login(self, request, app, token, **kwargs):
-        login = super().complete_login(request, app, token, **kwargs)
-        user = login.user
-        email_address = EmailAddress.objects.get(email=user.email)
-        logging.warning(f'Email {email_address.email}, verified: {email_address.verified}')
-        if not email_address.verified:
-            email_address.verified = True
-            email_address.save(update_fields=['verified'])
-        user = email_address.user
-        logging.warning(f'Complete_login, {user}, active {user.is_active}')
-        if not user.is_active:
-            user.is_active = True
-            user.save(update_fields=['is_active'])
-        if not login.user.password and login.user.password.startswith(UNUSABLE_PASSWORD_PREFIX):
-            logging.warning('unusuble password')
-            login.user.password = make_password(get_random_string(UNUSABLE_PASSWORD_SUFFIX_LENGTH))
-        return login
