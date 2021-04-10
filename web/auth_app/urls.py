@@ -1,5 +1,6 @@
 from django.urls import path
 from django.views.generic import TemplateView
+from django.conf import settings
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
@@ -14,7 +15,6 @@ urlpatterns = [
     path('token/verify/', TokenVerifyView.as_view()),
 ]
 
-
 urlpatterns += [
     path('sign-in/', views.LoginView.as_view(), name='api_login'),
     path('sign-up/', views.SignUpView.as_view(), name='api_sign_up'),
@@ -27,9 +27,16 @@ urlpatterns += [
 urlpatterns += router.urls
 
 urlpatterns += [
-    path('login/', TemplateView.as_view(template_name='auth_app/login.html'), name='login'),
-    path('register/', TemplateView.as_view(template_name='auth_app/sign_up.html'), name='sign_up'),
-    path('password-recovery/', TemplateView.as_view(), name='password_recovery'),
     path('password-reset/<uidb64>/<token>/', TemplateView.as_view(), name='password_reset_confirm'),
     path('verify-email/<key>/', TemplateView.as_view(), name='account_verification'),
 ]
+
+if settings.ENABLE_RENDERING:
+    from . import template_views as t_views
+
+    urlpatterns += [
+        path('login/', t_views.LoginView.as_view(), name='login'),
+        path('register/', t_views.SignUpView.as_view(), name='sign_up'),
+        path('password-recovery/', t_views.PasswordRecoveryView.as_view(), name='password_recovery'),
+
+    ]

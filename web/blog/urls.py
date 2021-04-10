@@ -1,5 +1,5 @@
 from django.urls import path
-from django.views.generic import TemplateView
+from django.conf import settings
 from rest_framework.routers import DefaultRouter
 
 from . import views
@@ -15,8 +15,12 @@ urlpatterns = [
 
 urlpatterns += router.urls
 
-urlpatterns += [
-    path('posts/', TemplateView.as_view(template_name='blog/post_list.html'), name='post_list'),
-    path('posts/<slug>/', TemplateView.as_view(template_name='blog/detail.html'), name='post_detail'),
 
-]
+if settings.ENABLE_RENDERING:
+    from . import template_views as t_views
+
+    urlpatterns += [
+        path('posts/', t_views.BlogListView.as_view(), name='post_list'),
+        path('posts/<slug>/', t_views.BlogDetailView.as_view(), name='post_detail'),
+
+    ]

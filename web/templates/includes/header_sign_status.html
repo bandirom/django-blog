@@ -1,7 +1,7 @@
-{% load i18n %}
+{% load static i18n %}
 {% if user.is_authenticated %}
 
-<form id="logoutForm ajax-post" action="{% url 'auth_app:logout' %}" method="post" >
+<form id="logoutForm" action="{% url 'auth_app:logout' %}" method="post" >
     {% csrf_token %}
     <ul class="nav navbar-nav navbar-right">
         <li><span class="navbar-brand">
@@ -12,7 +12,7 @@
             {% endif %}
             <a href="#"><i class="fas fa-user-circle"></i>{% trans 'Profile' %} </a>
         </span></li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">{% trans 'Log off' %}</a></li>
+        <li><a href="#" id="logoutSubmit">{% trans 'Log off' %}</a></li>
     </ul>
 </form>
 {% else %}

@@ -1,5 +1,5 @@
 from django.urls import path
-from django.views.generic import TemplateView
+from django.conf import settings
 from rest_framework.routers import DefaultRouter
 
 from . import views
@@ -14,7 +14,11 @@ urlpatterns = [
 
 urlpatterns += router.urls
 
-urlpatterns += [
-    path('contact/', TemplateView.as_view(template_name='contact_us/index.html'), name='index'),
 
-]
+if settings.ENABLE_RENDERING:
+    from . import template_views as t_views
+
+    urlpatterns += [
+        path('contact/', t_views.ContactUsView.as_view(), name='index'),
+
+    ]
