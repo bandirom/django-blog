@@ -11,7 +11,6 @@ from .additional_settings.allauth_settings import *
 from .additional_settings.jwt_settings import *
 from .additional_settings.summernote_settings import *
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -51,9 +50,10 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS")
 DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_DEFAULT")
 EMAIL_TIMEOUT = 15
-# EMAIL_USE_SSL = True
-EMAIL_USE_TLS = True
+EMAIL_USE_SSL = int(os.environ.get("EMAIL_USE_SSL", 0))
+EMAIL_USE_TLS = int(os.environ.get("EMAIL_USE_TLS", 1))
 
+ENABLE_RENDERING = os.environ.get('ENABLE_RENDERING', True)
 
 USER_AVATAR_MAX_SIZE = 4.0  #
 
@@ -93,7 +93,6 @@ LOCAL_APPS = [
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
 
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'main.middleware.HealthCheckMiddleware',
@@ -114,12 +113,19 @@ REST_FRAMEWORK = {
         'microservice_request.permissions.HasApiKeyOrIsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
+if ENABLE_RENDERING:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.TemplateHTMLRenderer',
+    )
 
 ROOT_URLCONF = 'src.urls'
 
@@ -157,7 +163,6 @@ DATABASES = {
     },
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -183,7 +188,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -203,11 +207,11 @@ ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'English'
 ROSETTA_SHOW_AT_ADMIN_PANEL = True
 ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = False
 
-
 if JAEGER_AGENT_HOST := os.environ.get('JAEGER_AGENT_HOST'):
     from jaeger_client import Config
     from jaeger_client.config import DEFAULT_REPORTING_PORT
     from django_opentracing import DjangoTracing
+
     """If you don't need to trace all requests, comment middleware and set OPENTRACING_TRACE_ALL = False
         More information https://github.com/opentracing-contrib/python-django/#tracing-individual-requests
     """
@@ -231,6 +235,7 @@ if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
     from sentry_sdk import init
     from sentry_sdk.integrations.django import DjangoIntegration
+
     init(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
