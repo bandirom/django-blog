@@ -11,7 +11,6 @@
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
   <title>{% block title %} Blog Post {% endblock title%} </title>
-  <!-- Add custom CSS here -->
   <link href="{% static 'blog/css/blog.css' %}" rel="stylesheet">
 
   {% block head %}{% endblock head %}
@@ -37,13 +36,13 @@
 
 <script>
   $(document).ready(function(){
-      {% block jquery %} {% endblock jquery %}
+    $.getScript('{% static 'auth_app/js/logout.js' %}');
+    {% block jquery %} {% endblock jquery %}
 })
 </script>
 
 {% block script %}
 {% endblock script %}
-
 
 </body>
 
