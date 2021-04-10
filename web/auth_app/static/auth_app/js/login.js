@@ -1,12 +1,10 @@
 $(function () {
-  $(document).on("click", "a.login", login);
+  // $(document).on("click", "a.login", login);
   $('#loginForm').submit(login);
 });
-console.log('login')
 
 function login(e) {
   let form = $(this);
-  console.log()
   e.preventDefault();
   $.ajax({
     url: form.attr("action"),
