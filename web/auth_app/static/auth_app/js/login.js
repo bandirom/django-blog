@@ -12,7 +12,6 @@ function login(e) {
     dataType: 'json',
     data: form.serialize(),
     success: function (data) {
-      console.log(data)
       location.reload();
     },
     error: function (data) {

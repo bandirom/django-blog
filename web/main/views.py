@@ -16,7 +16,7 @@ class TemplateAPIView(APIView):
     template_name = ''
 
     @method_decorator(name='create', decorator=swagger_auto_schema(auto_schema=None))
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         return Response()
 
 

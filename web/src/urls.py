@@ -16,6 +16,7 @@ urlpatterns = [
     path(f'{admin_url}/defender/', include('defender.urls')),
     path('api/', include('rest_framework.urls')),
     path('rosetta/', include('rosetta.urls')),
+    path('summernote/', include('django_summernote.urls')),
 ]
 
 urlpatterns += swagger_url

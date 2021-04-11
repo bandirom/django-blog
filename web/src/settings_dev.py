@@ -4,6 +4,8 @@ from .settings import *
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 CORS_ORIGIN_ALLOW_ALL = True
+X_FRAME_OPTIONS = "SAMESITE"
+
 
 if ENABLE_SILK:
     INSTALLED_APPS += ['silk']
