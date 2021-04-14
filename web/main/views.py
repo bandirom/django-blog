@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import GenericAPIView, get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from .serializers import UserSerializer
 
 User = get_user_model()
@@ -12,7 +15,8 @@ class TemplateAPIView(APIView):
     permission_classes = (AllowAny,)
     template_name = ''
 
-    def get(self, request):
+    @method_decorator(name='create', decorator=swagger_auto_schema(auto_schema=None))
+    def get(self, request, *args, **kwargs):
         return Response()
 
 

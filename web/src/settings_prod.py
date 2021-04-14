@@ -10,7 +10,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-X_FRAME_OPTIONS = "DENY"
+X_FRAME_OPTIONS = "SAMESITE"
 
 # Only via HTTPS
 if USE_HTTPS:

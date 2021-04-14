@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from rest_framework.reverse import reverse_lazy
 
 from . import managers
 from .choices import ArticleStatus
@@ -48,6 +49,10 @@ class Article(models.Model):
     def save(self, **kwargs):
         self.slug = slugify(self.title, allow_unicode=True)
         return super().save(**kwargs)
+
+    def get_absolute_url(self):
+        url = 'blog:post-detail'
+        return reverse_lazy(url, kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = _('Article')
