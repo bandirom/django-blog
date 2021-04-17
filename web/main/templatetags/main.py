@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django import template
 from django.conf import settings
-from django.utils import timezone
+
 register = template.Library()
 
 title = settings.MICROSERVICE_TITLE
