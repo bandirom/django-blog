@@ -1,5 +1,5 @@
 {% extends 'auth_app/base.html'%}
-{% load static %}
+{% load static i18n %}
 
 {% block head %}
 <link href="{% static 'auth_app/css/sign_up.css' %}" rel="stylesheet">
@@ -19,16 +19,13 @@
         <div class="col-xs-6 col-md-6">
           <input type="text" name="last_name" value="" class="form-control input-lg" placeholder="Last Name"/></div>
       </div>
-      <input type="text" name="email" value="" class="form-control input-lg" placeholder="Your Email"/><input
-      type="password" name="password1" value="" class="form-control input-lg" placeholder="Password"/><input
-      type="password" name="password2" value="" class="form-control input-lg" placeholder="Confirm Password"/>
-      {% include 'auth_app/includes/birth_date.html' %}
+      <input type="text" name="email" value="" class="form-control input-lg" placeholder="Your Email"/>
+      {% include 'auth_app/includes/password.html' %}
+      {% include 'auth_app/includes/birthday.html' %}
       {% include 'auth_app/includes/gender.html' %}
       <br/>
       <span class="help-block">By clicking Create my account, you agree to our Terms and that you have read our Data Use Policy, including our Cookie Use.</span>
-      <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit">
-        Create my account
-      </button>
+      <button class="btn btn-lg btn-primary btn-block signup-btn" type="submit">Create my account </button>
     </form>
   </div>
 </div>
