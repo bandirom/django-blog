@@ -5,12 +5,15 @@ from django.conf import settings
 
 register = template.Library()
 
-title = settings.MICROSERVICE_TITLE
-
 
 @register.simple_tag
 def microservice_title():
-    return title
+    return settings.MICROSERVICE_TITLE
+
+
+@register.simple_tag
+def github_link():
+    return settings.GITHUB_URL
 
 
 @register.filter(name='date_time')
