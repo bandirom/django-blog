@@ -103,16 +103,7 @@ class PasswordResetSerializer(auth_serializers.PasswordResetSerializer):
 
 
 class PasswordResetConfirmSerializer(auth_serializers.PasswordResetConfirmSerializer):
-
-    def save(self):
-        if not self.user.is_active:
-            self.user.is_active = True
-            self.user.save(update_fields=['is_active'])
-        email_address = self.user.emailaddress_set.first()
-        if email_address and not email_address.verified:
-            email_address.verified = True
-            email_address.save(update_fields=['verified'])
-        return self.set_password_form.save()
+    pass
 
 
 class VerifyEmailSerializer(serializers.Serializer):

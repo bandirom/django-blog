@@ -25,6 +25,7 @@ SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', 'test@test.com')
 SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD', 'tester26')
 
 MICROSERVICE_TITLE = os.environ.get('MICROSERVICE_TITLE', 'Template')
+GITHUB_URL = os.environ.get('GITHUB_URL', 'https://github.com')
 
 REDIS_URL = os.environ.get('REDIS_URL')
 
@@ -116,7 +117,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',

@@ -21,6 +21,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
+        ordering = ('-id',)
 
     def save(self, **kwargs):
         self.slug = slugify(self.name, allow_unicode=True)

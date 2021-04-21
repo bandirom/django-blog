@@ -2,15 +2,18 @@ from datetime import datetime
 
 from django import template
 from django.conf import settings
-from django.utils import timezone
-register = template.Library()
 
-title = settings.MICROSERVICE_TITLE
+register = template.Library()
 
 
 @register.simple_tag
 def microservice_title():
-    return title
+    return settings.MICROSERVICE_TITLE
+
+
+@register.simple_tag
+def github_link():
+    return settings.GITHUB_URL
 
 
 @register.filter(name='date_time')

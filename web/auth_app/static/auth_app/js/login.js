@@ -17,6 +17,7 @@ function login(e) {
     error: function (data) {
       $("#emailGroup").addClass("has-error");
       $("#passwordGroup").addClass("has-error");
+      $(".help-block").remove()
       $("#passwordGroup").append(
         '<div class="help-block">' + data.responseJSON.email + "</div>"
       );
