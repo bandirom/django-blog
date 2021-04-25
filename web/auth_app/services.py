@@ -17,6 +17,10 @@ User = get_user_model()
 class AuthAppService:
 
     @staticmethod
+    def is_user_exist(email):
+        return User.objects.filter(email=email).exists()
+
+    @staticmethod
     def validate_email(email):
         re_email = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,30})+$'
         if not re.search(re_email, email):
