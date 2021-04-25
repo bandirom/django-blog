@@ -21,7 +21,6 @@ function login(e) {
       $("#passwordGroup").append(
         '<div class="help-block">' + data.responseJSON.email + "</div>"
       );
-
     }
   })
 }
