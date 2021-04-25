@@ -23,8 +23,8 @@
         </div>
         <span class="button-checkbox">
 					<button type="button" class="btn" data-color="info">Remember Me</button>
-                    <input type="checkbox" name="remember_me" id="remember_me" checked="checked" class="hidden">
-					<a href="" class="btn btn-link pull-right">Forgot Password?</a>
+          <input type="checkbox" name="remember_me" id="remember_me" checked="checked" class="hidden">
+          <a href="#" class="btn btn-link pull-right" data-target="#pwdModal" data-toggle="modal">Forgot Password?</a>
 				</span>
         <hr class="colorgraph">
         <div class="row">
@@ -39,6 +39,8 @@
     </form>
   </div>
 </div>
+
+{% include 'auth_app/includes/forgot_password_modal.html' %}
 {% endblock container %}
 
 {% block jquery %}

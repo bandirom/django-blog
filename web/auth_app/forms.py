@@ -6,7 +6,6 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse_lazy
-# from main.services import CeleryService, UserService
 from main.services import UserService, CeleryService
 
 
