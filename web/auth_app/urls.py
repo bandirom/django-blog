@@ -1,8 +1,8 @@
 from django.urls import path
-from django.views.generic import TemplateView
 from django.conf import settings
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+from main.views import TemplateAPIView
 
 from . import views
 
@@ -27,8 +27,8 @@ urlpatterns += [
 urlpatterns += router.urls
 
 urlpatterns += [
-    path('password-reset/<uidb64>/<token>/', TemplateView.as_view(), name='password_reset_confirm'),
-    path('verify-email/<key>/', TemplateView.as_view(), name='account_verification'),
+    path('password-reset/<uidb64>/<token>/', TemplateAPIView.as_view(), name='password_reset_confirm'),
+    path('verify-email/<key>/', TemplateAPIView.as_view(), name='account_verification'),
 ]
 
 if settings.ENABLE_RENDERING:
@@ -38,5 +38,6 @@ if settings.ENABLE_RENDERING:
         path('login/', t_views.LoginView.as_view(), name='login'),
         path('register/', t_views.SignUpView.as_view(), name='sign_up'),
         path('password-recovery/', t_views.PasswordRecoveryView.as_view(), name='password_recovery'),
+        path('email-sent/', t_views.VerificationEmailSentView.as_view(), name='verify_email_sent'),
 
     ]
