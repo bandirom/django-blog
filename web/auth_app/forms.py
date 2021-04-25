@@ -12,7 +12,7 @@ from main.services import UserService, CeleryService
 class PassResetForm(PasswordResetForm):
 
     def get_reset_url(self, uid, token):
-        path = "auth_app:password_reset_confirm"
+        path = "auth_app:pass_reset_confirm"
         url = reverse_lazy(path, kwargs={'uidb64': uid, 'token': token})
         return settings.FRONTEND_SITE + str(url)
 
