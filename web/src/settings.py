@@ -25,7 +25,9 @@ SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', 'test@test.com')
 SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD', 'tester26')
 
 MICROSERVICE_TITLE = os.environ.get('MICROSERVICE_TITLE', 'Template')
+
 GITHUB_URL = os.environ.get('GITHUB_URL', 'https://github.com')
+FRONTEND_SITE = os.environ.get('FRONTEND_SITE', 'http://localhost:8009')
 
 REDIS_URL = os.environ.get('REDIS_URL')
 
