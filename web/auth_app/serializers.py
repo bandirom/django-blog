@@ -103,7 +103,8 @@ class PasswordResetSerializer(auth_serializers.PasswordResetSerializer):
 
 
 class PasswordResetConfirmSerializer(auth_serializers.PasswordResetConfirmSerializer):
-    pass
+    new_password1 = serializers.CharField(max_length=128, min_length=8)
+    new_password2 = serializers.CharField(max_length=128, min_length=8)
 
 
 class VerifyEmailSerializer(serializers.Serializer):
