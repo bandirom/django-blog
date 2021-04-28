@@ -5,7 +5,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework import mixins
 from main.pagination import DefaultPagination
 
 from .services import BlogService
@@ -55,3 +56,38 @@ class ArticleViewSet(ViewSet):
         response = super().retrieve(request, **kwargs)
         response.template_name = self.get_template_name()
         return response
+
+
+class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet):
+    permission_classes = (AllowAny, )
+    http_method_names = ('get', 'post', 'put', 'delete')
+
+    def get_serializer_class(self):
+        if self.action == 'update':
+            return serializers.UpdateDestroyCommentSerializer
+        elif self.action == 'destroy':
+            return serializers.UpdateDestroyCommentSerializer
+        return serializers.CommentSerializer
+
+    def get_queryset(self):
+        return BlogService.get_comments_queryset()
+
+    def create(self, request, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

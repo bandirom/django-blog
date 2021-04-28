@@ -9,6 +9,7 @@ app_name = 'blog'
 router = DefaultRouter()
 router.register('categories', views.CategoryViewSet, basename='categories')
 router.register('posts', views.ArticleViewSet, basename='post')
+router.register('comment', views.CommentViewSet, basename='comment')
 
 urlpatterns = [
 
