@@ -26,10 +26,6 @@ urlpatterns += [
 
 urlpatterns += router.urls
 
-urlpatterns += [
-    path('verify-email/<key>/', TemplateAPIView.as_view(), name='account_verification'),
-]
-
 if settings.ENABLE_RENDERING:
     from . import template_views as t_views
 
@@ -39,5 +35,6 @@ if settings.ENABLE_RENDERING:
         path('email-sent/verify/', t_views.VerificationEmailSentView.as_view(), name='verify_email_sent'),
         path('email-sent/reset/', t_views.PasswordResetEmailSentView.as_view(), name='reset_email_sent'),
         path('password-reset/<uidb64>/<token>/', t_views.PasswordResetConfirmView.as_view(), name='pass_reset_confirm'),
+        path('verify-email/<key>/', t_views.EmailVerificationView.as_view(), name='account_verification'),
 
     ]
