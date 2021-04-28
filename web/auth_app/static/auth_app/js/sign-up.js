@@ -2,14 +2,14 @@ $(function () {
   $('#signUpForm').submit(singUp);
 });
 
-let error_class_name = "has-error"
+const error_class_name = "has-error"
 
 function singUp(e) {
   let form = $(this);
   e.preventDefault();
   $.ajax({
     url: form.attr("action"),
-    type: "POST",
+    type: form.attr("method"),
     dataType: 'json',
     data: form.serialize(),
     success: function (data) {
@@ -30,15 +30,12 @@ function error_process(data) {
   }
   if (data.responseJSON.email) {
     help_block("#emailGroup", data.responseJSON.email)
-
   }
   if (data.responseJSON.password1) {
     help_block("#password1Group", data.responseJSON.password1)
-
   }
   if (data.responseJSON.password2) {
     help_block("#password2Group", data.responseJSON.password2)
-
   }
   if (data.responseJSON.first_name) {
     help_block("#firstNameGroup", data.responseJSON.first_name)
