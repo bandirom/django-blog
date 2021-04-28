@@ -1,3 +1,4 @@
+{% load main %}
 <!-- the comment box -->
 <div class="well">
   <h4><i class="fa fa-paper-plane-o"></i> Leave a Comment:</h4>
@@ -11,12 +12,21 @@
 <hr>
 
 <!-- the comments -->
-<h3><i class="fa fa-comment"></i> User One says:
-  <small> 9:41 PM on August 24, 2014</small>
-</h3>
-<p>Excellent post! Thank You the great article, it was useful!</p>
+{% for comment in comments %}
+<div>
+  <h3><i class="fa fa-comment"></i> {{ comment.author }}:
+    <small> {{ comment.updated | date_time }}</small>
+  </h3>
+  <p>{{ comment.content }}</p>
+  <a href="#"><i class="fa fa-reply"></i> Reply</a>
+  {% for child in comment.child %}
+  <div>
+    <h3><i class="fa fa-comment"></i> {{ child.author }}:
+      <small> {{ child.updated | date_time }}</small>
+    </h3>
+    <p>{{ child.content }}</p>
+  </div>
+  {% endfor %}
+</div>
 
-<h3><i class="fa fa-comment"></i> User Two says:
-  <small> 9:47 PM on August 24, 2014</small>
-</h3>
-<p>Excellent post! Thank You the great article, it was useful!</p>
+{% endfor %}
