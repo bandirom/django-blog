@@ -20,7 +20,7 @@
   <p>{{ comment.content }}</p>
   <a href="#"><i class="fa fa-reply"></i> Reply</a>
   {% for child in comment.child %}
-  <div>
+  <div class="sub-comment">
     <h3><i class="fa fa-comment"></i> {{ child.author }}:
       <small> {{ child.updated | date_time }}</small>
     </h3>
