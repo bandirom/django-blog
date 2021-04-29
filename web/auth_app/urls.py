@@ -27,14 +27,15 @@ urlpatterns += [
 urlpatterns += router.urls
 
 if settings.ENABLE_RENDERING:
-    from . import template_views as t_views
-
     urlpatterns += [
-        path('login/', t_views.LoginView.as_view(), name='login'),
-        path('register/', t_views.SignUpView.as_view(), name='sign_up'),
-        path('email-sent/verify/', t_views.VerificationEmailSentView.as_view(), name='verify_email_sent'),
-        path('email-sent/reset/', t_views.PasswordResetEmailSentView.as_view(), name='reset_email_sent'),
-        path('password-reset/<uidb64>/<token>/', t_views.PasswordResetConfirmView.as_view(), name='pass_reset_confirm'),
-        path('verify-email/<key>/', t_views.EmailVerificationView.as_view(), name='account_verification'),
-
+        path('login/', TemplateAPIView.as_view(template_name='auth_app/login.html'), name='login'),
+        path('register/', TemplateAPIView.as_view(template_name='auth_app/sign_up.html'), name='sign_up'),
+        path('email-sent/verify/', TemplateAPIView.as_view(template_name='auth_app/reset_password_confirm.html'),
+             name='verify_email_sent'),
+        path('email-sent/reset/', TemplateAPIView.as_view(template_name='auth_app/verification_sent.html'),
+             name='reset_email_sent'),
+        path('password-reset/<uidb64>/<token>/',
+             TemplateAPIView.as_view(template_name='auth_app/reset_password_sent.html'), name='pass_reset_confirm'),
+        path('verify-email/<key>/', TemplateAPIView.as_view(template_name='auth_app/email_verification.html'),
+             name='account_verification'),
     ]
