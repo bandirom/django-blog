@@ -18,7 +18,7 @@ urlpatterns = [
 urlpatterns += [
     path('sign-in/', views.LoginView.as_view(), name='api_login'),
     path('sign-up/', views.SignUpView.as_view(), name='api_sign_up'),
-    path('sign-up/verify/', views.VerifyEmailView.as_view()),
+    path('sign-up/verify/', views.VerifyEmailView.as_view(), name='api_sign_up_verify'),
     path('password/reset/', views.PasswordResetView.as_view(), name='api_forgot_password'),
     path('password/reset/confirm/', views.PasswordResetConfirmView.as_view(), name='reset_confirm'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
