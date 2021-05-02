@@ -63,9 +63,7 @@ class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.De
     http_method_names = ('get', 'post', 'put', 'delete')
 
     def get_serializer_class(self):
-        if self.action == 'update':
-            return serializers.UpdateDestroyCommentSerializer
-        elif self.action == 'destroy':
+        if self.action == 'update' or self.action == 'destroy':
             return serializers.UpdateDestroyCommentSerializer
         return serializers.CommentSerializer
 
