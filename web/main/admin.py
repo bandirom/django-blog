@@ -6,7 +6,13 @@ from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
+from user_profile.models import Profile
+
 User = get_user_model()
+
+
+class ProfileInline(admin.TabularInline):
+    model = Profile
 
 
 class EmailsInline(admin.TabularInline):
@@ -25,11 +31,12 @@ class EmailsInline(admin.TabularInline):
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     ordering = ('-id',)
-    list_display = ('email', 'full_name', 'is_active', 'email_verified')
-    inlines = (EmailsInline,)
+    list_display = ('email', 'full_name', 'phone_number', 'is_active', 'email_verified')
+    inlines = (EmailsInline, ProfileInline)
+    list_select_related = ('profile',)
 
     fieldsets = (
-        (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email')}),
+        (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email', 'phone_number')}),
         (_('Secrets'), {'fields': ('password',)}),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),

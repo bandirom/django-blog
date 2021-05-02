@@ -62,3 +62,10 @@ django-summernote==0.8.11.6
 
 # Tags
 django-taggit==1.4.0
+
+# Countries
+django-countries==7.1
+
+# PhoneNumberField
+django-phonenumber-field==5.1.0
+phonenumberslite==8.12.22

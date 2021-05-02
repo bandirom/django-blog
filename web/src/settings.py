@@ -91,6 +91,7 @@ LOCAL_APPS = [
     'auth_app.apps.AuthAppConfig',
     'blog.apps.BlogConfig',
     'contact_us.apps.ContactUsConfig',
+    'user_profile.apps.UserProfileConfig',
 
 ]
 
