@@ -1,33 +1,12 @@
 from typing import Union, List
 
 from django.conf import settings
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.template import loader
-from django.template.loader import get_template
 from django.utils.translation import activate
 
 from main.decorators import smtp_shell
 from src.celery import app
-
-
-def send_email(subject: str, template, content: dict, to_email: Union[str, List[str]]):
-    html_content = template.render(content)
-    send_mail(
-        subject=subject,
-        from_email=None,
-        message='',
-        recipient_list=[to_email] if isinstance(to_email, str) else to_email,
-        html_message=html_content
-    )
-
-
-@app.task()
-def send_verification_email(**kwargs):
-    content = kwargs.get('content', {})
-    to_email = kwargs.get('to_email')
-    subject = 'Please Confirm Your E-mail Address'
-    template = get_template('emails/verify_email.html')
-    send_email(subject, template, content, to_email)
 
 
 @app.task()
