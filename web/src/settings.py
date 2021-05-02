@@ -51,11 +51,10 @@ EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 465))
 EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS")
-DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_DEFAULT")
+EMAIL_DEFAULT = os.environ.get("EMAIL_DEFAULT")
 EMAIL_TIMEOUT = 15
 EMAIL_USE_SSL = int(os.environ.get("EMAIL_USE_SSL", 0))
-EMAIL_USE_TLS = int(os.environ.get("EMAIL_USE_TLS", 1))
-
+EMAIL_USE_TLS = int(os.environ.get("EMAIL_USE_TLS", 0))
 ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 1))
 
 USER_AVATAR_MAX_SIZE = 4.0
