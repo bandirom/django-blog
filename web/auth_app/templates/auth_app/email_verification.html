@@ -2,10 +2,7 @@
 {% load static i18n %}
 
 {% block container %}
-<h1>{% trans "Verify Your E-mail Address" %}</h1>
-
-<p>{% blocktrans %}Email Verify{% endblocktrans %}</p>
-
+<div id="verifyConfirm" data-href="{% url 'auth_app:api_sign_up_verify' %}"></div>
 {% endblock container %}
 
 {% block jquery %}
