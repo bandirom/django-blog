@@ -44,6 +44,5 @@ class LogoutView(auth_views.LogoutView):
         django_logout(self.request)
 
     def logout(self, request):
-        self.session_logout()
         response = full_logout(request)
         return response

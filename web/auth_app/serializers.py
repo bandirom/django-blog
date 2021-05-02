@@ -90,14 +90,6 @@ class LoginSerializer(auth_serializers.LoginSerializer):
         return attrs
 
 
-class UserSignUpWithCaptchaSerializer(UserSignUpSerializer):
-    pass
-
-
-class LoginWithCaptchaSerializer(LoginSerializer):
-    pass
-
-
 class PasswordResetSerializer(auth_serializers.PasswordResetSerializer):
     password_reset_form_class = PassResetForm
 
