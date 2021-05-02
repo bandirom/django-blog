@@ -13,7 +13,8 @@ function singUp(e) {
     dataType: 'json',
     data: form.serialize(),
     success: function (data) {
-      url = $('#successSignUp').data('href');
+      url = form.data('href');
+      console.log(url)
       window.location.href = url;
     },
     error: function (data) {
