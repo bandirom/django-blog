@@ -6,7 +6,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse_lazy
-from main.services import UserService, CeleryService
+from auth_app.services import CeleryService
+from main.services import UserService
 
 
 class PassResetForm(PasswordResetForm):
@@ -17,8 +18,8 @@ class PassResetForm(PasswordResetForm):
         return settings.FRONTEND_SITE + str(url)
 
     def save(self, domain_override=None,
-             subject_template_name='account/email/password_reset_subject.txt',
-             email_template_name='account/email/password_reset_email.html',
+             subject_template_name='emails/password_reset_subject.txt',
+             email_template_name='emails/password_reset_email.html',
              use_https=False, token_generator=default_token_generator,
              from_email=None, request=None, html_email_template_name='account/email/password_reset_email.html',
              extra_email_context=None, **kwargs):
@@ -32,12 +33,9 @@ class PassResetForm(PasswordResetForm):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = token_generator.make_token(user)
         url = self.get_reset_url(uid=uid, token=token)
+        content = {
+            'user': user.get_full_name(),
+            'reset_url': url,
 
-        data = {
-            'to_email': email,
-            'content': {
-                'user': user.get_full_name(),
-                'reset_url': url,
-            }
         }
-        CeleryService.send_password_reset(data=data)
+        CeleryService.send_password_reset(to_email=email, content=content)

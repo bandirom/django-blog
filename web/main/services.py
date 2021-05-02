@@ -1,29 +1,7 @@
 from django.contrib.auth import get_user_model
-
-from auth_app.utils import get_activate_key
 from main.decorators import except_shell
-from src.celery import app
 
 User = get_user_model()
-
-
-class CeleryService:
-
-    @staticmethod
-    def send_password_reset(data: dict):
-        print(data)
-
-    @staticmethod
-    def send_email_confirm(user):
-        key = get_activate_key(user)
-        kwargs = {
-            'to_email': user.email,
-            'content': {
-                'user': user.get_full_name(),
-                'activate_url': key,
-            }
-        }
-        print(kwargs)
 
 
 class UserService:

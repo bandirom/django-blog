@@ -8,10 +8,31 @@ from rest_framework.status import HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVE
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .utils import captcha_request, get_client_ip
+from .tasks import send_information_email
+from .utils import captcha_request, get_client_ip, get_activate_key
 from main.decorators import except_shell
 
 User = get_user_model()
+
+
+class CeleryService:
+
+    @staticmethod
+    def send_password_reset(content: dict, to_email: str):
+        subject = 'Password Reset'
+        template = 'emails/password_reset.html'
+        send_information_email(subject=subject, to_email=to_email, html_email_template_name=template, context=content)
+
+    @staticmethod
+    def send_email_confirm(user):
+        content = {
+            'user': user.get_full_name(),
+            'activate_url': get_activate_key(user),
+        }
+        subject = 'Please Confirm Your E-mail Address'
+        template = 'emails/verify_email.html'
+        to_email = user.email
+        send_information_email(subject=subject, to_email=to_email, html_email_template_name=template, context=content)
 
 
 class AuthAppService:

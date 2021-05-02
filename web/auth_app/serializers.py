@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import make_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from main.services import CeleryService
+from auth_app.services import CeleryService
 from .forms import PassResetForm
 from .services import AuthAppService
 
@@ -52,7 +52,7 @@ class UserSignUpSerializer(serializers.Serializer):
             del self.validated_data['captcha']
         user = User.objects.create(**self.validated_data, is_active=False)
         setup_user_email(request=request, user=user, addresses=[])
-        # CeleryService.send_email_confirm(user)
+        CeleryService.send_email_confirm(user)
         return user
 
 
