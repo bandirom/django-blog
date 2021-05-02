@@ -30,12 +30,12 @@ if settings.ENABLE_RENDERING:
     urlpatterns += [
         path('login/', TemplateAPIView.as_view(template_name='auth_app/login.html'), name='login'),
         path('register/', TemplateAPIView.as_view(template_name='auth_app/sign_up.html'), name='sign_up'),
-        path('email-sent/verify/', TemplateAPIView.as_view(template_name='auth_app/reset_password_confirm.html'),
+        path('email-sent/verify/', TemplateAPIView.as_view(template_name='auth_app/verification_sent.html'),
              name='verify_email_sent'),
-        path('email-sent/reset/', TemplateAPIView.as_view(template_name='auth_app/verification_sent.html'),
+        path('email-sent/reset/', TemplateAPIView.as_view(template_name='auth_app/reset_password_sent.html'),
              name='reset_email_sent'),
         path('password-reset/<uidb64>/<token>/',
-             TemplateAPIView.as_view(template_name='auth_app/reset_password_sent.html'), name='pass_reset_confirm'),
+             TemplateAPIView.as_view(template_name='auth_app/reset_password_confirm.html'), name='pass_reset_confirm'),
         path('verify-email/<key>/', TemplateAPIView.as_view(template_name='auth_app/email_verification.html'),
              name='account_verification'),
     ]
