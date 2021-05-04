@@ -2,9 +2,18 @@
 <!-- the comment box -->
 <div class="well">
   <h4><i class="fa fa-paper-plane-o"></i> Leave a Comment:</h4>
-  <form role="form">
-    <div class="form-group">
-      <textarea class="form-control" rows="3"></textarea>
+  <form id="formReview" action="{% url 'blog:comment-list' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="parent_id" id="commentParent" value="">
+    <input type="hidden" name="article" value="{{ id }}">
+    {% if not user.is_authenticated %}
+    <div id="emailGroup" class="col-sm-6 form-group">
+      <label for="author"> Email: </label>
+      <input type="email" class="form-control" name="author" id="author" value="" required>
+    </div>
+    {% endif %}
+    <div id="textAreaGroup" class="form-group">
+      <textarea id="textComment" name="content" class="form-control" rows="3"></textarea>
     </div>
     <button type="submit" class="btn btn-primary"><i class="fa fa-reply"></i> Submit</button>
   </form>
@@ -18,7 +27,9 @@
     <small> {{ comment.updated | date_time }}</small>
   </h3>
   <p>{{ comment.content }}</p>
-  <a href="#"><i class="fa fa-reply"></i> Reply</a>
+  <a href="#formReview" onclick="addParentToComment('{{ comment.author }}', '{{ comment.id }}')">
+    <i class="fa fa-reply"></i> Reply
+  </a>
   {% for child in comment.child %}
   <div class="sub-comment">
     <h3><i class="fa fa-comment"></i> {{ child.author }}:
