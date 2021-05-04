@@ -17,9 +17,14 @@ class ArticleAdmin(SummernoteModelAdmin):
     summernote_fields = ('content',)
     fields = ('category', 'title', 'status', 'author', 'image', 'content', 'created', 'updated')
     readonly_fields = ('created', 'updated')
-    list_select_related = ('category', 'author', 'comment')
+    list_select_related = ('category', 'author')
     list_filter = ('status',)
     inlines = (CommentsInline,)
+    save_as = True
+    list_editable = ('status', 'author')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('comment_set')
 
 
 @admin.register(Category)
