@@ -73,7 +73,10 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'url', 'author', 'category', 'created', 'updated', 'comments_count', 'image')
+        fields = (
+            'id', 'title', 'url', 'author', 'category',
+            'created', 'updated', 'comments_count', 'image', 'content'
+        )
 
 
 class FullArticleSerializer(ArticleSerializer):
@@ -81,4 +84,4 @@ class FullArticleSerializer(ArticleSerializer):
     comments = CommentSerializer(source='comment_set', many=True)
 
     class Meta(ArticleSerializer.Meta):
-        fields = ArticleSerializer.Meta.fields + ('content', 'comments',)
+        fields = ArticleSerializer.Meta.fields + ('comments',)
