@@ -4,9 +4,8 @@
 
 {% block container %}
 
-
 <div class="row">
-  <div class="col-lg-8">
+  <div id="pagination" class="col-lg-8">
     {% for article in results %}
     <div class="row">
       <div class="col-md-12 post">
@@ -48,6 +47,9 @@
       </div>
     </div>
     {% endfor %}
+
+    {% include 'blog/includes/pagination.html' %}
+
   </div>
   {% include 'blog/includes/right_sidebar.html' %}
 </div>

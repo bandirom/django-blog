@@ -1,0 +1,13 @@
+<ul class="pagination">
+  {% if previous %}
+  <li><a href="{{ previous }}">«</a></li>
+  {% else %}
+  <li class="disabled"><a href="#">«</a></li>
+  {% endif %}
+  <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+  {% if next %}
+  <li><a href="{{ next }}">»</a></li>
+  {% else %}
+  <li class="disabled"><a href="#">»</a></li>
+  {% endif %}
+</ul>
