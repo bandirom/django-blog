@@ -18,6 +18,8 @@ error_messages = {
     'not_verified': _('Email not verified'),
     'not_active': _('Your account is not active. Please contact Your administrator'),
     'wrong_credentials': _('Entered email or password is incorrect'),
+    'already_registered': _("User is already registered with this e-mail address"),
+    'password_not_match': _("The two password fields didn't match"),
 }
 
 
@@ -36,12 +38,12 @@ class UserSignUpSerializer(serializers.Serializer):
         if not status:
             raise serializers.ValidationError(msg)
         if email and email_address_exists(email):
-            raise serializers.ValidationError(_("User is already registered with this e-mail address."))
+            raise serializers.ValidationError(error_messages['already_registered'])
         return email
 
     def validate(self, data):
         if data['password1'] != data['password2']:
-            raise serializers.ValidationError({'password2': _("The two password fields didn't match.")})
+            raise serializers.ValidationError({'password2': error_messages['password_not_match']})
         return data
 
     def save(self, **kwargs):

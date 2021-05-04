@@ -6,7 +6,7 @@ from django.conf import settings
 
 
 urlpatterns = [
-    path('user/', UserView.as_view()),
+    path('user/', UserView.as_view(), name='api_user'),
 ]
 
 if settings.ENABLE_RENDERING:
