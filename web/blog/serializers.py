@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from main.serializers import UserSerializer
+from user_profile.serializers import UserSerializer
 from .models import Category, Article, Comment
 from .services import BlogService
 
@@ -9,9 +9,7 @@ from .services import BlogService
 class ParentCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = (
-            'id', 'author', 'content', 'updated', 'article',
-        )
+        fields = ('id', 'author', 'content', 'updated', 'article')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -57,7 +55,6 @@ class UpdateDestroyCommentSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
     slug = serializers.SlugField(read_only=True, allow_unicode=True)
 
     class Meta:
@@ -80,7 +77,6 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class FullArticleSerializer(ArticleSerializer):
-
     comments = CommentSerializer(source='comment_set', many=True)
 
     class Meta(ArticleSerializer.Meta):
