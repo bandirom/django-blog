@@ -5,10 +5,10 @@ version: '3.7'
 services:
   celery:
     env_file:
-      - docker/dev/env/.email.env
+      - docker/dev/env/.mailhog.env
   web:
     env_file:
-      - docker/dev/env/.email.env
+      - docker/dev/env/.mailhog.env
   mailhog:
     image: mailhog/mailhog
     ports:
