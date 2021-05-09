@@ -20,5 +20,6 @@ services:
     networks:
       - separated_network
 
+
 volumes:
   mailbox_data:
