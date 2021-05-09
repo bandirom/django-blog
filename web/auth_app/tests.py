@@ -89,7 +89,9 @@ class AuthApiTestCase(APITestCase):
 
     @locmem_email_backend
     def test_password_reset(self):
-        url = reverse_lazy('auth_app:api_forgot_password')
+        # url = reverse_lazy('auth_app:api_forgot_password')
+        pass
 
     def test_logout(self):
-        url = reverse_lazy('auth_app:logout')
+        # url = reverse_lazy('auth_app:logout')
+        pass
