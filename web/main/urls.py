@@ -1,15 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.generic import RedirectView
-from .views import UserView, IndexView
+from .views import TemplateAPIView
 from django.conf import settings
 
 
 urlpatterns = [
-    path('user/', UserView.as_view(), name='api_user'),
 ]
 
 if settings.ENABLE_RENDERING:
-    urlpatterns += [path('', IndexView.as_view(), name='index')]
+    urlpatterns += [path('', TemplateAPIView.as_view(template_name='index.html'), name='index')]
 else:
     urlpatterns += [path('', login_required(RedirectView.as_view(pattern_name='admin:index')))]
