@@ -1,7 +1,9 @@
 {% extends "blog/base.html" %}
 {% load static main %}
 
-{% block head %}{% endblock head %}
+{% block head %}
+<link href="{% static 'blog/css/comments.css' %}" rel="stylesheet">
+{% endblock head %}
 
 {% block container %}
 <div class="row">
