@@ -1,5 +1,5 @@
 {% extends "blog/base.html" %}
-{% load static main %}
+{% load static main i18n %}
 
 {% block head %}
 <link href="{% static 'blog/css/comments.css' %}" rel="stylesheet">
@@ -15,10 +15,22 @@
     </p>
     <hr>
     <p><i class="fa fa-calendar"></i> Posted on {{ created | date_time }}</p>
-    <p><i class="fa fa-tags"></i> Tags: <a href=""><span class="badge badge-info">Bootstrap</span></a> <a
-      href=""><span class="badge badge-info">Web</span></a> <a href=""><span class="badge badge-info">CSS</span></a>
-      <a href=""><span class="badge badge-info">HTML</span></a></p>
-
+    <p><i class="fa fa-tags"></i> Tags:
+      <a href=""><span class="badge badge-info">Bootstrap</span></a>
+      <a href=""><span class="badge badge-info">Web</span></a>
+      <a href=""><span class="badge badge-info">CSS</span></a>
+      <a href=""><span class="badge badge-info">HTML</span></a>
+    </p>
+    <ul>
+      <li data-id="{{ id }}" data-type="article" data-action="like" title="{% trans 'Like' %}">
+        <span class="glyphicon glyphicon-thumbs-up"></span>
+        <span data-count="like"></span>
+      </li>
+      <li data-id="{{ id }}" data-type="article" data-action="dislike" title="{% trans 'Dislike' %}">
+        <span class="glyphicon glyphicon-thumbs-down"></span>
+        <span data-count="dislike"></span>
+      </li>
+    </ul>
     <hr>
     <img src="{{ image }}" class="img-responsive" width="700" height="300">
     <hr>
@@ -38,4 +50,5 @@
 
 {% block jquery %}
 $.getScript('{% static 'blog/js/detail.js' %}');
+$.getScript('{% static 'blog/js/likes.js' %}');
 {% endblock %}
