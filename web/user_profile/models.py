@@ -1,8 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django_countries.fields import CountryField
-from phonenumber_field.modelfields import PhoneNumberField
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from .choices import GenderChoice
@@ -23,3 +20,13 @@ class Profile(models.Model):
 
     class Meta:
         verbose_name = _('Profile')
+
+    def set_image_to_default(self):
+        self.avatar.delete(save=False)  # delete old image file
+        self.save()
+
+    def is_default_image(self):
+        return True if self.avatar.url.find("no-avatar.png") != -1 else False
+
+    def __str__(self):
+        return f"{self.user.full_name()} profile"
