@@ -10,6 +10,8 @@ from .additional_settings.celery_settings import *
 from .additional_settings.allauth_settings import *
 from .additional_settings.jwt_settings import *
 from .additional_settings.summernote_settings import *
+from .additional_settings.smtp_settings import *
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -47,17 +49,11 @@ API_KEY = os.environ.get('API_KEY')
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
 SITE_ID = 1
 
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 465))
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
-EMAIL_TIMEOUT = 15
-EMAIL_USE_SSL = int(os.environ.get("EMAIL_USE_SSL", 0))
-EMAIL_USE_TLS = int(os.environ.get("EMAIL_USE_TLS", 0))
 ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 1))
 
 USER_AVATAR_MAX_SIZE = 4.0
+USER_FILE_MAX_SIZE = 10.0  # Mb
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # b = 10 MB
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -92,6 +88,7 @@ LOCAL_APPS = [
     'blog.apps.BlogConfig',
     'contact_us.apps.ContactUsConfig',
     'user_profile.apps.UserProfileConfig',
+    # 'actions.apps.ActionsConfig',
 
 ]
 

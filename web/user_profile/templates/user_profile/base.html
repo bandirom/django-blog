@@ -1,5 +1,8 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block active_post %}class="active"{% endblock active_post %}
+
 {% block header %}
 {% include 'includes/header.html'  with selected='profile' %}
 {% endblock header %}
@@ -7,3 +10,7 @@
 {% block container %}
 
 {% endblock container %}
+
+{% block jquery %}
+$.getScript('{% static 'user_profile/js/profile.js' %}');
+{% endblock %}

@@ -2,5 +2,39 @@
 
 
 {% block container %}
-{{ full_name }}
+<div class="row">
+  <div class="col-sm-10"><h1>{{ full_name }}</h1></div>
+  <div class="col-sm-2">
+    <a href="#" class="pull-right">
+      <img title="profile image" class="img-circle img-responsive"
+           src="http://www.gravatar.com/avatar/28fd20ccec6865e2d5f0e1f4446eb7bf?s=100">
+    </a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-3"><!--left col-->
+    {% include 'user_profile/include/block_avatar.html' %}
+    </hr><br>
+
+    {% include 'user_profile/include/block_website.html' %}
+    {% include 'user_profile/include/block_activity.html' %}
+    {% include 'user_profile/include/block_social_media.html' %}
+
+  </div><!--/col-3-->
+  <div class="col-sm-9">
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+      <li><a data-toggle="tab" href="#messages">Menu 1</a></li>
+      <li><a data-toggle="tab" href="#settings">Menu 2</a></li>
+    </ul>
+
+
+    <div class="tab-content">
+          {% include 'user_profile/include/tab1.html' %}
+          {% include 'user_profile/include/tab2.html' %}
+          {% include 'user_profile/include/tab3.html' %}
+    </div><!--/tab-pane-->
+  </div><!--/tab-content-->
+
+</div><!--/col-9-->
 {% endblock container %}
