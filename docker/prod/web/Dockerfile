@@ -34,7 +34,10 @@ ARG USER=ubuntu
 
 RUN apk update && apk add --no-cache postgresql-dev curl \
     && addgroup -g $GID -S $USER \
-    && adduser -S $USER -G $USER --disabled-password --uid "$UID"
+    && adduser -S $USER -G $USER --disabled-password --uid "$UID" \
+    && mkdir -p /gunicorn_socket /redis_socket \
+    && chmod -R 777 /gunicorn_socket /redis_socket \
+    && chown -R $USER:$USER /gunicorn_socket
 
 WORKDIR $APP_HOME
 
@@ -42,8 +45,6 @@ COPY --from=builder /install /usr/local
 COPY --chown=$USER:$USER ./docker/prod/web/entrypoint.sh /entrypoint.sh
 COPY --chown=$USER:$USER ./web $APP_HOME
 
-RUN chmod +x /entrypoint.sh && mkdir -p static && chown -R $USER:$USER static
-
-RUN flake8 .
+RUN chmod +x /entrypoint.sh && mkdir -p static && chown -R $USER:$USER static && flake8 .
 
 USER $USER

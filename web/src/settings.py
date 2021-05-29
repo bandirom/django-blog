@@ -88,11 +88,12 @@ LOCAL_APPS = [
     'blog.apps.BlogConfig',
     'contact_us.apps.ContactUsConfig',
     'user_profile.apps.UserProfileConfig',
-    # 'actions.apps.ActionsConfig',
+   # 'actions.apps.ActionsConfig',
 
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -163,6 +164,7 @@ DATABASES = {
     },
 }
 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -188,6 +190,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+TIMEZONE_COOKIE_NAME = 'timezone'
+TIMEZONE_COOKIE_AGE = 15552000  # 60*60*24*180
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -206,6 +211,7 @@ ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = LANGUAGE_CODE
 ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'English'
 ROSETTA_SHOW_AT_ADMIN_PANEL = True
 ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = False
+
 
 if JAEGER_AGENT_HOST := os.environ.get('JAEGER_AGENT_HOST'):
     from jaeger_client import Config
@@ -235,7 +241,6 @@ if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
     from sentry_sdk import init
     from sentry_sdk.integrations.django import DjangoIntegration
-
     init(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],

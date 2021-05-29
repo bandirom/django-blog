@@ -1,11 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.generic import RedirectView
-from .views import TemplateAPIView
 from django.conf import settings
+
+from .views import TemplateAPIView, SetUserTimeZone
 
 
 urlpatterns = [
+    path('timezone/set/', SetUserTimeZone.as_view(), name='set_user_timezone'),
+
 ]
 
 if settings.ENABLE_RENDERING:

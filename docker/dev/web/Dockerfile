@@ -29,8 +29,10 @@ RUN pip install -r ./requirements/local.txt
 COPY --chown=$USER:$USER ./docker/dev/web/entrypoint.sh /entrypoint.sh
 COPY --chown=$USER:$USER ./web $HOME
 
-RUN chmod +x /entrypoint.sh && mkdir -p $HOME/static && chown -R $USER:$USER $HOME/static
-
-RUN flake8 .
+RUN chmod +x /entrypoint.sh \
+    && mkdir -p $HOME/static /redis_socket \
+    && chown -R $USER:$USER $HOME/static \
+    && chmod -R 777 /redis_socket \
+    && flake8 .
 
 USER $USER
