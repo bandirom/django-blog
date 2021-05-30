@@ -28,3 +28,7 @@ class BlogService:
     @staticmethod
     def is_valid_comment_parent(parent_id: int, article: Article) -> bool:
         return Comment.objects.filter(id=parent_id, article=article, parent__isnull=True).exists()
+
+    @staticmethod
+    def get_article_comments(article_id):
+        return Comment.objects.filter(article_id=article_id, parent__isnull=True)
