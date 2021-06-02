@@ -88,7 +88,7 @@ LOCAL_APPS = [
     'blog.apps.BlogConfig',
     'contact_us.apps.ContactUsConfig',
     'user_profile.apps.UserProfileConfig',
-   # 'actions.apps.ActionsConfig',
+    'actions.apps.ActionsConfig',
 
 ]
 

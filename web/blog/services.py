@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db.models import Count, QuerySet, Prefetch
 
+from main.decorators import except_shell
 from .choices import ArticleStatus
 from .models import Category, Article, Comment
 
@@ -32,3 +33,13 @@ class BlogService:
     @staticmethod
     def get_article_comments(article_id):
         return Comment.objects.filter(article_id=article_id, parent__isnull=True)
+
+    @staticmethod
+    @except_shell((Article.DoesNotExist,))
+    def get_article(article_id):
+        return Article.objects.select_related('category').prefetch_related('comment_set').get(id=article_id)
+
+    @staticmethod
+    @except_shell((Comment.DoesNotExist,))
+    def get_comment(comment_id):
+        return Comment.objects.get(id=comment_id)
