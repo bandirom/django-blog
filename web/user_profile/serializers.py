@@ -3,25 +3,26 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from rest_framework import serializers
 from .models import Profile
-
+from .choices import GenderChoice
 
 User = get_user_model()
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Profile
         fields = ('birthday', 'avatar', 'gender',)
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     profile = ProfileSerializer()
 
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'email', 'profile', 'is_active', 'email_verified')
+        fields = (
+            'id', 'full_name', 'first_name', 'last_name', 'email', 'profile', 'is_active', 'email_verified',
+            'phone_number'
+        )
         read_only_fields = ('full_name', 'email_verified')
 
     def to_representation(self, instance):
@@ -31,11 +32,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserImageSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Profile
-        fields = ("avatar",)
-
-    avatar = serializers.ImageField()
+        fields = ('avatar',)
 
     def validate_avatar(self, avatar):
         if avatar.size > settings.USER_AVATAR_MAX_SIZE * 1024 * 1024:
@@ -47,3 +47,12 @@ class UserImageSerializer(serializers.ModelSerializer):
             self.instance.set_image_to_default()
         instance = super().save(**kwargs)
         return instance
+
+
+class UpdateUserProfileSerializer(serializers.ModelSerializer):
+    birthday = serializers.DateField(source='profile_set.birthday')
+    gender = serializers.ChoiceField(source='profile_set.gender', choices=GenderChoice.choices)
+
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'birthday', 'gender')

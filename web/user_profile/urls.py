@@ -9,7 +9,7 @@ app_name = 'user_profile'
 
 router = DefaultRouter()
 
-profile = views.ProfileViewSet.as_view({'get': 'profile'})
+profile = views.ProfileViewSet.as_view({'get': 'profile', 'put': 'update'})
 
 urlpatterns = [
     path('profile/', profile, name='profile'),
