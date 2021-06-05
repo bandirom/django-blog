@@ -34,7 +34,7 @@ jobs:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.AWS_PEM }}
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
           known_hosts: 'empty'
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
@@ -50,4 +50,4 @@ jobs:
             docker-compose -f prod.yml -f prod.dev.yml up -d --build
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USER }}
-          privateKey: ${{ secrets.AWS_PEM}}
+          privateKey: ${{ secrets.AWS_PRIVATE_KEY}}
