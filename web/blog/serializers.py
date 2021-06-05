@@ -7,15 +7,18 @@ from .services import BlogService
 
 
 class ParentCommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Comment
-        fields = ('id', 'author', 'content', 'updated', 'article')
+        fields = ('id', 'author', 'content', 'updated', 'article', 'user')
 
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.EmailField(required=False)
     child = ParentCommentSerializer(many=True, read_only=True, source='parent_set')
     parent_id = serializers.IntegerField(min_value=1, default=None)
+    user = UserSerializer()
 
     class Meta:
         model = Comment
