@@ -36,7 +36,7 @@ class AuthApiTestCase(APITestCase):
 
     def test_login(self):
         login_url = reverse_lazy('auth_app:api_login')
-        user_url = reverse_lazy('api_user')
+        user_url = reverse_lazy('user_profile:profile')
 
         data = {
             'email': self.user.email,
