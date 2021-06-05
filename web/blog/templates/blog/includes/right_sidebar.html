@@ -1,4 +1,9 @@
 <div class="col-lg-4">
+
+  {% if user.is_authenticated %}
+  {% include 'blog/includes/suggest_new_post.html' %}
+  {% endif %}
+
   <div class="well">
     <h4><i class="fa fa-search"></i> Blog Search...</h4>
     <div class="input-group">
