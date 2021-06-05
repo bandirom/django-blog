@@ -38,7 +38,7 @@ class ProfileViewSet(GenericViewSet):
         response.template_name = self.get_template_name()
         return response
 
-    def image_update(self, request, *args, **kwargs):
+    def image_update(self, request):
         """
         Response for change user avatar
 
