@@ -1,13 +1,11 @@
 import logging
 from django.utils.translation import gettext_lazy as _
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import mixins
-from main.pagination import DefaultPagination
+from main.pagination import BasePageNumberPagination
 from main.views import TemplateAPIView
 from .serializers import CategorySerializer
 from .services import BlogService
@@ -21,7 +19,7 @@ class ViewSet(ModelViewSet):
     http_method_names = ('get', 'post', 'put', 'delete')
     lookup_field = 'slug'
     permission_classes = (AllowAny,)
-    pagination_class = DefaultPagination
+    pagination_class = BasePageNumberPagination
 
 
 class CategoryViewSet(ViewSet):
@@ -62,7 +60,7 @@ class ArticleViewSet(ViewSet):
 class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet):
     permission_classes = (AllowAny, )
     http_method_names = ('get', 'post', 'put', 'delete')
-    pagination_class = DefaultPagination
+    pagination_class = BasePageNumberPagination
 
     def get_serializer_class(self):
         if self.action == 'update' or self.action == 'destroy':

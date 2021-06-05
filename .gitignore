@@ -11,6 +11,7 @@ celerybeat*
 .coverage
 web/.cache
 .cache
+web/media/*
 modules.txt
 web/media/*
 !web/media/no-avatar.png

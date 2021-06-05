@@ -40,6 +40,7 @@ class CustomUserAdmin(UserAdmin):
     def email_verified(self, obj):
         return obj.email_address[0].verified if obj.email_address else False
     email_verified.boolean = True
+    search_fields = ('first_name', 'last_name', 'email')
 
     fieldsets = (
         (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email', 'phone_number')}),
