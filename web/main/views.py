@@ -58,7 +58,3 @@ class SetUserTimeZone(GenericAPIView):
             max_age=getattr(settings, 'TIMEZONE_COOKIE_AGE', 86400),
         )
         return response
-
-
-class IndexView(TemplateAPIView):
-    template_name = 'index.html'

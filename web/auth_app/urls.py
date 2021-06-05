@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
-
+from main.views import TemplateAPIView
 from . import views
 
 app_name = 'auth_app'
@@ -32,11 +32,10 @@ urlpatterns += [
 ]
 
 if settings.ENABLE_RENDERING:
-    from . import template_views as t_views
-
     urlpatterns += [
-        path('login/', t_views.LoginView.as_view(), name='login'),
-        path('register/', t_views.SignUpView.as_view(), name='sign_up'),
-        path('password-recovery/', t_views.PasswordRecoveryView.as_view(), name='password_recovery'),
+        path('login/', TemplateAPIView.as_view(template_name='auth_app/login.html'), name='login'),
+        path('register/', TemplateAPIView.as_view(template_name='auth_app/sign_up.html'), name='sign_up'),
+        path('password-recovery/', TemplateAPIView.as_view(template_name=''),
+             name='password_recovery'),
 
     ]
