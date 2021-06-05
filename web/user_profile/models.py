@@ -16,6 +16,8 @@ class Profile(models.Model):
     avatar = models.ImageField(default='no-avatar.png', blank=True, upload_to=avatar_upload_patch)
     birthday = models.DateField(null=True, blank=True)
     gender = models.IntegerField(choices=GenderChoice.choices, null=True, blank=True)
+    website = models.URLField(blank=True, default='')
+
     objects = models.Manager()
 
     class Meta:
