@@ -26,6 +26,7 @@ class EmailsInline(admin.TabularInline):
 class CustomUserAdmin(UserAdmin):
     ordering = ('-id',)
     list_display = ('email', 'full_name', 'is_active', 'email_verified')
+    search_fields = ('first_name', 'last_name', 'email')
     inlines = (EmailsInline,)
 
     fieldsets = (

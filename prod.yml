@@ -6,9 +6,15 @@ services:
       - static_volume:/home/ubuntu/web/static
       - media_volume:/home/ubuntu/web/media
       - ./logs/nginx:/var/log/nginx
+      - gunicorn_socket:/gunicorn_socket
     depends_on:
       - web
     restart: always
+    healthcheck:
+      test: service nginx status || exit 1
+      interval: 20s
+      timeout: 3s
+      retries: 3
     networks:
       - microservice_network
   web:
@@ -19,6 +25,8 @@ services:
     volumes:
       - static_volume:/home/ubuntu/web/static
       - media_volume:/home/ubuntu/web/media
+      - redis_socket:/redis_socket
+      - gunicorn_socket:/gunicorn_socket
     expose:
       - 8000
     environment:
@@ -51,10 +59,12 @@ services:
     depends_on:
       - redis
     restart: always
+    volumes:
+      - redis_socket:/redis_socket
     networks:
       - separated_network
   db:
-    image: postgres:13.2-alpine
+    image: postgres:12.6-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
@@ -68,10 +78,13 @@ services:
       timeout: 5s
       retries: 5
   redis:
-    image: redis:6.0.1-alpine
+    build:
+      context: .
+      dockerfile: docker/prod/redis/Dockerfile
     restart: always
     volumes:
       - redis_data:/data
+      - redis_socket:/redis_socket
     networks:
       - separated_network
     healthcheck:
@@ -83,6 +96,8 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  redis_socket:
+  gunicorn_socket:
   static_volume:
   media_volume:
 

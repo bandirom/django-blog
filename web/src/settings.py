@@ -10,6 +10,8 @@ from .additional_settings.celery_settings import *
 from .additional_settings.allauth_settings import *
 from .additional_settings.jwt_settings import *
 from .additional_settings.summernote_settings import *
+from .additional_settings.smtp_settings import *
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -44,15 +46,6 @@ API_KEY = os.environ.get('API_KEY')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
 SITE_ID = 1
-
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 465))
-EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS")
-DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_DEFAULT")
-EMAIL_TIMEOUT = 15
-EMAIL_USE_SSL = int(os.environ.get("EMAIL_USE_SSL", 0))
-EMAIL_USE_TLS = int(os.environ.get("EMAIL_USE_TLS", 1))
 
 ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 1))
 
@@ -94,6 +87,7 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -165,6 +159,7 @@ DATABASES = {
     },
 }
 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -190,6 +185,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+TIMEZONE_COOKIE_NAME = 'timezone'
+TIMEZONE_COOKIE_AGE = 15552000  # 60*60*24*180
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -209,11 +207,11 @@ ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'English'
 ROSETTA_SHOW_AT_ADMIN_PANEL = True
 ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = False
 
+
 if JAEGER_AGENT_HOST := os.environ.get('JAEGER_AGENT_HOST'):
     from jaeger_client import Config
     from jaeger_client.config import DEFAULT_REPORTING_PORT
     from django_opentracing import DjangoTracing
-
     """If you don't need to trace all requests, comment middleware and set OPENTRACING_TRACE_ALL = False
         More information https://github.com/opentracing-contrib/python-django/#tracing-individual-requests
     """
@@ -237,7 +235,6 @@ if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
     from sentry_sdk import init
     from sentry_sdk.integrations.django import DjangoIntegration
-
     init(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
