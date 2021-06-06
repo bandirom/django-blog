@@ -1,3 +1,4 @@
+import re
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
@@ -12,13 +13,13 @@ from rest_framework import status
 from auth_app.serializers import error_messages
 from main.services import UserService
 
-
 User = get_user_model()
 
 locmem_email_backend = override_settings(
     EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
     CELERY_TASK_ALWAYS_EAGER=False,
 )
+
 
 # refresh_from_db()
 
@@ -86,11 +87,26 @@ class AuthApiTestCase(APITestCase):
         user = UserService.get_user(email=data['email'])
         self.assertFalse(user.is_active)
         self.assertFalse(user.email_verified())
+        string = str(mail.outbox[0].message())
+        pattern = r'(http?://[^\"\s]+)'
+        result = re.findall(pattern, string)
+        activate_url = result[0]
+        key = activate_url.split('/')
+        url = reverse_lazy('auth_app:api_sign_up_verify')
+        data = {'key': key[5]}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        user = UserService.get_user('new_user@test.com')
+        self.assertTrue(user.is_active)
+        self.assertTrue(user.email_verified())
 
     @locmem_email_backend
     def test_password_reset(self):
-        # url = reverse_lazy('auth_app:api_forgot_password')
-        pass
+        url = reverse_lazy('auth_app:api_forgot_password')
+        data = {'email': self.user.email}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        self.assertEqual(len(mail.outbox), 1)
 
     def test_logout(self):
         # url = reverse_lazy('auth_app:logout')
