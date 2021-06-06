@@ -66,6 +66,12 @@ class AuthAppService:
     def get_user(email):
         return User.objects.get(email=email)
 
+    @staticmethod
+    def make_user_active(user):
+        user.is_active = True
+        user.save(update_fields=['is_active'])
+        return user
+
 
 def full_logout(request):
     response = Response({"detail": _("Successfully logged out.")}, status=HTTP_200_OK)
