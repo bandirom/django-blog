@@ -1,5 +1,6 @@
 import logging
 from django.contrib.auth import logout as django_logout
+from django.utils.translation import gettext_lazy as _
 
 from dj_rest_auth import views as auth_views
 from dj_rest_auth.registration.views import (
@@ -7,9 +8,11 @@ from dj_rest_auth.registration.views import (
 )
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
 
 from . import serializers
-from .services import full_logout
+from .services import full_logout, AuthAppService
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +38,16 @@ class VerifyEmailView(_VerifyEmailView):
 
     def get_serializer(self, *args, **kwargs):
         return serializers.VerifyEmailSerializer(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.kwargs['key'] = serializer.validated_data['key']
+        confirmation = self.get_object()
+        user = confirmation.email_address.user
+        AuthAppService.make_user_active(user)
+        confirmation.confirm(self.request)
+        return Response({'detail': _('ok')}, status=HTTP_200_OK)
 
 
 class LogoutView(auth_views.LogoutView):
