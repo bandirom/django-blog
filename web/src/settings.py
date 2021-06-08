@@ -49,8 +49,6 @@ API_KEY = os.environ.get('API_KEY')
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
 SITE_ID = 1
 
-ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 1))
-
 USER_AVATAR_MAX_SIZE = 4.0
 
 INSTALLED_APPS = [
