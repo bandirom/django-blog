@@ -4,6 +4,7 @@ $(function () {
 });
 
 function like(e) {
+
   e.preventDefault()
   let like = $(this);
   let type = like.data('type');
@@ -12,10 +13,17 @@ function like(e) {
   let dislike = like.next();
   console.log(type, pk, action, dislike)
   // $.ajax({
-    // url:
+  // url:
   // })
 }
 
 function dislike() {
   console.log('dislike')
+  let dislike = $(this);
+  let type = dislike.data('type');
+  let pk = dislike.data('id');
+  let action = dislike.data('action');
+  let like = dislike.prev();
+  console.log(type, pk, action, dislike)
+
 }
