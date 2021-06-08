@@ -37,6 +37,8 @@ USE_HTTPS = int(os.environ.get('USE_HTTPS', 0))
 ENABLE_SENTRY = int(os.environ.get('ENABLE_SENTRY', 0))
 ENABLE_SILK = int(os.environ.get('ENABLE_SILK', 0))
 ENABLE_DEBUG_TOOLBAR = int(os.environ.get('ENABLE_DEBUG_TOOLBAR', 0))
+ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 0))
+
 INTERNAL_IPS = []
 
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
@@ -49,7 +51,6 @@ API_KEY = os.environ.get('API_KEY')
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
 SITE_ID = 1
 
-ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 1))
 
 USER_AVATAR_MAX_SIZE = 4.0
 USER_FILE_MAX_SIZE = 10.0  # Mb
@@ -122,11 +123,14 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
+
 if ENABLE_RENDERING:
+    """ For build CMS using DRF """
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer',
     )
+
 
 ROOT_URLCONF = 'src.urls'
 
@@ -158,12 +162,11 @@ DATABASES = {
         "NAME": os.environ.get("POSTGRES_DB"),
         "USER": os.environ.get("POSTGRES_USER"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_HOST"),
+        "HOST": os.environ.get("POSTGRES_SOCKET") or os.environ.get('POSTGRES_HOST'),
         "PORT": os.environ.get("POSTGRES_PORT"),
         "CONN_MAX_AGE": 0,
     },
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
