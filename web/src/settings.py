@@ -27,7 +27,6 @@ SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', 'test@test.com')
 SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD', 'tester26')
 
 MICROSERVICE_TITLE = os.environ.get('MICROSERVICE_TITLE', 'Template')
-
 GITHUB_URL = os.environ.get('GITHUB_URL', 'https://github.com')
 FRONTEND_SITE = os.environ.get('FRONTEND_SITE', 'http://localhost:8009')
 
@@ -50,7 +49,6 @@ API_KEY = os.environ.get('API_KEY')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
 SITE_ID = 1
-
 
 USER_AVATAR_MAX_SIZE = 4.0
 USER_FILE_MAX_SIZE = 10.0  # Mb
