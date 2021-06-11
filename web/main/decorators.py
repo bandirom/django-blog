@@ -5,6 +5,7 @@ from django.core.cache import cache
 from requests.exceptions import RequestException
 from kombu.exceptions import OperationalError
 from timeit import default_timer
+from smtplib import SMTPRecipientsRefused
 
 logger = logging.getLogger(__name__)
 

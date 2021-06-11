@@ -12,6 +12,7 @@ celerybeat*
 web/.cache
 .cache
 web/media/*
+htmlcov
 modules.txt
 web/media/*
 !web/media/no-avatar.png
