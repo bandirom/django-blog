@@ -7,7 +7,7 @@ from .choices import GenderChoice
 User = get_user_model()
 
 
-def avatar_upload_patch(obj, filename: str):
+def avatar_upload_patch(obj, filename: str) -> str:
     return f"avatars/{obj.user_id}/{filename}"
 
 
