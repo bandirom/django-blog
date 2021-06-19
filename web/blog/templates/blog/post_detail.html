@@ -22,11 +22,13 @@
       <a href=""><span class="badge badge-info">HTML</span></a>
     </p>
     <ul>
-      <li data-id="{{ id }}" data-type="article" data-action="like" title="{% trans 'Like' %}">
+      <li id="likeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
+          data-action="like" title="{% trans 'Like' %}">
         <span class="glyphicon glyphicon-thumbs-up"></span>
         <span data-count="like"></span>
       </li>
-      <li data-id="{{ id }}" data-type="article" data-action="dislike" title="{% trans 'Dislike' %}">
+      <li id="dislikeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
+          data-action="dislike" title="{% trans 'Dislike' %}">
         <span class="glyphicon glyphicon-thumbs-down"></span>
         <span data-count="dislike"></span>
       </li>
@@ -54,5 +56,5 @@
 
 {% block jquery %}
   $.getScript('{% static 'blog/js/detail.js' %}');
-  $.getScript('{% static 'blog/js/likes.js' %}');
+  $.getScript('{% static 'actions/js/likes.js' %}');
 {% endblock %}
