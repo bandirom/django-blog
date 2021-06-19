@@ -3,6 +3,7 @@ Pip*
 Pipfile*
 __pycache__
 .idea
+.vscode
 celerybeat*
 .local/
 *.log
@@ -11,6 +12,7 @@ celerybeat*
 .coverage
 .cache
 htmlcov
+venv
 modules.txt
 web/media/*
 !web/media/no-avatar.png
