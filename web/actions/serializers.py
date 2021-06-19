@@ -6,6 +6,7 @@ from blog.models import Article, Comment
 
 from .choices import LikeStatus, LikeObjChoice
 from .services import ActionsService
+from .models import LikeDislike
 
 
 class LikeDislikeSerializer(serializers.Serializer):
@@ -44,3 +45,10 @@ class LikeDislikeSerializer(serializers.Serializer):
             'sum_rating': obj.votes.sum_rating(),
         }
         return data
+
+
+class LikeDislikeRelationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LikeDislike
+        fields = ('vote', 'user', 'date')
