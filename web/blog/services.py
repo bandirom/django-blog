@@ -31,15 +31,15 @@ class BlogService:
         return Comment.objects.filter(id=parent_id, article=article, parent__isnull=True).exists()
 
     @staticmethod
-    def get_article_comments(article_id):
+    def get_article_comments(article_id: int):
         return Comment.objects.filter(article_id=article_id, parent__isnull=True)
 
     @staticmethod
     @except_shell((Article.DoesNotExist,))
-    def get_article(article_id):
+    def get_article(article_id: int):
         return Article.objects.select_related('category').prefetch_related('comment_set').get(id=article_id)
 
     @staticmethod
     @except_shell((Comment.DoesNotExist,))
-    def get_comment(comment_id):
+    def get_comment(comment_id: int):
         return Comment.objects.get(id=comment_id)
