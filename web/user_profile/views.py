@@ -40,7 +40,7 @@ class ProfileViewSet(GenericViewSet):
 
     def image_update(self, request):
         """
-        Response for change user avatar
+        Change user avatar
 
         POST request
         """
