@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
 
+from actions.admin import LikeDislikeInline
 from .models import Article, Category, Comment
 
 
@@ -19,7 +20,7 @@ class ArticleAdmin(SummernoteModelAdmin):
     readonly_fields = ('created', 'updated')
     list_select_related = ('category', 'author')
     list_filter = ('status',)
-    inlines = (CommentsInline,)
+    inlines = (CommentsInline, LikeDislikeInline)
     save_as = True
     list_editable = ('status', 'author')
 
