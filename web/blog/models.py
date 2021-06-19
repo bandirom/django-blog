@@ -54,8 +54,13 @@ class Article(models.Model):
         return super().save(**kwargs)
 
     def get_absolute_url(self):
-        url = 'blog:post-detail'
-        return reverse_lazy(url, kwargs={'slug': self.slug})
+        return reverse_lazy('blog:post-detail', kwargs={'slug': self.slug})
+
+    def likes(self):
+        return self.votes.likes().count()
+
+    def dislikes(self):
+        return self.votes.dislikes().count()
 
     class Meta:
         verbose_name = _('Article')
