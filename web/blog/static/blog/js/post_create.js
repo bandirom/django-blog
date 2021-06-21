@@ -18,7 +18,6 @@ function postCreate(event) {
     success: function (data) {
       console.log('success', data)
       $('#successModal').modal('show');
-      // $('#myModal').modal('toggle');
     },
     error: function (data) {
       $(".help-block").remove()
