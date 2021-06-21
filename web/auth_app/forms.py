@@ -17,12 +17,7 @@ class PassResetForm(PasswordResetForm):
         url = reverse_lazy(path, kwargs={'uidb64': uid, 'token': token})
         return settings.FRONTEND_SITE + str(url)
 
-    def save(self, domain_override=None,
-             subject_template_name='emails/password_reset_subject.txt',
-             email_template_name='emails/password_reset_email.html',
-             use_https=False, token_generator=default_token_generator,
-             from_email=None, request=None, html_email_template_name='account/email/password_reset_email.html',
-             extra_email_context=None, **kwargs):
+    def save(self, **kwargs):
         """
         Generate a one-use only link for resetting password and send it to the user.
         """
@@ -31,11 +26,10 @@ class PassResetForm(PasswordResetForm):
         if not user:
             raise ValidationError({'email': _('User does not exist with this email')})
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = token_generator.make_token(user)
+        token = default_token_generator.make_token(user)
         url = self.get_reset_url(uid=uid, token=token)
         content = {
             'user': user.get_full_name(),
             'reset_url': url,
-
         }
         CeleryService.send_password_reset(to_email=email, content=content)
