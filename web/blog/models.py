@@ -49,8 +49,12 @@ class Article(models.Model):
     def __str__(self):
         return '{title} - {author}'.format(title=self.short_title, author=self.author)
 
+    @staticmethod
+    def get_slug(title: str):
+        return slugify(title, allow_unicode=True)
+
     def save(self, **kwargs):
-        self.slug = slugify(self.title, allow_unicode=True)
+        self.slug = self.get_slug(self.title)
         return super().save(**kwargs)
 
     def get_absolute_url(self):

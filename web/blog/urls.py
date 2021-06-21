@@ -18,5 +18,5 @@ urlpatterns = [
 urlpatterns += router.urls
 
 urlpatterns += [
-    path('new/', views.NewArticleView.as_view(template_name='blog/create_new_post.html'), name='new_post'),
+    path('new/', views.NewArticleView.as_view(template_name='blog/post_create.html'), name='new_post'),
 ]

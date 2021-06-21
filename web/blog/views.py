@@ -41,6 +41,8 @@ class ArticleViewSet(ViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return serializers.ArticleSerializer
+        elif self.action == 'create':
+            return serializers.CreateArticleSerializer
         return serializers.FullArticleSerializer
 
     def get_queryset(self):

@@ -1,0 +1,18 @@
+{% load i18n %}
+<div id="successModal" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Post has been create</h3>
+        <a href="#close" title="Close" class="close">×</a>
+      </div>
+      <div class="modal-body">
+        <p>{% trans 'Thank You for your post! Your post will be reviewed by the admin' %}</p>
+        <div>
+          <p>{% trans 'You can add one more!' %}</p>
+          <a href="{% url 'blog:new_post' %}" class="btn btn-primary">{% trans 'One more!' %}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

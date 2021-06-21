@@ -1,0 +1,67 @@
+{% extends "blog/base.html" %}
+{% load static main %}
+
+{% block title %}New Post{% endblock title %}
+
+{% block head %}
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+
+{% endblock head %}
+
+{% block container %}
+
+  <h1>Create a new post</h1>
+  <form action="{% url 'blog:post-list' %}" id="createArticleForm" method="post" enctype="multipart/form-data"
+        name="fileinfo">
+    <div id="categoryGroup">
+      <label>Category: </label>
+      <select class="form-control" name="category" style="width: 40%">
+        {% for category in categories %}
+          <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <hr>
+    <div id="titleGroup">
+      <label>Article Title: </label>
+      <input class="form-control" type="text" maxlength="200" name="title" style="width: 60%">
+    </div>
+    <hr>
+    <div id="posterGroup">
+      <input class="form-control" type="file" name="image" value="Upload poster" style="width: 30%">
+    </div>
+    <hr>
+    <div id="contentGroup">
+      <textarea id="summernote" placeholder="Content" class="form-control" name="content" cols="40" rows="3"></textarea>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary"><i class="fa fa-reply"></i> Submit</button>
+    </div>
+
+  </form>
+{% include 'blog/includes/modal_create_post.html' %}
+{% endblock container %}
+
+{% block script %}
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+  <script>
+    $('#summernote').summernote({
+      placeholder: 'Content',
+      tabsize: 2,
+      height: 120,
+      toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+      ]
+    });
+  </script>
+{% endblock script %}
+
+{% block jquery %}
+  $.getScript('{% static 'blog/js/post_create.js' %}');
+{% endblock %}
