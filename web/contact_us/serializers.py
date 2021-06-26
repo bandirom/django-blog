@@ -8,7 +8,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Feedback
-        fields = ('name', 'email', 'content')
+        fields = ('name', 'email', 'content', 'file')
 
     def create(self, validated_data):
         user = self.context['request'].user

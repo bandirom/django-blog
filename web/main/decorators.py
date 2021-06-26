@@ -1,5 +1,4 @@
 import logging
-from smtplib import SMTPRecipientsRefused
 
 from django.core.cache import cache
 from requests.exceptions import RequestException
