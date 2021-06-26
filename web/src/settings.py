@@ -54,6 +54,8 @@ USER_AVATAR_MAX_SIZE = 4.0
 USER_FILE_MAX_SIZE = 10.0  # Mb
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # b = 10 MB
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
