@@ -5,13 +5,15 @@ __pycache__
 .idea
 .vscode
 celerybeat*
-.local/
+.local
 *.log
 *.log.*
 .ash_history
+.bash_history
 .coverage
 .cache
 web/media/*
 htmlcov
 venv
+backup
 modules.txt
