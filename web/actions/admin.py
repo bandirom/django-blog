@@ -5,7 +5,9 @@ from .models import LikeDislike
 
 @admin.register(LikeDislike)
 class LikeAdmin(admin.ModelAdmin):
-    pass
+    list_select_related = ('user', 'content_type')
+    list_display = ('user', 'content_type', 'vote', 'date', 'content_object')
+    list_filter = ('vote',)
 
 
 class LikeDislikeInline(cadmin.GenericTabularInline):
