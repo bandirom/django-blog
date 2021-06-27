@@ -2,56 +2,68 @@
 {% load static main i18n %}
 
 {% block head %}
-<link href="{% static 'blog/css/comments.css' %}" rel="stylesheet">
+  <link href="{% static 'blog/css/comments.css' %}" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/fe539a9d82.js" crossorigin="anonymous"></script>
+
 {% endblock head %}
 
 {% block container %}
-<div class="row">
-  <div class="col-lg-8">
+  <div class="row">
+    <div class="col-lg-8">
 
-    <!-- the actual blog post: title/author/date/content -->
-    <h1><a href="">{{ title }}</a></h1>
-    <p class="lead"><i class="fa fa-user"></i> by <a href="">{{ author.full_name }}</a>
-    </p>
-    <hr>
-    <p><i class="fa fa-calendar"></i> Posted on {{ created | date_time }}</p>
-    <p><i class="fa fa-tags"></i> Tags:
-      <a href=""><span class="badge badge-info">Bootstrap</span></a>
-      <a href=""><span class="badge badge-info">Web</span></a>
-      <a href=""><span class="badge badge-info">CSS</span></a>
-      <a href=""><span class="badge badge-info">HTML</span></a>
-    </p>
-    <ul>
-      <li id="likeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
-          data-action="like" title="{% trans 'Like' %}">
-        <span class="glyphicon glyphicon-thumbs-up"></span>
-        <span data-count="like"></span>
-      </li>
-      <li id="dislikeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
-          data-action="dislike" title="{% trans 'Dislike' %}">
-        <span class="glyphicon glyphicon-thumbs-down"></span>
-        <span data-count="dislike"></span>
-      </li>
-    </ul>
-    <hr>
-    <img src="{{ image }}" class="img-responsive" width="700" height="300">
-    <hr>
-    <p class="lead">
-      {{ content | safe }}
-    </p>
-    <br/>
-    <hr>
-    <!-- the comment box -->
-    {% include 'blog/includes/comments.html' %}
+      <!-- the actual blog post: title/author/date/content -->
+      <h1><a href="">{{ title }}</a></h1>
+      <p class="lead"><i class="fa fa-user"></i> by <a href="">{{ author.full_name }}</a>
+      </p>
+      <hr>
+      <p><i class="fa fa-calendar"></i> Posted on {{ created | date_time }}</p>
+      <p><i class="fa fa-tags"></i> Tags:
+        <a href=""><span class="badge badge-info">Bootstrap</span></a>
+        <a href=""><span class="badge badge-info">Web</span></a>
+        <a href=""><span class="badge badge-info">CSS</span></a>
+        <a href=""><span class="badge badge-info">HTML</span></a>
+      </p>
+      <ul>
+        <li id="likeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
+            data-vote=1 title="{% trans 'Like' %}">
+          <i id="articleLikeIcon"
+                  {% if like_status == 'liked' %}
+             class="fas fa-thumbs-up"
+                  {% elif like_status == 'disliked' or like_status == 'undone' %}
+             class="far fa-thumbs-up"
+                  {% endif %}>
+          </i><span id="articleLikeCount"> {{ likes }}</span>
+        </li>
+        <li id="dislikeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
+            data-vote=-1 title="{% trans 'Dislike' %}">
+          <i id="articleDislikeIcon"
+                  {% if like_status == 'disliked' %}
+             class="fas fa-thumbs-down"
+                  {% elif like_status == 'liked' or like_status == 'undone' %}
+             class="far fa-thumbs-down"
+                  {% endif %}>
+          </i><span id="articleDislikeCount"> {{ dislikes }}</span>
+        </li>
+      </ul>
+      <hr>
+      <img src="{{ image }}" class="img-responsive" width="700" height="300">
+      <hr>
+      <p class="lead">
+        {{ content | safe }}
+      </p>
+      <br/>
+      <hr>
+      <!-- the comment box -->
+      {% include 'blog/includes/comments.html' %}
+    </div>
+
+    {% include 'blog/includes/right_sidebar.html' %}
   </div>
-
-  {% include 'blog/includes/right_sidebar.html' %}
-</div>
 {% endblock container %}
 
 {% block script %}
   <script src="{% static 'blog/js/comments.js' %}"></script>
-  <script>getArticleComments(article_id={{id}}, url="{% url 'blog:article_comments' id %}")</script>
+  <script>getArticleComments(article_id ={{id}}, url = "{% url 'blog:article_comments' id %}")</script>
 {% endblock script %}
 
 {% block jquery %}

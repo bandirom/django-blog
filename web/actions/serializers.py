@@ -4,7 +4,7 @@ from rest_framework import serializers
 from blog.services import BlogService
 from blog.models import Article, Comment
 
-from .choices import LikeStatus, LikeObjChoice
+from .choices import LikeStatus, LikeObjChoice, LikeIconStatus
 from .services import ActionsService
 from .models import LikeDislike
 
@@ -15,6 +15,8 @@ class LikeDislikeSerializer(serializers.Serializer):
     vote = serializers.ChoiceField(choices=LikeStatus.choices)
 
     def save(self):
+        icon_status = LikeIconStatus.LIKED \
+            if self.validated_data.get('vote') == LikeStatus.LIKE else LikeIconStatus.DISLIKED
         model = self.validated_data.get('model')
         obj: None = None
         object_id = self.validated_data.get('object_id')
@@ -28,18 +30,16 @@ class LikeDislikeSerializer(serializers.Serializer):
             if like_dislike.vote is not vote:
                 like_dislike.vote = vote
                 like_dislike.save(update_fields=['vote'])
-                result = True
             else:
                 like_dislike.delete()
-                result = False
+                icon_status = LikeIconStatus.UNDONE
         else:
             obj.votes.create(user=user, vote=self.validated_data.get('vote'))
-            result = True
-        return self._response_data(result, obj)
+        return self._response_data(icon_status, obj)
 
-    def _response_data(self, result: bool, obj: Union[Article, Comment]) -> dict:
+    def _response_data(self, icon_status: str, obj: Union[Article, Comment]) -> dict:
         data = {
-            'result': result,
+            'status': icon_status,
             'like_count': obj.votes.likes().count(),
             'dislike_count': obj.votes.dislikes().count(),
             'sum_rating': obj.votes.sum_rating(),

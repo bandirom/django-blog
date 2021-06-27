@@ -5,6 +5,7 @@ from actions.serializers import LikeDislikeRelationSerializer
 from user_profile.serializers import UserSerializer
 from .models import Category, Article, Comment
 from .services import BlogService
+from actions.choices import LikeIconStatus, LikeStatus
 
 
 class ParentCommentSerializer(serializers.ModelSerializer):
@@ -71,12 +72,21 @@ class ArticleSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     category = CategorySerializer()
     comments_count = serializers.IntegerField()
+    like_status = serializers.SerializerMethodField(method_name='get_like_status')
+
+    def get_like_status(self, obj) -> str:
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return LikeIconStatus.UNDONE
+        if like_obj := obj.votes.filter(user=user).first():
+            return LikeIconStatus.LIKED if like_obj.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
+        return LikeIconStatus.UNDONE
 
     class Meta:
         model = Article
         fields = (
             'id', 'title', 'url', 'author', 'category', 'likes', 'dislikes',
-            'created', 'updated', 'comments_count', 'image', 'content'
+            'created', 'updated', 'comments_count', 'image', 'content', 'like_status'
         )
 
 
