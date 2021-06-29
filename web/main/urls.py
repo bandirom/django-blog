@@ -7,7 +7,7 @@ from .views import TemplateAPIView, SetUserTimeZone
 
 
 urlpatterns = [
-    path('timezone/set/', SetUserTimeZone.as_view(), name='set_user_timezone'),
+    path('timezone/', SetUserTimeZone.as_view(), name='set_user_timezone'),
 
 ]
 

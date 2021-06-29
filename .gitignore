@@ -12,11 +12,11 @@ celerybeat*
 .bash_history
 .coverage
 .cache
+web/media/*
 htmlcov
 venv
 backup
 modules.txt
-web/media/*
 !web/media/no-avatar.png
 !web/media/no-image-available.jpg
 
