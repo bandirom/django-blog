@@ -51,6 +51,8 @@ SITE_ID = 1
 
 USER_AVATAR_MAX_SIZE = 4.0
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
