@@ -1,4 +1,4 @@
-from django.contrib.contenttypes import admin as cadmin
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib import admin
 from .models import LikeDislike
 
@@ -10,6 +10,6 @@ class LikeAdmin(admin.ModelAdmin):
     list_filter = ('vote',)
 
 
-class LikeDislikeInline(cadmin.GenericTabularInline):
+class LikeDislikeInline(GenericTabularInline):
     model = LikeDislike
     extra = 0
