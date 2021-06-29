@@ -1,9 +1,10 @@
 $(function () {
-  $('#likeArticle').click(like_request);
-  $('#dislikeArticle').click(like_request);
+  $('#likeArticle').click(articleLikeRequest);
+  $('#dislikeArticle').click(articleLikeRequest);
+  $('.commentLike').click(commentLike);
 });
 
-function like_request(e) {
+function articleLikeRequest(e) {
   let like = $(this);
   let data = {
     'object_id': like.data('id'),
@@ -58,4 +59,29 @@ function default_status() {
 
   $('#articleDislikeIcon').removeClass('fas', 'fa-thumbs-down')
   $('#articleDislikeIcon').addClass('far', 'fa-thumbs-down')
+}
+
+
+function commentLike(e) {
+  e.preventDefault()
+  console.log('like')
+  let like = $(this);
+  let data = {
+    'object_id': like.data('id'),
+    'model': like.data('type'),
+    'vote': like.data('vote'),
+  }
+  console.log(data)
+  $.ajax({
+    url: like.data('href'),
+    type: 'post',
+    data: data,
+    success: function (data) {
+      console.log(data, "success")
+
+    },
+    error: function (data) {
+      console.log(data, "Error")
+    }
+  })
 }

@@ -35,7 +35,10 @@
 							<h6 class="comment-name by-author"><a href="#">{{ comment.author }}</a></h6>
 							<span>{{ comment.updated | date_time }}</span>
               <a href="#formReview" onclick="addParentToComment('{{ comment.author }}', '{{ comment.id }}')"><i class="fa fa-reply"></i></a>
-							<a href="" data-id="{{ comment.id }}" data-action="like" data-type="comment"><i class="fa fa-heart"></i></a>
+               <i class="fa fa-heart commentLike"
+                  data-id="{{ comment.id }}" data-vote=1
+                  data-href="{% url 'actions:like_dislike' %}"
+                  data-type="comment"></i>
 						</div>
 						<div class="comment-content">
 							{{ comment.content }}
@@ -52,7 +55,10 @@
 							<div class="comment-head">
 								<h6 class="comment-name"><a href="#"> {{ child.author }}</a></h6>
 								<span>{{ child.updated | date_time }}</span>
-								<a href="" data-id="{{ child.id }}" data-action="like" data-type="comment"><i class="fa fa-heart"></i></a>
+                <i class="fa fa-heart commentLike"
+                   data-id="{{ child.id }}" data-vote=1
+                   data-type="comment" data-href="{% url 'actions:like_dislike' %}">
+                </i>
 							</div>
 							<div class="comment-content">
 								{{ child.content }}

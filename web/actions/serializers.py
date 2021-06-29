@@ -18,13 +18,12 @@ class LikeDislikeSerializer(serializers.Serializer):
         icon_status = LikeIconStatus.LIKED \
             if self.validated_data.get('vote') == LikeStatus.LIKE else LikeIconStatus.DISLIKED
         model = self.validated_data.get('model')
-        obj: None = None
         object_id = self.validated_data.get('object_id')
         user = self.context['request'].user
         vote = self.validated_data.get('vote')
         if model == LikeObjChoice.ARTICLE:
             obj: Article = BlogService.get_article(article_id=object_id)
-        elif model == LikeObjChoice.COMMENT:
+        else:
             obj: Comment = BlogService.get_comment(comment_id=object_id)
         if like_dislike := ActionsService.get_like_dislike_obj(object_id, user, obj):
             if like_dislike.vote is not vote:
