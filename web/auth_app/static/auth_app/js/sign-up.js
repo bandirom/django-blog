@@ -13,9 +13,7 @@ function singUp(e) {
     dataType: 'json',
     data: form.serialize(),
     success: function (data) {
-      url = form.data('href');
-      console.log(url)
-      window.location.href = url;
+      window.location.href = form.data('href');
     },
     error: function (data) {
       error_process(data);
