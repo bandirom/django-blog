@@ -1,8 +1,6 @@
 from django.conf import settings
 from rest_framework.reverse import reverse
 
-from . import models
-
 
 class ContactUsService:
 
@@ -21,7 +19,7 @@ class ContactUsService:
             'file_url': feedback.file.url,
             'context': {
                 'feedback_url': ContactUsService.reverse_review_feedback_link(feedback),
-            }
+            },
         }
 
     @staticmethod
@@ -33,5 +31,4 @@ class ContactUsService:
             'context': {
                 'user': feedback.name,
             },
-            'bcc': settings.ADMIN_EMAILS,
         }
