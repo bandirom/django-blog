@@ -9,7 +9,6 @@ from .services import ContactUsService
 
 @receiver(post_save, sender=Feedback)
 def send_emails(sender, created: bool, instance, **kwargs):
-    print(sender, created, instance)
     if created:
         send_information_email.delay(**ContactUsService.get_admin_email_data(instance))
         send_information_email.delay(**ContactUsService.get_user_email_data(instance))
