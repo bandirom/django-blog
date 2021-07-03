@@ -2,29 +2,48 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from actions.serializers import LikeDislikeRelationSerializer
-from user_profile.serializers import UserSerializer
+from user_profile.serializers import ShortUserSerializer
 from .models import Category, Article, Comment
 from .services import BlogService
 from actions.choices import LikeIconStatus, LikeStatus
 
 
 class ParentCommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = ShortUserSerializer()
+
+    like_status = serializers.SerializerMethodField(method_name='get_like_status')
+
+    def get_like_status(self, obj) -> str:
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return LikeIconStatus.UNDONE
+        if like_obj := obj.votes.filter(user=user).first():
+            return LikeIconStatus.LIKED if like_obj.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
+        return LikeIconStatus.UNDONE
 
     class Meta:
         model = Comment
-        fields = ('id', 'author', 'content', 'updated', 'article', 'user')
+        fields = ('id', 'author', 'content', 'updated', 'article', 'user', 'like_status')
 
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.EmailField(required=False)
     child = ParentCommentSerializer(many=True, read_only=True, source='parent_set')
     parent_id = serializers.IntegerField(min_value=1, default=None)
-    user = UserSerializer(read_only=True)
+    user = ShortUserSerializer(read_only=True)
+    like_status = serializers.SerializerMethodField(method_name='get_like_status')
+
+    def get_like_status(self, obj) -> str:
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return LikeIconStatus.UNDONE
+        if like_obj := obj.votes.filter(user=user).first():
+            return LikeIconStatus.LIKED if like_obj.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
+        return LikeIconStatus.UNDONE
 
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'author', 'content', 'child', 'updated', 'article', 'parent_id')
+        fields = ('id', 'user', 'author', 'content', 'child', 'updated', 'article', 'parent_id', 'like_status')
 
     def validate(self, data):
         if not self.context.get('request').user.is_authenticated and not data.get('author'):
@@ -69,7 +88,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
     url = serializers.CharField(source='get_absolute_url')
-    author = UserSerializer()
+    author = ShortUserSerializer()
     category = CategorySerializer()
     comments_count = serializers.IntegerField()
     like_status = serializers.SerializerMethodField(method_name='get_like_status')

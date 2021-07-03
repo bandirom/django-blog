@@ -8,6 +8,14 @@ from .choices import GenderChoice
 User = get_user_model()
 
 
+class ShortUserSerializer(serializers.ModelSerializer):
+    avatar = serializers.CharField(source='profile.avatar')
+
+    class Meta:
+        model = User
+        fields = ('id', 'full_name', 'avatar')
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
@@ -32,7 +40,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserImageSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Profile
         fields = ('avatar',)
