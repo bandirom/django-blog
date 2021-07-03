@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name='Profile',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('avatar', models.ImageField(blank=True, default='no-avatar.png', upload_to=user_profile.models.avatar_upload_patch)),
+                ('avatar', models.ImageField(blank=True, default='no-avatar.png', upload_to=user_profile.models.avatar_upload_path)),
                 ('birthday', models.DateField(blank=True, null=True)),
                 ('gender', models.IntegerField(blank=True, choices=[(0, 'Male'), (1, 'Female')], null=True)),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
