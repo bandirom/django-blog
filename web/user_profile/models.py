@@ -7,13 +7,13 @@ from .choices import GenderChoice
 User = get_user_model()
 
 
-def avatar_upload_patch(obj, filename: str) -> str:
+def avatar_upload_path(obj, filename: str) -> str:
     return f"avatars/{obj.user_id}/{filename}"
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar = models.ImageField(default='no-avatar.png', blank=True, upload_to=avatar_upload_patch)
+    avatar = models.ImageField(default='no-avatar.png', blank=True, upload_to=avatar_upload_path)
     birthday = models.DateField(null=True, blank=True)
     gender = models.IntegerField(choices=GenderChoice.choices, null=True, blank=True)
     website = models.URLField(blank=True, default='')
