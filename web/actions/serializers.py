@@ -33,7 +33,7 @@ class LikeDislikeSerializer(serializers.Serializer):
                 like_dislike.delete()
                 icon_status = LikeIconStatus.UNDONE
         else:
-            obj.votes.create(user=user, vote=self.validated_data.get('vote'))
+            obj.votes.create(user=user, vote=vote)
         return self._response_data(icon_status, obj)
 
     def _response_data(self, icon_status: str, obj: Union[Article, Comment]) -> dict:

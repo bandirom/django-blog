@@ -48,11 +48,10 @@ class UserSignUpSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         request = self.context.get('request')
-        self.validated_data['password'] = make_password(self.validated_data.pop('password1'))
+        self.validated_data['password'] = self.validated_data.pop('password1')
         del self.validated_data['password2']
-        if self.validated_data.get('captcha'):
-            del self.validated_data['captcha']
-        user = User.objects.create(**self.validated_data, is_active=False)
+        self.validated_data.pop('captcha', None)
+        user = User.objects.create_user(**self.validated_data, is_active=False)
         setup_user_email(request=request, user=user, addresses=[])
         CeleryService.send_email_confirm(user)
         return user
