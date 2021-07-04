@@ -7,13 +7,9 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 from main.services import UserService
-from user_profile.models import Profile
+from user_profile.admin import ProfileInline
 
 User = get_user_model()
-
-
-class ProfileInline(admin.TabularInline):
-    model = Profile
 
 
 class EmailsInline(admin.TabularInline):
