@@ -39,16 +39,6 @@ class VerifyEmailView(_VerifyEmailView):
     def get_serializer(self, *args, **kwargs):
         return serializers.VerifyEmailSerializer(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.kwargs['key'] = serializer.validated_data['key']
-        confirmation = self.get_object()
-        user = confirmation.email_address.user
-        AuthAppService.make_user_active(user)
-        confirmation.confirm(self.request)
-        return Response({'detail': _('ok')}, status=HTTP_200_OK)
-
 
 class LogoutView(auth_views.LogoutView):
     allowed_methods = ('POST', 'OPTIONS')
