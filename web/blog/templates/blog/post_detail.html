@@ -25,20 +25,16 @@
         <li id="likeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
             data-vote=1 title="{% trans 'Like' %}">
           <i id="articleLikeIcon"
-                  {% if like_status == 'liked' %}
-             class="fas fa-thumbs-up"
-                  {% elif like_status == 'disliked' or like_status == 'undone' %}
-             class="far fa-thumbs-up"
+                  {% if like_status == 'liked' %} class="fas fa-thumbs-up"
+                  {% else %} class="far fa-thumbs-up"
                   {% endif %}>
           </i><span id="articleLikeCount"> {{ likes }}</span>
         </li>
         <li id="dislikeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
             data-vote=-1 title="{% trans 'Dislike' %}">
           <i id="articleDislikeIcon"
-                  {% if like_status == 'disliked' %}
-             class="fas fa-thumbs-down"
-                  {% elif like_status == 'liked' or like_status == 'undone' %}
-             class="far fa-thumbs-down"
+                  {% if like_status == 'disliked' %} class="fas fa-thumbs-down"
+                  {% else %} class="far fa-thumbs-down"
                   {% endif %}>
           </i><span id="articleDislikeCount"> {{ dislikes }}</span>
         </li>
@@ -61,7 +57,7 @@
 
 {% block script %}
   <script src="{% static 'blog/js/comments.js' %}"></script>
-{#  <script>getArticleComments(article_id ={{id}}, url = "{% url 'blog:article_comments' id %}")</script>#}
+  {#  <script>getArticleComments(article_id ={{id}}, url = "{% url 'blog:article_comments' id %}")</script>#}
 {% endblock script %}
 
 {% block jquery %}
