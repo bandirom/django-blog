@@ -11,7 +11,7 @@ User = get_user_model()
 
 class LikeDislike(models.Model):
     vote = models.SmallIntegerField(choices=LikeStatus.choices)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()

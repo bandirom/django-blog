@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+from blog.choices import ArticleStatus
 
 from .managers import UserManager
 
@@ -27,6 +28,12 @@ class User(AbstractUser):
     def full_name(self):
         return super().get_full_name()
 
-    def email_verified(self):
+    def email_verified(self) -> bool:
         return self.emailaddress_set.get(primary=True).verified
     email_verified.boolean = True
+
+    def user_likes(self) -> int:
+        return self.likes.all().count()
+
+    def user_posts(self) -> int:
+        return self.article_set.filter(status=ArticleStatus.ACTIVE).count()

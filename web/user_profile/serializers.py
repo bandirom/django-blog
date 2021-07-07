@@ -29,9 +29,9 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 'full_name', 'first_name', 'last_name', 'email', 'profile', 'is_active', 'email_verified',
-            'phone_number'
+            'phone_number', 'user_likes', 'user_posts'
         )
-        read_only_fields = ('full_name', 'email_verified')
+        read_only_fields = ('full_name', 'email_verified', 'user_likes', 'user_posts')
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
@@ -63,3 +63,10 @@ class UpdateUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'birthday', 'gender')
+
+
+class UserListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'full_name', 'birthday', 'gender')
