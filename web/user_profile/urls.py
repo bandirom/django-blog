@@ -16,7 +16,7 @@ urlpatterns = [
     path("profile/avatar/update/", views.ProfileViewSet.as_view({'post': 'image_update'}), name='api_avatar_update'),
     # path("user/avatar/delete/", views.ProfileViewSet.as_view({'delete': 'image_delete'}), name='api_avatar_delete'),
     path('profile/password/change/', views.ProfileViewSet.as_view({'post': 'change_password'}), name='api_change_pass'),
-    path('users/', views.UserListView.as_view(), name='user_list'),
+    path('user/list/', views.UserListView.as_view(), name='user_list'),
     path('user/<user_id>/', views.UserProfileByIdView.as_view(), name='user_by_id'),
 ]
 

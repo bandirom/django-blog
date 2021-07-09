@@ -13,10 +13,8 @@ router.register('comment', views.CommentViewSet, basename='comment')
 
 urlpatterns = [
     path('comment/<article_id>/', views.CommentViewSet.as_view({'get': 'list'}), name='article_comments'),
+    path('posts/new/', views.NewArticleView.as_view(), name='new_post'),
+
 ]
 
 urlpatterns += router.urls
-
-urlpatterns += [
-    path('new/', views.NewArticleView.as_view(template_name='blog/post_create.html'), name='new_post'),
-]

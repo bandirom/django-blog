@@ -108,6 +108,8 @@ class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.De
 
 class NewArticleView(TemplateAPIView):
 
+    template_name = 'blog/post_create.html'
+
     def get_queryset(self):
         return BlogService.category_queryset()
 
