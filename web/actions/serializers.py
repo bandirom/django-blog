@@ -39,8 +39,8 @@ class LikeDislikeSerializer(serializers.Serializer):
     def _response_data(self, icon_status: str, obj: Union[Article, Comment]) -> dict:
         data = {
             'status': icon_status,
-            'like_count': obj.votes.likes().count(),
-            'dislike_count': obj.votes.dislikes().count(),
+            'like_count': obj.likes(),
+            'dislike_count': obj.dislikes(),
             'sum_rating': obj.votes.sum_rating(),
         }
         return data
