@@ -1,5 +1,8 @@
 version: '3.7'
 
+x-variables: &variables
+  ENV_STAGE: local
+
 services:
   web:
     build:
@@ -12,6 +15,8 @@ services:
       - postgres_socket:/postgres_socket
     ports:
       - 8008:8000
+    environment:
+      <<: *variables
     env_file:
       - docker/dev/env/.env
       - docker/dev/env/.db.env
@@ -19,7 +24,7 @@ services:
     depends_on:
       - db
       - redis
-    restart: always
+    restart: unless-stopped
     networks:
       - microservice_network
       - separated_network
@@ -37,7 +42,7 @@ services:
       context: .
       dockerfile: docker/dev/db/Dockerfile
     hostname: postgres
-    restart: always
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data/
       - postgres_socket:/postgres_socket
@@ -54,7 +59,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/dev/redis/Dockerfile
-    restart: always
+    restart: unless-stopped
     volumes:
       - redis_data:/data
       - redis_socket:/redis_socket
@@ -71,15 +76,18 @@ services:
       dockerfile: docker/dev/web/Dockerfile
     command: celery -A src worker -l info -Q celery
     volumes:
+      - ./web/:/usr/src/web/
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
+    environment:
+      <<: *variables
     env_file:
       - docker/dev/env/.env
       - docker/dev/env/.db.env
       - docker/prod/env/.data.env
     depends_on:
       - redis
-    restart: always
+    restart: unless-stopped
     networks:
       - separated_network
 
@@ -93,5 +101,6 @@ volumes:
 networks:
   microservice_network:
     driver: bridge
+    name: local_microservice_network
   separated_network:
     driver: bridge
