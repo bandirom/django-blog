@@ -1,0 +1,27 @@
+{% extends "user_profile/base.html" %}
+{% load i18n %}
+
+{% block container %}
+  <div class="row">
+    <div class="span12">
+      <ul class="thumbnails">
+        {% for user in user_list %}
+          <li class="span5 clearfix">
+            <div class="thumbnail clearfix">
+              <img src="{{ user.avatar }}" alt="Avatar" class="pull-left span2 clearfix"
+                   style='margin-right:10px'>
+              <div class="caption" class="pull-left">
+                <a href="#" class="btn btn-primary icon  pull-right">Follow</a>
+                <h4>
+                  <a href="{% url 'user_profile:user_by_id' user.id %}">{{ user.full_name }}</a>
+                </h4>
+{#                <small><b>RG: </b>99384877</small>#}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+
+      </ul>
+    </div>
+  </div>
+{% endblock container %}

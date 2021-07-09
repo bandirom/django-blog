@@ -3,10 +3,10 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.generics import GenericAPIView
 from dj_rest_auth.serializers import PasswordChangeSerializer
 from .services import UserProfileService
 from . import serializers
-
 
 logger = logging.getLogger(__name__)
 
@@ -60,3 +60,32 @@ class ProfileViewSet(GenericViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserListView(GenericAPIView):
+    serializer_class = serializers.UserListSerializer
+    template_name = 'user_profile/user_list.html'
+
+    def get_queryset(self):
+        return UserProfileService.user_queryset()
+
+    def get(self, request):
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        data = {
+            'user_list': serializer.data
+        }
+        return Response(data, status=status.HTTP_200_OK, template_name=self.template_name)
+
+
+class UserProfileByIdView(GenericAPIView):
+    serializer_class = serializers.UserSerializer
+    template_name = 'user_profile/profile_read_only.html'
+
+    def get_object(self):
+        obj = UserProfileService.get_user_profile(self.kwargs.get('user_id'))
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def get(self, request, user_id: int):
+        serializer = self.get_serializer(self.get_object())
+        return Response(serializer.data, status=status.HTTP_200_OK, template_name=self.template_name)

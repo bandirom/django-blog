@@ -1,0 +1,35 @@
+{% extends "user_profile/base.html" %}
+{% load i18n %}
+
+
+{% block container %}
+  <div class="row">
+    <div class="col-sm-10"><h1>{{ full_name }}</h1></div>
+    <div class="col-sm-2">
+      <a href="{% url 'user_profile:user_list' %}" class="pull-right">
+        <img title="profile image" class="img-circle img-responsive"
+             src="http://www.gravatar.com/avatar/28fd20ccec6865e2d5f0e1f4446eb7bf?s=100">
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3"><!--left col-->
+      {% include 'user_profile/include/block_avatar.html' %}
+      </hr><br>
+
+      {% include 'user_profile/include/block_website.html' %}
+      {% include 'user_profile/include/block_activity.html' %}
+      {% include 'user_profile/include/block_social_media.html' %}
+
+    </div><!--/col-3-->
+    <div class="col-sm-9">
+      <hr>
+      <div class="col-xs-6">
+        <h4>Name: {{ full_name }}</h4>
+        <h4>Phone: {% if phone_number %} {{ phone_number }} {% else %} - {% endif %}</h4>
+      </div>
+      <hr>
+    </div><!--/col-9-->
+
+  </div><!--/row-->
+{% endblock container %}

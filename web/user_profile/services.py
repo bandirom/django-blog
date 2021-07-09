@@ -10,7 +10,7 @@ class UserProfileService:
 
     @staticmethod
     def get_user_profile(user_id: int):
-        user_articles = Count('article_set', filter=Q(article_set=ArticleStatus.ACTIVE))
+        user_articles = Count('article_set', filter=Q(article_set__status=ArticleStatus.ACTIVE))
         user_likes = Count('likes')
         return (
             User.objects.select_related('profile')
@@ -20,4 +20,4 @@ class UserProfileService:
 
     @staticmethod
     def user_queryset():
-        return User.objects.exclude(is_staff=True, is_superuser=True, is_active=False).select_related('profile')
+        return User.objects.exclude(is_active=False).select_related('profile')
