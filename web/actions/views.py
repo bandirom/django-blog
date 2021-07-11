@@ -19,3 +19,13 @@ class LikeDislikeView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         response_data: dict = serializer.save()
         return Response(response_data, status.HTTP_200_OK)
+
+
+class FollowView(GenericAPIView):
+    serializer_class = serializers.FollowSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response_data: dict = serializer.save()
+        return Response(response_data, status.HTTP_200_OK)

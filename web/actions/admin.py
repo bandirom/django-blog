@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib import admin
-from .models import LikeDislike
+from .models import LikeDislike, Follower
 
 
 @admin.register(LikeDislike)
@@ -13,3 +13,8 @@ class LikeAdmin(admin.ModelAdmin):
 class LikeDislikeInline(GenericTabularInline):
     model = LikeDislike
     extra = 0
+
+
+@admin.register(Follower)
+class FollowerAdmin(admin.ModelAdmin):
+    list_display = ('user_from', 'user_to', 'created')

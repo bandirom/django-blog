@@ -4,7 +4,7 @@ from rest_framework import serializers
 from blog.services import BlogService
 from blog.models import Article, Comment
 
-from .choices import LikeStatus, LikeObjChoice, LikeIconStatus
+from .choices import LikeStatus, LikeObjChoice, LikeIconStatus, FollowIconStatus
 from .services import ActionsService
 from .models import LikeDislike
 
@@ -51,3 +51,23 @@ class LikeDislikeRelationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LikeDislike
         fields = ('vote', 'user', 'date')
+
+
+class FollowSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField(min_value=1)
+
+    def save(self) -> dict:
+        user = self.context['request'].user
+        user_to_id = self.validated_data.get('user_id')
+        if not ActionsService.is_user_followed(user, user_to_id):
+            ActionsService.follow_user(user, user_to_id)
+            follow_status = FollowIconStatus.FOLLOW
+        else:
+            ActionsService.unfollow_user(user, user_to_id)
+            follow_status = FollowIconStatus.UNFOLLOW
+        return self.response_data(follow_status)
+
+    def response_data(self, follow_status: int) -> dict:
+        return {
+            'follow': follow_status,
+        }
