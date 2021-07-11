@@ -53,7 +53,7 @@ class CommentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'parent_id': _('Choice comment is not valid for this article')})
         return data
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict):
         user = self.context.get('request').user
         if user.is_authenticated:
             validated_data['author'] = user.email
