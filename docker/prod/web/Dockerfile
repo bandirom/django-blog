@@ -42,10 +42,10 @@ RUN apk update && apk add --no-cache postgresql-dev curl \
 WORKDIR $APP_HOME
 
 COPY --from=builder /install /usr/local
-COPY --chown=$USER:$USER ./docker/prod/web/entrypoint.sh /
+COPY --chown=$USER:$USER ./docker/prod/web/entrypoints /
 COPY --chown=$USER:$USER ./web $APP_HOME
 
-RUN chmod +x /entrypoint.sh \
+RUN chmod +x /entrypoint.sh /tests.sh \
     && mkdir -p static \
     && chown -R $USER:$USER static \
     && flake8 .
