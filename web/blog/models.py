@@ -54,7 +54,7 @@ class Article(models.Model):
     status = models.PositiveSmallIntegerField(choices=ArticleStatus.choices, default=ArticleStatus.INACTIVE)
     image = models.ImageField(upload_to='articles/', blank=True, default='no-image-available.jpg')
     votes = GenericRelation(LikeDislike, related_query_name='articles')
-    tags = TaggableManager(through=TaggedArticle, related_name='article_tags')
+    tags = TaggableManager(through=TaggedArticle, related_name='article_tags', blank=True)
 
     objects = models.Manager()
 
