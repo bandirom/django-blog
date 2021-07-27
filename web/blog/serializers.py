@@ -110,8 +110,12 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class FullArticleSerializer(ArticleSerializer):
-    comments = CommentSerializer(source='comment_set', many=True)
+    comments = serializers.SerializerMethodField('get_parent_comment')
     votes = LikeDislikeRelationSerializer(many=True)
+
+    def get_parent_comment(self, obj):
+        queryset = obj.comment_set.filter(parent_id__isnull=True)
+        return CommentSerializer(queryset, source='comment_set', many=True).data
 
     class Meta(ArticleSerializer.Meta):
         fields = ArticleSerializer.Meta.fields + ('comments', 'votes')
