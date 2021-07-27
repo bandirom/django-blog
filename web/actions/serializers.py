@@ -58,16 +58,16 @@ class FollowSerializer(serializers.Serializer):
 
     def save(self) -> dict:
         user = self.context['request'].user
-        user_to_id = self.validated_data.get('user_id')
-        if not ActionsService.is_user_followed(user, user_to_id):
-            ActionsService.follow_user(user, user_to_id)
-            follow_status = FollowIconStatus.FOLLOW
-        else:
-            ActionsService.unfollow_user(user, user_to_id)
+        user_id = self.validated_data.get('user_id')
+        if not ActionsService.is_user_followed(user, user_id):
+            ActionsService.follow_user(user, user_id)
             follow_status = FollowIconStatus.UNFOLLOW
+        else:
+            ActionsService.unfollow_user(user, user_id)
+            follow_status = FollowIconStatus.FOLLOW
         return self.response_data(follow_status)
 
-    def response_data(self, follow_status: int) -> dict:
+    def response_data(self, follow_status: str) -> dict:
         return {
-            'follow': follow_status,
+            'status': follow_status,
         }

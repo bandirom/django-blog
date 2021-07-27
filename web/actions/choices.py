@@ -18,6 +18,13 @@ class LikeIconStatus(TextChoices):
     UNDONE = ('undone', _('Undone'))
 
 
-class FollowIconStatus(IntegerChoices):
-    FOLLOW = (1, _('Follow'))
-    UNFOLLOW = (0, _('Unfollow'))
+class FollowIconStatus(TextChoices):
+    FOLLOW = ('Follow', _('Follow'))
+    UNFOLLOW = ('Unfollow', _('Unfollow'))
+
+
+class UserActionsChoice(IntegerChoices):
+    FOLLOW_TO = (1, _('User {subscriber} follow to {user_to}'))
+    LIKED_ARTICLE = (2, _('User {user} liked article {article}'))
+    DISLIKED_ARTICLE = (3, _('User {user} disliked article {article}'))
+    LIKED_COMMENT = (4, _('User {user} liked comment {comment} from user {comment_owner}'))

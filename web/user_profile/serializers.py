@@ -4,6 +4,9 @@ from django.conf import settings
 from rest_framework import serializers
 from .models import Profile
 from .choices import GenderChoice
+from actions.choices import FollowIconStatus
+from actions.services import ActionsService
+
 
 User = get_user_model()
 
@@ -66,7 +69,13 @@ class UpdateUserProfileSerializer(serializers.ModelSerializer):
 
 class UserListSerializer(serializers.ModelSerializer):
     avatar = serializers.ImageField(source='profile.avatar')
+    follow = serializers.SerializerMethodField('get_follow_status')
+
+    def get_follow_status(self, obj) -> str:
+        user = self.context['request'].user
+        is_follow = ActionsService.is_user_followed(user, obj.id)
+        return FollowIconStatus.UNFOLLOW if is_follow else FollowIconStatus.FOLLOW
 
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'avatar')
+        fields = ('id', 'full_name', 'avatar', 'follow')

@@ -17,13 +17,13 @@ class ActionsService:
         return LikeDislike.objects.get(content_type=content_type, object_id=object_id, user=user)
 
     @staticmethod
-    def follow_user(user_from, user_to_id: int):
-        return Follower.objects.create(user_from=user_from, user_to_id=user_to_id)
+    def follow_user(user, to_user_id: int):
+        return Follower.objects.create(subscriber=user, to_user_id=to_user_id)
 
     @staticmethod
     def is_user_followed(user, to_user_id: int) -> bool:
-        return user.follower_from.filter(user_to_id=to_user_id).exists()
+        return user.following.filter(to_user_id=to_user_id).exists()
 
     @staticmethod
-    def unfollow_user(user_from, user_to_id: int):
-        return user_from.follower_from.filter(user_to_id=user_to_id).delete()
+    def unfollow_user(user, to_user_id: int):
+        return user.following.filter(to_user_id=to_user_id).delete()
