@@ -12,7 +12,7 @@
                    style='margin-right:10px'>
               <div class="caption" class="pull-left">
                 <a href="#" data-href="{% url 'actions:follower' %}" data-id="{{ user.id }}"
-                   class="btn btn-primary icon  pull-right followMe">Follow</a>
+                   class="btn btn-primary icon  pull-right followMe">{{ user.follow }}</a>
                 <h4>
                   <a href="{% url 'user_profile:user_by_id' user.id %}">{{ user.full_name }}</a>
                 </h4>
@@ -28,5 +28,5 @@
 {% endblock container %}
 
 {% block jquery %}
-$.getScript('{% static 'user_profile/js/follow.js' %}');
+$.getScript('{% static 'actions/js/follow.js' %}');
 {% endblock %}
