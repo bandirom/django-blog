@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib import admin
-from .models import LikeDislike, Follower
+from .models import LikeDislike, Follower, Action
 
 
 @admin.register(LikeDislike)
@@ -19,3 +19,8 @@ class LikeDislikeInline(GenericTabularInline):
 class FollowerAdmin(admin.ModelAdmin):
     list_display = ('subscriber', 'to_user', 'created')
     date_hierarchy = 'created'
+
+
+@admin.register(Action)
+class ActionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'action', 'date')

@@ -20,7 +20,7 @@
             </div>
             <div class="row">
               <div class="col-md-12 post-header-line">
-                <span class="glyphicon glyphicon-user"></span>by <a href="#">{{ article.author.full_name }}</a> |
+                <span class="glyphicon glyphicon-user"></span>by <a href="{% url 'user_profile:user_by_id' article.author.id %}">{{ article.author.full_name }}</a> |
                 <span class="glyphicon glyphicon-calendar"></span> {{ article.updated | date_time }} |
                 <span class="glyphicon glyphicon-comment"></span><a href="#"> {{ article.comments_count }} Comments</a>
                 |
