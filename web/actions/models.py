@@ -38,10 +38,19 @@ class Follower(models.Model):
         return f'{self.subscriber} follows {self.to_user}'
 
 
+def action_content_limit():
+    return (
+        models.Q(app_label='actions', model='follower') |
+        models.Q(app_label='actions', model='likedislike')
+    )
+
+
 class Action(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='actions')
-    action = models.PositiveSmallIntegerField(choices=UserActionsChoice.choices)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    action = models.CharField(max_length=500)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=action_content_limit)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
     date = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    objects = models.Manager()
