@@ -32,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 'full_name', 'first_name', 'last_name', 'email', 'profile', 'is_active', 'email_verified',
-            'phone_number', 'user_likes', 'user_posts'
+            'phone_number', 'user_likes', 'user_posts', 'followers_count', 'following_count'
         )
         read_only_fields = ('full_name', 'email_verified', 'user_likes', 'user_posts')
 

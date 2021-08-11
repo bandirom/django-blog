@@ -36,3 +36,9 @@ class User(AbstractUser):
 
     def user_posts(self) -> int:
         return self.article_set.filter(status=ArticleStatus.ACTIVE).count()
+
+    def followers_count(self):
+        return self.followers.count()
+
+    def following_count(self):
+        return self.following.count()

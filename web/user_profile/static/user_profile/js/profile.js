@@ -1,9 +1,29 @@
 $(function () {
   $("#fileUpload").on('change', uploadPhoto);
   $('#changePasswordForm').submit(changePassword);
+  $('#followersButton').click(followersApi)
+  $('#followingButton').click(followersApi)
+
 });
 
 const error_class_name = "has-error"
+
+
+function followersApi(){
+  button = $(this)
+   $.ajax({
+    type: 'GET',
+    url: button.data('href'),
+    success: function (data) {
+        console.log('success', data)
+        $('#followerModal').modal('show');
+    },
+    error: function (data) {
+      console.log('error', data)
+    }
+  })
+}
+
 
 function uploadPhoto(e) {
   e.preventDefault()
