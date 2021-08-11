@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from rest_framework.reverse import  reverse_lazy
+from rest_framework.reverse import reverse_lazy
 
 from .services import ActionsService
 from .models import Follower
