@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 from blog.choices import ArticleStatus
-
 from .managers import UserManager
 
 
@@ -15,7 +14,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-
+    following = models.ManyToManyField('self', through='actions.Follower', symmetrical=False, related_name='followers')
     objects = UserManager()
 
     class Meta:

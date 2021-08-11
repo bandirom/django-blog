@@ -1,4 +1,6 @@
 from typing import Union
+
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from blog.services import BlogService
@@ -7,6 +9,8 @@ from blog.models import Article, Comment
 from .choices import LikeStatus, LikeObjChoice, LikeIconStatus, FollowIconStatus
 from .services import ActionsService
 from .models import LikeDislike
+
+User = get_user_model()
 
 
 class LikeDislikeSerializer(serializers.Serializer):
@@ -47,7 +51,6 @@ class LikeDislikeSerializer(serializers.Serializer):
 
 
 class LikeDislikeRelationSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = LikeDislike
         fields = ('vote', 'user', 'date')
@@ -71,3 +74,11 @@ class FollowSerializer(serializers.Serializer):
         return {
             'status': follow_status,
         }
+
+
+class UserFollowSerializer(serializers.ModelSerializer):
+    """ For list of user following and followers """
+
+    class Meta:
+        model = User
+        fields = ('id', 'full_name')

@@ -24,8 +24,8 @@ class LikeDislike(models.Model):
 
 
 class Follower(models.Model):
-    subscriber = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
-    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
+    subscriber = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rel_from')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rel_to')
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     objects = models.Manager()
@@ -35,7 +35,7 @@ class Follower(models.Model):
         unique_together = ('subscriber', 'to_user')
 
     def __str__(self):
-        return f'{self.subscriber} follows {self.to_user}'
+        return f'{self.subscriber} follow to {self.to_user}'
 
 
 def action_content_limit():

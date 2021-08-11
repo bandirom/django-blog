@@ -38,15 +38,8 @@ class ActionsService:
 
     @staticmethod
     def get_user_followers(user):
-        print(user)
-        # print(Follower.objects.all())
-        print('_followers', Follower.objects.filter(to_user=user))
         return user.followers.all()
-
 
     @staticmethod
     def get_user_following(user):
-        Follower.objects.filter(subscriber=user)
-        print(user)
-        print('following', Follower.objects.filter(subscriber=user))
         return user.following.all()
