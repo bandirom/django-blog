@@ -2,6 +2,7 @@ from typing import Union
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 
 from blog.services import BlogService
 from blog.models import Article, Comment
@@ -78,7 +79,12 @@ class FollowSerializer(serializers.Serializer):
 
 class UserFollowSerializer(serializers.ModelSerializer):
     """ For list of user following and followers """
+    profile_url = serializers.SerializerMethodField(method_name='get_profile_url')
+    avatar = serializers.ImageField(source='profile.avatar')
+
+    def get_profile_url(self, obj):
+        return reverse('user_profile:user_by_id', kwargs={'user_id': obj.id})
 
     class Meta:
         model = User
-        fields = ('id', 'full_name')
+        fields = ('id', 'full_name', 'avatar', 'profile_url')

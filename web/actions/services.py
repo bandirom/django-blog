@@ -38,8 +38,8 @@ class ActionsService:
 
     @staticmethod
     def get_user_followers(user):
-        return user.followers.all()
+        return user.followers.select_related('profile').all()
 
     @staticmethod
     def get_user_following(user):
-        return user.following.all()
+        return user.following.select_related('profile').all()

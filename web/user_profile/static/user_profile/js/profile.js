@@ -16,6 +16,7 @@ function followersApi(){
     url: button.data('href'),
     success: function (data) {
         console.log('success', data)
+        renderModal(data, button)
         $('#followerModal').modal('show');
     },
     error: function (data) {
@@ -81,4 +82,29 @@ function changePassword(e) {
 function help_block(group, variable) {
   $(group).addClass(error_class_name);
   $(group).append('<div class="help-block">' + variable + "</div>");
+}
+
+
+function renderModal(data, button) {
+  $('#followModalTitle').text(button.text())
+  followBodyRender(data)
+
+}
+
+function followBodyRender(data) {
+  user_list = data.results
+  console.log( 'list',user_list)
+  let body = $('#followModalBody')
+  body.empty()
+  $.each(user_list, function(i){ //Loop the array
+   var templateString = `
+      <div class="user">
+        <p>
+          <img src="${user_list[i].avatar}" class="avatar img-circle img-thumbnail" width=50px>
+          <a href='${user_list[i].profile_url}'> ${user_list[i].full_name} </a>
+        </p>
+      </div>
+   `
+   body.append(templateString);
+  })
 }
