@@ -8,7 +8,7 @@
         {% for user in user_list %}
           <li class="span5 clearfix">
             <div class="thumbnail clearfix">
-              <img src="{{ user.avatar }}" alt="Avatar" class="pull-left span2 clearfix"
+              <img src="{{ user.avatar }}" alt="Avatar" class="pull-left span2 clearfix avatar img-circle img-thumbnail" width="120px"
                    style='margin-right:10px'>
               <div class="caption" class="pull-left">
                 <a href="#" data-href="{% url 'actions:follower' %}" data-id="{{ user.id }}"
