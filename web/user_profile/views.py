@@ -67,7 +67,7 @@ class UserListView(GenericAPIView):
     template_name = 'user_profile/user_list.html'
 
     def get_queryset(self):
-        return UserProfileService.user_queryset()
+        return UserProfileService.user_queryset().exclude(id=self.request.user.id)
 
     def get(self, request):
         serializer = self.get_serializer(self.get_queryset(), many=True)
