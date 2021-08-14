@@ -26,11 +26,11 @@ class ActionsService:
 
     @staticmethod
     def is_user_followed(user, to_user_id: int) -> bool:
-        return user.following.filter(to_user_id=to_user_id).exists()
+        return Follower.objects.filter(subscriber=user, to_user_id=to_user_id).exists()
 
     @staticmethod
     def unfollow_user(user, to_user_id: int):
-        return user.following.filter(to_user_id=to_user_id).delete()
+        return Follower.objects.filter(subscriber=user, to_user_id=to_user_id).delete()
 
     @staticmethod
     def create_action(user, action: str, target):
