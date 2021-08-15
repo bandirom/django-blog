@@ -3,9 +3,8 @@
 {% block title %}Blog Post{% endblock title %}
 
 {% block container %}
-
   <div class="row">
-    <div id="pagination" class="col-lg-8">
+    <div id="pagination" data-href-next="{{ next }}" data-href-previous="{{ previous }}" class="col-lg-8">
       {% for article in results %}
         <div class="row">
           <div class="col-md-12 post">
@@ -20,10 +19,9 @@
             </div>
             <div class="row">
               <div class="col-md-12 post-header-line">
-                <span class="glyphicon glyphicon-user"></span>by <a href="{% url 'user_profile:user_by_id' article.author.id %}">{{ article.author.full_name }}</a> |
+                <span class="glyphicon glyphicon-user"></span>by <a href="{{ article.author.url }}">{{ article.author.full_name }}</a> |
                 <span class="glyphicon glyphicon-calendar"></span> {{ article.updated | date_time }} |
-                <span class="glyphicon glyphicon-comment"></span><a href="#"> {{ article.comments_count }} Comments</a>
-                |
+                <span class="glyphicon glyphicon-comment"></span><a href="#"> {{ article.comments_count }} Comments</a> |
                 <i class="icon-share"></i><a href="#">39 Shares</a> |
                 <span class="glyphicon glyphicon-tags"></span> Tags: <a href="#">
                 <span class="label label-info">Snipp</span></a> <a href="#">
@@ -52,8 +50,6 @@
         <div><h3>No match result found</h3></div>
 
       {% endfor %}
-
-      {% include 'rest_framework/pagination/numbers.html' %}
 
     </div>
     {% include 'blog/includes/right_sidebar.html' %}

@@ -13,10 +13,11 @@ User = get_user_model()
 
 class ShortUserSerializer(serializers.ModelSerializer):
     avatar = serializers.CharField(source='profile.avatar')
+    url = serializers.URLField(source='get_absolute_url')
 
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'avatar')
+        fields = ('id', 'full_name', 'avatar', 'url')
 
 
 class ProfileSerializer(serializers.ModelSerializer):

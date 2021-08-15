@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+from rest_framework.reverse import reverse_lazy
+
 from blog.choices import ArticleStatus
 from .managers import UserManager
 
@@ -42,3 +44,6 @@ class User(AbstractUser):
 
     def following_count(self):
         return self.following.count()
+
+    def get_absolute_url(self):
+        return reverse_lazy('user_profile:user_by_id', args=(self.id,))
