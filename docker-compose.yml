@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
+    image: bandirom/django-template
     entrypoint: /entrypoint.sh
     volumes:
       - ./web/:/usr/src/web/
@@ -74,6 +75,7 @@ services:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
+    image: bandirom/django-template
     command: celery -A src worker -l info -Q celery
     volumes:
       - ./web/:/usr/src/web/
