@@ -1,6 +1,5 @@
 import logging
 from django.contrib.auth import logout as django_logout
-from django.utils.translation import gettext_lazy as _
 
 from dj_rest_auth import views as auth_views
 from dj_rest_auth.registration.views import (
@@ -8,11 +7,9 @@ from dj_rest_auth.registration.views import (
 )
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
 
 from . import serializers
-from .services import full_logout, AuthAppService
+from .services import full_logout
 
 logger = logging.getLogger(__name__)
 
