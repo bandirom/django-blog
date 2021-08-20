@@ -65,3 +65,12 @@ legend{
 		font-weight:bold;
 	}
 }
+
+.pass-icon
+{
+    float: right;
+    margin-top: -40px;
+    position: relative;
+    z-index: 5;
+    font-size:20px;
+}

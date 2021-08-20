@@ -1,8 +1,21 @@
 $(function () {
   $('#signUpForm').submit(singUp);
+  $('.pass-icon').click(passwordVisibility);
 });
 
 const error_class_name = "has-error"
+
+function passwordVisibility() {
+  let name = $(this).attr('data-field-name')
+  let input = $("[name=" + name + "]")
+  console.log(name, $("[name=" + name + "]"))
+  if (input.attr("type") == "password"){
+      input.attr("type", "text");
+  }
+  else {
+      input.attr("type", "password");
+  }
+}
 
 function singUp(e) {
   let form = $(this);
