@@ -41,7 +41,8 @@ class Follower(models.Model):
 def action_content_limit():
     return (
         models.Q(app_label='actions', model='follower') |
-        models.Q(app_label='actions', model='likedislike')
+        models.Q(app_label='actions', model='likedislike') |
+        models.Q(app_label='user_profile', model='profile')
     )
 
 
@@ -54,3 +55,6 @@ class Action(models.Model):
     date = models.DateTimeField(auto_now_add=True, db_index=True)
 
     objects = models.Manager()
+
+    class Meta:
+        ordering = ('-date',)

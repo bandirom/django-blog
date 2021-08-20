@@ -43,3 +43,9 @@ class ActionsService:
     @staticmethod
     def get_user_following(user):
         return user.following.select_related('profile').all()
+
+    @staticmethod
+    def get_following_actions(user):
+        followings = user.following.all()
+        return Action.objects.filter(user__in=followings)
+

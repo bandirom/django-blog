@@ -93,7 +93,6 @@ function renderModal(data, button) {
 
 function followBodyRender(data) {
   user_list = data.results
-  console.log( 'list',user_list)
   let body = $('#followModalBody')
   body.empty()
   $.each(user_list, function(i){ //Loop the array

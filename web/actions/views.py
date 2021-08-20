@@ -1,5 +1,5 @@
 import logging
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin
@@ -47,3 +47,10 @@ class UserFollowersView(ListModelMixin, GenericViewSet):
 
     def user_following(self, request):
         return self.list(request)
+
+
+class ActionListView(ListAPIView):
+    serializer_class = serializers.ActionListSerializer
+
+    def get_queryset(self):
+        return ActionsService.get_following_actions(self.request.user)

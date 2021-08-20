@@ -9,7 +9,7 @@ from blog.models import Article, Comment
 
 from .choices import LikeStatus, LikeObjChoice, LikeIconStatus, FollowIconStatus
 from .services import ActionsService
-from .models import LikeDislike
+from .models import LikeDislike, Action
 
 User = get_user_model()
 
@@ -79,12 +79,16 @@ class FollowSerializer(serializers.Serializer):
 
 class UserFollowSerializer(serializers.ModelSerializer):
     """ For list of user following and followers """
-    profile_url = serializers.SerializerMethodField(method_name='get_profile_url')
+    profile_url = serializers.URLField(source='get_absolute_url')
     avatar = serializers.ImageField(source='profile.avatar')
-
-    def get_profile_url(self, obj):
-        return reverse('user_profile:user_by_id', kwargs={'user_id': obj.id})
 
     class Meta:
         model = User
         fields = ('id', 'full_name', 'avatar', 'profile_url')
+
+
+class ActionListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Action
+        fields = ('id', 'user', 'action', 'date')
