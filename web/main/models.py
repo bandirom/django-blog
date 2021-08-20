@@ -39,10 +39,10 @@ class User(AbstractUser):
     def user_posts(self) -> int:
         return self.article_set.filter(status=ArticleStatus.ACTIVE).count()
 
-    def followers_count(self):
+    def followers_count(self) -> int:
         return self.followers.count()
 
-    def following_count(self):
+    def following_count(self) -> int:
         return self.following.count()
 
     def get_absolute_url(self):
