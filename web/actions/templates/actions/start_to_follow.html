@@ -1,0 +1,11 @@
+{% extends 'actions/base.html' %}
+{% load i18n static %}
+
+{% block template %}
+
+<p>
+  User <a href="{{ subscriber.get_absolute_url }}">{{ subscriber.full_name }}</a>start to follow
+  <a href="{{ to_user.get_absolute_url }}">{{ to_user.full_name }}</a>
+</p>
+
+{% endblock template %}
