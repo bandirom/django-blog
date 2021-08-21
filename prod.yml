@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   nginx:
-    image: bandirom/django-template-nginx-prod:0.1
+    image: bandirom/django-template-nginx:0.1
     volumes:
       - static_volume:/home/ubuntu/web/static
       - media_volume:/home/ubuntu/web/media
@@ -24,7 +24,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/django-template-prod:0.1
+    image: bandirom/django-template:0.1
     entrypoint: /entrypoint.sh
     volumes:
       - static_volume:/home/ubuntu/web/static
@@ -60,7 +60,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/django-template-prod:latest
+    image: bandirom/django-template:0.1
     command: celery -A src worker -l info -Q celery
     env_file:
       - docker/prod/env/.env
@@ -79,7 +79,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/db/Dockerfile
-    image: bandirom/django-template-prod-db:latest
+    image: bandirom/django-template-db:latest
     volumes:
       - postgres_data:/var/lib/postgresql/data/
       - postgres_socket:/postgres_socket
@@ -97,7 +97,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/redis/Dockerfile
-    image: bandirom/django-template-prod-redis:latest
+    image: bandirom/django-template-redis:latest
     restart: always
     volumes:
       - redis_data:/data

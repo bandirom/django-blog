@@ -8,7 +8,6 @@ services:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
-    image: bandirom/django-template
     entrypoint: /entrypoint.sh
     volumes:
       - ./web/:/usr/src/web/:cached
@@ -42,7 +41,6 @@ services:
     build:
       context: .
       dockerfile: docker/dev/db/Dockerfile
-    image: bandirom/django-template-db
     hostname: postgres
     restart: unless-stopped
     volumes:
@@ -61,7 +59,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/dev/redis/Dockerfile
-    image: bandirom/django-template-redis
     restart: unless-stopped
     volumes:
       - redis_data:/data
@@ -77,7 +74,6 @@ services:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
-    image: bandirom/django-template
     command: celery -A src worker -l info -Q celery
     volumes:
       - ./web/:/usr/src/web/:cached
