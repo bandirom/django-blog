@@ -8,10 +8,9 @@ services:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
-    image: bandirom/django-template
     entrypoint: /entrypoint.sh
     volumes:
-      - ./web/:/usr/src/web/
+      - ./web/:/usr/src/web/:cached
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
     ports:
@@ -30,7 +29,7 @@ services:
       - microservice_network
       - separated_network
     extra_hosts:
-      docker-gateway-host: 172.17.0.1  # Linux OS get access from docker container to localhost
+      - "docker-gateway-host:172.17.0.1"  # Linux OS get access from docker container to localhost
       # host.docker.internal - For docker in Windows. No other action is required.
       # If You need to connect to PostgreSql in localhost, just use host.docker.internal instead of localhost
     healthcheck:
@@ -42,7 +41,6 @@ services:
     build:
       context: .
       dockerfile: docker/dev/db/Dockerfile
-    image: bandirom/django-template-db
     hostname: postgres
     restart: unless-stopped
     volumes:
@@ -61,7 +59,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/dev/redis/Dockerfile
-    image: bandirom/django-template-redis
     restart: unless-stopped
     volumes:
       - redis_data:/data
@@ -77,10 +74,9 @@ services:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
-    image: bandirom/django-template
     command: celery -A src worker -l info -Q celery
     volumes:
-      - ./web/:/usr/src/web/
+      - ./web/:/usr/src/web/:cached
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
     environment:
@@ -95,7 +91,7 @@ services:
     networks:
       - separated_network
     extra_hosts:
-      docker-gateway-host: 172.17.0.1
+      - "docker-gateway-host:172.17.0.1"
 
 volumes:
   postgres_data:
