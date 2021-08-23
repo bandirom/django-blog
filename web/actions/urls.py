@@ -12,6 +12,7 @@ urlpatterns = [
     path('follow/', views.FollowView.as_view(), name='follower'),
     path('followers/', views.UserFollowersView.as_view({'get': 'user_followers'}), name='user_followers'),
     path('following/', views.UserFollowersView.as_view({'get': 'user_following'}), name='user_following'),
+    path('actions/', views.ActionListView.as_view(), name='action_list'),
 ]
 
 urlpatterns += router.urls

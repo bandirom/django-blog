@@ -24,7 +24,12 @@ class BlogService:
 
     @staticmethod
     def get_comments_queryset() -> QuerySet[Comment]:
-        return Comment.objects.select_related('user', 'article', 'parent').filter(article__status=ArticleStatus.ACTIVE)
+        return (
+            Comment.objects
+            .select_related('user', 'article', 'parent')
+            .filter(article__status=ArticleStatus.ACTIVE)
+            .order_by('id')
+        )
 
     @staticmethod
     def is_valid_comment_parent(parent_id: int, article: Article) -> bool:

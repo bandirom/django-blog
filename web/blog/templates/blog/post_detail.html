@@ -10,7 +10,6 @@
 {% block container %}
   <div class="row">
     <div class="col-lg-8">
-      <div id="articleData" data-id="{{ id }}" data-href="{% url 'blog:article_comments' id %}"></div>
       <h1><a href="">{{ title }}</a></h1>
       <p class="lead"><i class="fa fa-user"></i> by <a href="">{{ author.full_name }}</a>
       </p>
@@ -60,5 +59,6 @@
 
 {% block jquery %}
   $.getScript('{% static 'blog/js/detail.js' %}');
+  $.getScript('{% static 'blog/js/comments.js' %}');
   $.getScript('{% static 'actions/js/likes.js' %}');
 {% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'actions/base.html' %}
+{% load i18n static %}
+
+{% block template %}
+
+<p>
+  User <a href="{{ user.get_absolute_url }}">{{ user.full_name }}</a>changed avatar
+  <img src="{{ avatar_url }}">
+</p>
+
+{% endblock template %}

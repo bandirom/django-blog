@@ -24,8 +24,7 @@
 <div class="row">
     <div class="comments-container">
 		<h1>Comments ({{ comments_count }})</h1>
-
-		<ul id="comments-list" class="comments-list">
+		<ul id="paginationComment" class="comments-list" data-id="{{ id }}" data-href-next="{% url 'blog:article_comments' id %}">
       {% for comment in comments %}
       <li>
 				<div class="comment-main-level">
