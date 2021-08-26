@@ -10,12 +10,11 @@ const error_class_name = "has-error"
 
 
 function followersApi(){
-  button = $(this)
+  let button = $(this)
    $.ajax({
     type: 'GET',
     url: button.data('href'),
     success: function (data) {
-        console.log('success', data)
         renderModal(data, button)
         $('#followerModal').modal('show');
     },
@@ -87,13 +86,15 @@ function help_block(group, variable) {
 
 function renderModal(data, button) {
   $('#followModalTitle').text(button.text())
-  followBodyRender(data)
+  followBodyRender(data, button)
 
 }
 
-function followBodyRender(data) {
+function followBodyRender(data, button) {
   user_list = data.results
   let body = $('#followModalBody')
+  let followUrl = button.data('follow-actions')
+
   body.empty()
   $.each(user_list, function(i){ //Loop the array
    var templateString = `
@@ -101,9 +102,12 @@ function followBodyRender(data) {
         <p>
           <img src="${user_list[i].avatar}" class="avatar img-circle img-thumbnail" width=50px>
           <a href='${user_list[i].profile_url}'> ${user_list[i].full_name} </a>
+          <button class="btn btn-primary followMe" data-id="${user_list[i].id}" data-href='${followUrl}'> Follow </button>
         </p>
       </div>
    `
    body.append(templateString);
   })
+   $(".followMe").click(followMe);
+
 }

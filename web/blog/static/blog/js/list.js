@@ -19,7 +19,6 @@ function apiRequest(pagination){
       type: "GET",
       url: pagination.attr('data-href-next'),
       success: function (data) {
-          console.log('success', data)
         if (data.results) {
           appendUrls(pagination,data.next, data.previous)
           if (newArticlesRender(data, pagination)) {
