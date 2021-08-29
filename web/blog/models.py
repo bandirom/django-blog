@@ -107,6 +107,6 @@ class Comment(models.Model):
         verbose_name = _('Comment')
         verbose_name_plural = _('Comments')
         ordering = ('-id',)
-        
+
     def __str__(self):
         return '{author}: {article}'.format(author=self.author, article=self.article.title)

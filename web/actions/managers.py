@@ -13,7 +13,6 @@ class LikeDislikeManager(models.Manager):
         return self.get_queryset().filter(vote=LikeStatus.DISLIKE)
 
     def sum_rating(self):
-
         return self.get_queryset().aggregate(Sum('vote')).get('vote__sum') or 0
 
     def articles(self):
@@ -21,3 +20,6 @@ class LikeDislikeManager(models.Manager):
 
     def comments(self):
         return self.get_queryset().filter(content_type__model=LikeObjChoice.COMMENT).order_by('-comments__updated')
+
+    def get_queryset(self):
+        return super().get_queryset().select_related('user', 'content_type').prefetch_related('content_object')
