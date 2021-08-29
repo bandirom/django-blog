@@ -25,4 +25,4 @@ def find_by_key(data: dict, target):
 
 def find_dict_in_list(target: list[dict], dict_key, lookup_value):
     """Find a dict in a list of dict by dict key"""
-    return next(iter(x for x in target if x.get(dict_key) == lookup_value), {},)
+    return next(iter(x for x in target if x.get(dict_key) == lookup_value), {})
