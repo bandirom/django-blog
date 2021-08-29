@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-from .managers import LikeDislikeManager
-from .choices import LikeStatus, UserActionsChoice
+from .managers import LikeDislikeManager, FollowerManager
+from .choices import LikeStatus
 
 User = get_user_model()
 
@@ -28,7 +28,7 @@ class Follower(models.Model):
     to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rel_to')
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
-    objects = models.Manager()
+    objects = FollowerManager()
 
     class Meta:
         ordering = ('-created',)
