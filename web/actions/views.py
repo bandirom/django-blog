@@ -41,11 +41,23 @@ class UserFollowersView(ListModelMixin, GenericViewSet):
             return ActionsService.get_user_followers(self.request.user)
         elif self.action == 'user_following':
             return ActionsService.get_user_following(self.request.user)
+        elif self.action == 'user_followers_by_id':
+            user = ActionsService.get_user_by_id(self.kwargs['user_id'])
+            return ActionsService.get_user_followers(user)
+        elif self.action == 'user_following_by_id':
+            user = ActionsService.get_user_by_id(self.kwargs['user_id'])
+            return ActionsService.get_user_following(user)
 
     def user_followers(self, request):
         return self.list(request)
 
     def user_following(self, request):
+        return self.list(request)
+
+    def user_followers_by_id(self, request, user_id: int):
+        return self.list(request)
+
+    def user_following_by_id(self, request, user_id: int):
         return self.list(request)
 
 

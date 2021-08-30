@@ -8,11 +8,18 @@ from .choices import LikeStatus
 User = get_user_model()
 
 
+def like_content_limit():
+    return (
+        models.Q(app_label='blog', model='article') |
+        models.Q(app_label='blog', model='comment')
+    )
+
+
 class LikeDislike(models.Model):
     vote = models.SmallIntegerField(choices=LikeStatus.choices)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=like_content_limit)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
     date = models.DateTimeField(auto_now=True)

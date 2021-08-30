@@ -16,7 +16,7 @@
     <div class="col-sm-3"><!--left col-->
       {% include 'user_profile/include/block_avatar.html' %}
       </hr><br>
-
+      {% include 'user_profile/include/block_followers_by_user.html' %}
       {% include 'user_profile/include/block_website.html' %}
       {% include 'user_profile/include/block_activity.html' %}
       {% include 'user_profile/include/block_social_media.html' %}
@@ -30,6 +30,8 @@
       </div>
       <hr>
     </div><!--/col-9-->
+    {% include 'user_profile/include/modal_followers.html' %}
 
   </div><!--/row-->
+
 {% endblock container %}
