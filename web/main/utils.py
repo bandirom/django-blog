@@ -23,6 +23,10 @@ def find_by_key(data: dict, target):
                     return find_by_key(i, target)
 
 
-def find_dict_in_list(target: list[dict], dict_key, lookup_value):
+def find_dict_in_list(target: list[dict], dict_key, lookup_value) -> dict:
     """Find a dict in a list of dict by dict key"""
     return next(iter(x for x in target if x.get(dict_key) == lookup_value), {})
+
+
+def get_user_language(request) -> str:
+    return request.headers.get('Accept-Language', 'en').split(',')[0]
