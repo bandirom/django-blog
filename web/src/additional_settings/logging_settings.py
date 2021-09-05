@@ -47,7 +47,7 @@ LOGGING = {
             'level': 'ERROR',
             'class': 'main.logging.AdminEmailHandler',
             'include_html': True,
-            'filters': ['require_debug_true'],
+            'filters': ['require_debug_false'],
             'email_backend': 'django.core.mail.backends.{0}.EmailBackend'.format(
                 environ.get('EMAIL_BACKEND', 'console')),
         }
