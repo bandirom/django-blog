@@ -17,6 +17,8 @@ web/media/*
 htmlcov
 venv
 backup
+.crt
+.key
 modules.txt
 !web/media/no-avatar.png
 !web/media/no-image-available.jpg

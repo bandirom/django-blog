@@ -12,7 +12,6 @@ from .additional_settings.jwt_settings import *
 from .additional_settings.summernote_settings import *
 from .additional_settings.smtp_settings import *
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -27,6 +26,7 @@ SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', 'test@test.com')
 SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD', 'tester26')
 
 MICROSERVICE_TITLE = os.environ.get('MICROSERVICE_TITLE', 'Template')
+MICROSERVICE_PREFIX = os.environ.get('MICROSERVICE_PREFIX', '')
 GITHUB_URL = os.environ.get('GITHUB_URL', 'https://github.com')
 FRONTEND_SITE = os.environ.get('FRONTEND_SITE', 'http://localhost:8008')
 BACKEND_SITE = os.environ.get('BACKEND_SITE', 'http://localhost:8008')
@@ -42,7 +42,11 @@ ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 0))
 INTERNAL_IPS = []
 
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
-ADMIN_EMAILS = os.environ.get('ADMIN_EMAILS', '').split(',')
+
+ADMINS = [
+    ('Nazarii', 'bandirom@ukr.net'),
+]
+
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
 
 API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
@@ -98,7 +102,6 @@ LOCAL_APPS = [
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
 
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'main.middleware.HealthCheckMiddleware',
@@ -133,7 +136,6 @@ if ENABLE_RENDERING:
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer',
     )
-
 
 ROOT_URLCONF = 'src.urls'
 
@@ -199,10 +201,10 @@ USE_TZ = True
 TIMEZONE_COOKIE_NAME = 'timezone'
 TIMEZONE_COOKIE_AGE = 15552000  # 60*60*24*180
 
-STATIC_URL = '/static/'
+STATIC_URL = f'{MICROSERVICE_PREFIX}/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = '/media/'
+MEDIA_URL = f'{MICROSERVICE_PREFIX}/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOCALE_PATHS = (
@@ -213,16 +215,19 @@ LANGUAGES = (
     ('en', _('English')),
 )
 
+SESSION_COOKIE_NAME = 'sessionid_blog'
+CSRF_COOKIE_NAME = 'csrftoken_blog'
+
 ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = LANGUAGE_CODE
 ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'English'
 ROSETTA_SHOW_AT_ADMIN_PANEL = True
 ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = False
 
-
 if JAEGER_AGENT_HOST := os.environ.get('JAEGER_AGENT_HOST'):
     from jaeger_client import Config
     from jaeger_client.config import DEFAULT_REPORTING_PORT
     from django_opentracing import DjangoTracing
+
     """If you don't need to trace all requests, comment middleware and set OPENTRACING_TRACE_ALL = False
         More information https://github.com/opentracing-contrib/python-django/#tracing-individual-requests
     """
@@ -246,6 +251,7 @@ if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
     from sentry_sdk import init
     from sentry_sdk.integrations.django import DjangoIntegration
+
     init(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
