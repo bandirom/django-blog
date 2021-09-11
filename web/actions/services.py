@@ -56,4 +56,3 @@ class ActionsService:
     def get_following_actions(user):
         followings = user.following.all()
         return Action.objects.filter(user__in=followings)
-

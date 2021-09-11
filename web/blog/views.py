@@ -106,7 +106,7 @@ class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.De
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class NewArticleView(TemplateAPIView):
+class CreateArticleTemplateView(TemplateAPIView):
 
     template_name = 'blog/post_create.html'
 

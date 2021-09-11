@@ -25,7 +25,6 @@ class Profile(models.Model):
 
     def set_image_to_default(self):
         self.avatar.delete(save=False)  # delete old image file
-        self.save()
 
     def is_default_image(self):
         return True if self.avatar.url.find("no-avatar.png") != -1 else False
