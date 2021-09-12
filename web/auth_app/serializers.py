@@ -4,11 +4,11 @@ from allauth.utils import email_address_exists
 from dj_rest_auth import serializers as auth_serializers
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from auth_app.services import CeleryService
+from user_profile.choices import GenderChoice
 from .forms import PassResetForm
 from .services import AuthAppService
 
@@ -29,6 +29,8 @@ class UserSignUpSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password1 = serializers.CharField(write_only=True, min_length=8)
     password2 = serializers.CharField(write_only=True, min_length=8)
+    birthday = serializers.DateField(required=False, source='profile.birthday')
+    gender = serializers.ChoiceField(choices=GenderChoice.choices, required=False, source='profile.gender')
 
     def validate_password1(self, password):
         return get_adapter().clean_password(password)
@@ -48,10 +50,14 @@ class UserSignUpSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         request = self.context.get('request')
+        profile_data: dict = self.validated_data.pop('profile')
         self.validated_data['password'] = self.validated_data.pop('password1')
         del self.validated_data['password2']
         self.validated_data.pop('captcha', None)
         user = User.objects.create_user(**self.validated_data, is_active=False)
+        user.profile.birthday = profile_data.get('birthday')
+        user.profile.gender = profile_data.get('gender')
+        user.profile.save()
         setup_user_email(request=request, user=user, addresses=[])
         CeleryService.send_email_confirm(user)
         return user

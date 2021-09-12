@@ -19,10 +19,10 @@ def user_start_to_follow(sender, created: bool, instance: Follower, **kwargs):
 
 
 @receiver(post_save, sender=Profile)
-def user_change_avatar(sender, created: bool, instance: Profile, update_fields, **kwargs):
-    if created:
+def user_change_avatar(sender, created: bool, instance: Profile, update_fields: frozenset, **kwargs):
+    if created or not update_fields:
         return
-    if not update_fields and 'avatar' not in update_fields:
+    if 'avatar' not in update_fields:
         return
     template = 'actions/change_avatar.html'
     data = {
