@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, RetrieveAPIView
 from dj_rest_auth.serializers import PasswordChangeSerializer
 from .services import UserProfileService
 from . import serializers
@@ -89,3 +89,10 @@ class UserProfileByIdView(GenericAPIView):
     def get(self, request, user_id: int):
         serializer = self.get_serializer(self.get_object())
         return Response(serializer.data, status=status.HTTP_200_OK, template_name=self.template_name)
+
+
+class UserShortInfoView(RetrieveAPIView):
+    serializer_class = serializers.UserShortInfoSerializer
+
+    def get_queryset(self):
+        return UserProfileService.user_queryset()

@@ -14,11 +14,11 @@ from .additional_settings.smtp_settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = int(os.environ.get("DEBUG", default=1))
+DEBUG = int(os.environ.get('DEBUG', default=1))
 
-ALLOWED_HOSTS: list = os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
 
 AUTH_USER_MODEL = 'main.User'
 
@@ -162,14 +162,14 @@ WSGI_APPLICATION = 'src.wsgi.application'
 ASGI_APPLICATION = 'src.asgi.application'
 
 DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("SQL_ENGINE"),
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_SOCKET") or os.environ.get('POSTGRES_HOST'),
-        "PORT": os.environ.get("POSTGRES_PORT"),
-        "CONN_MAX_AGE": 0,
+    'default': {
+        'ENGINE': os.environ.get('SQL_ENGINE'),
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_SOCKET') or os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT'),
+        'CONN_MAX_AGE': 0,
     },
 }
 
@@ -187,6 +187,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get('REDIS_SOCKET'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 LANGUAGE_CODE = 'en-us'
 
@@ -235,12 +245,12 @@ if JAEGER_AGENT_HOST := os.environ.get('JAEGER_AGENT_HOST'):
     OPENTRACING_TRACE_ALL = True
     tracer = Config(
         config={
-            "sampler": {"type": "const", "param": 1},
-            "local_agent": {
-                "reporting_port": os.environ.get("JAEGER_AGENT_PORT", DEFAULT_REPORTING_PORT),
-                "reporting_host": JAEGER_AGENT_HOST,
+            'sampler': {'type': 'const', 'param': 1},
+            'local_agent': {
+                'reporting_port': os.environ.get('JAEGER_AGENT_PORT', DEFAULT_REPORTING_PORT),
+                'reporting_host': JAEGER_AGENT_HOST,
             },
-            "logging": int(os.environ.get('JAEGER_LOGGING', False)),
+            'logging': int(os.environ.get('JAEGER_LOGGING', False)),
         },
         service_name=MICROSERVICE_TITLE,
         validate=True,
