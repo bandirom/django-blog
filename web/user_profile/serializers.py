@@ -81,3 +81,12 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'full_name', 'avatar', 'follow')
+
+
+class UserShortInfoSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(source='profile.avatar')
+    url = serializers.URLField(source='get_absolute_url')
+
+    class Meta:
+        model = User
+        fields = ('id', 'full_name', 'avatar', 'url')
