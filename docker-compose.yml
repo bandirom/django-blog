@@ -74,7 +74,7 @@ services:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
-    command: celery -A src worker -l info -Q celery
+    command: celery -A src worker -l info -Q blog_local
     volumes:
       - ./web/:/usr/src/web/
       - redis_socket:/redis_socket
