@@ -3,7 +3,8 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 
 from .services import ActionsService
-from .models import Follower
+from .models import Follower, LikeDislike
+from .choices import LikeObjChoice, LikeStatus
 from user_profile.models import Profile
 
 
@@ -28,6 +29,20 @@ def user_change_avatar(sender, created: bool, instance: Profile, update_fields: 
     data = {
         'avatar_url': instance.avatar,
         'user': instance.user
+    }
+    action = render_to_string(template, data)
+    ActionsService.create_action(instance.user, action, instance)
+
+
+@receiver(post_save, sender=LikeDislike)
+def user_like_article(sender, created: bool, instance: LikeDislike, **kwargs):
+    if instance.content_type.model != LikeObjChoice.ARTICLE:
+        return
+    template = 'actions/user_like_article.html'
+    data = {
+        'user': instance.user,
+        'article': instance.content_object,
+        'vote': 'like' if instance.vote == LikeStatus.LIKE else 'dislike',
     }
     action = render_to_string(template, data)
     ActionsService.create_action(instance.user, action, instance)

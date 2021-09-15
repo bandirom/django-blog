@@ -1,0 +1,11 @@
+{% extends 'actions/base.html' %}
+
+{% block template %}
+
+<p>
+  User <a href="{{ user.get_absolute_url }}">{{ user.full_name }}</a> {{ vote }} article
+  <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+</p>
+
+{% endblock template %}
+
