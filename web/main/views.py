@@ -2,10 +2,14 @@ from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework.mixins import ListModelMixin
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import SessionAuthentication
 
+from actions.serializers import ActionListSerializer
+from actions.services import ActionsService
+from .pagination import BasePageNumberPagination
 from .serializers import SetTimeZoneSerializer
 
 
@@ -14,6 +18,19 @@ class TemplateAPIView(APIView):
         path('some-path/', TemplateAPIView.as_view(template_name='template.html'))
     """
     permission_classes = (AllowAny,)
+    template_name = ''
+
+    @swagger_auto_schema(auto_schema=None)
+    def get(self, request, *args, **kwargs):
+        return Response()
+
+
+class GenericTemplateAPIView(GenericAPIView):
+    """ Help to build CMS System using DRF, JWT and Cookies
+        path('some-path/', TemplateAPIView.as_view(template_name='template.html'))
+    """
+    permission_classes = (AllowAny,)
+
     template_name = ''
 
     @swagger_auto_schema(auto_schema=None)
@@ -35,3 +52,23 @@ class SetUserTimeZone(GenericAPIView):
             max_age=getattr(settings, 'TIMEZONE_COOKIE_AGE', 86400),
         )
         return response
+
+
+class IndexTemplateView(ListModelMixin, GenericTemplateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ActionListSerializer
+    pagination_class = BasePageNumberPagination
+
+    @property
+    def template_name(self):
+        if not self.request.user.is_authenticated:
+            return 'index.html'
+        return 'actions/index.html'
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return super().get(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return ActionsService.get_following_actions(self.request.user)

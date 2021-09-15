@@ -3,7 +3,7 @@ from django.urls import path
 from django.views.generic import RedirectView
 from django.conf import settings
 
-from .views import TemplateAPIView, SetUserTimeZone
+from .views import IndexTemplateView, SetUserTimeZone
 
 
 urlpatterns = [
@@ -12,6 +12,6 @@ urlpatterns = [
 ]
 
 if settings.ENABLE_RENDERING:
-    urlpatterns += [path('', TemplateAPIView.as_view(template_name='index.html'), name='index')]
+    urlpatterns += [path('', IndexTemplateView.as_view(), name='index')]
 else:
     urlpatterns += [path('', login_required(RedirectView.as_view(pattern_name='admin:index')))]
