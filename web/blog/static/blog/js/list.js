@@ -38,6 +38,10 @@ function appendUrls(pagination, next, previous) {
 function newArticlesRender(data, pagination) {
   articles = data.results
   $.each(articles, function(i){
+    let tags = ''
+    for (let j of articles[i].tag_list) {
+      tags += `<a href="#"><span class="label label-info">${j}</span></a> `;
+    }
    var templateString = `
       <div class="row">
           <div class="col-md-12 post">
@@ -56,8 +60,7 @@ function newArticlesRender(data, pagination) {
                 <span class="glyphicon glyphicon-calendar"></span>${articles[i].updated} |
                 <span class="glyphicon glyphicon-comment"></span><a href="#"> ${articles[i].comments_count} Comments</a> |
                 <i class="icon-share"></i><a href="#">39 Shares</a> |
-                <span class="glyphicon glyphicon-tags"></span> Tags: <a href="#">
-                <span class="label label-info">Snipp</span></a> <a href="#">
+                <span class="glyphicon glyphicon-tags"></span> Tags: ${tags}
               </div>
             </div>
             <div class="row post-content">

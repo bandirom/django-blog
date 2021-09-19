@@ -105,12 +105,12 @@ class ArticleSerializer(serializers.ModelSerializer):
         model = Article
         fields = (
             'id', 'title', 'url', 'author', 'category', 'likes', 'dislikes',
-            'created', 'updated', 'comments_count', 'image', 'content', 'like_status'
+            'created', 'updated', 'comments_count', 'image', 'content', 'like_status', 'tag_list',
         )
 
 
 class FullArticleSerializer(ArticleSerializer):
-    comments = serializers.SerializerMethodField('get_parent_comment')
+    # comments = serializers.SerializerMethodField('get_parent_comment')
     votes = LikeDislikeRelationSerializer(many=True)
 
     def get_parent_comment(self, obj):
@@ -118,7 +118,7 @@ class FullArticleSerializer(ArticleSerializer):
         return CommentSerializer(queryset, source='comment_set', many=True).data
 
     class Meta(ArticleSerializer.Meta):
-        fields = ArticleSerializer.Meta.fields + ('comments', 'votes')
+        fields = ArticleSerializer.Meta.fields + ('votes',)
 
 
 class CreateArticleSerializer(serializers.ModelSerializer):

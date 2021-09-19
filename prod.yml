@@ -24,7 +24,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/django-template:0.1
+    image: bandirom/django-template:0.1.1
     entrypoint: /entrypoint.sh
     volumes:
       - static_volume:/home/ubuntu/web/static
@@ -60,7 +60,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/django-template:0.1
+    image: bandirom/django-template:0.1.1
     command: celery -A src worker -l info -Q celery
     env_file:
       - docker/prod/env/.env

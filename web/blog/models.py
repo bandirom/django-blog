@@ -82,8 +82,11 @@ class Article(models.Model):
     def dislikes(self) -> int:
         return self.votes.dislikes().count()
 
-    def tag_list(self) -> str:
+    def tag_list_str(self) -> str:
         return u", ".join(o.name for o in self.tags.all())
+
+    def tag_list(self) -> list:
+        return self.tags.values_list('name', flat=True)
 
     class Meta:
         verbose_name = _('Article')

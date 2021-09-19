@@ -16,10 +16,9 @@
       <hr>
       <p><i class="fa fa-calendar"></i> Posted on {{ created | date_time }}</p>
       <p><i class="fa fa-tags"></i> Tags:
-        <a href=""><span class="badge badge-info">Bootstrap</span></a>
-        <a href=""><span class="badge badge-info">Web</span></a>
-        <a href=""><span class="badge badge-info">CSS</span></a>
-        <a href=""><span class="badge badge-info">HTML</span></a>
+        {% for tag in tag_list %}
+          <a href="#"><span class="badge badge-info">{{ tag }}</span></a>
+        {% endfor %}
       </p>
       <ul>
         <li id="likeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
