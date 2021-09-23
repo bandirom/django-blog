@@ -6,6 +6,7 @@ from user_profile.serializers import ShortUserSerializer
 from .models import Category, Article, Comment
 from .services import BlogService
 from actions.choices import LikeIconStatus, LikeStatus
+from main.taggit_serializers import TagListSerializerField, TaggitSerializer
 
 
 class ParentCommentSerializer(serializers.ModelSerializer):
@@ -121,11 +122,12 @@ class FullArticleSerializer(ArticleSerializer):
         fields = ArticleSerializer.Meta.fields + ('votes',)
 
 
-class CreateArticleSerializer(serializers.ModelSerializer):
+class CreateArticleSerializer(TaggitSerializer, serializers.ModelSerializer):
+    tags = TagListSerializerField()
 
     class Meta:
         model = Article
-        fields = ('title', 'category', 'image', 'content')
+        fields = ('title', 'category', 'image', 'content', 'tags')
 
     def create(self, validated_data):
         validated_data['author'] = self.context.get('request').user
