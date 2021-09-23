@@ -17,6 +17,7 @@
       {% include 'user_profile/include/block_avatar.html' %}
       </hr><br>
       {% include 'user_profile/include/block_followers_by_user.html' %}
+      {% include 'user_profile/include/block_send_message.html' %}
       {% include 'user_profile/include/block_website.html' %}
       {% include 'user_profile/include/block_activity.html' %}
       {% include 'user_profile/include/block_social_media.html' %}
@@ -35,3 +36,7 @@
   </div><!--/row-->
 
 {% endblock container %}
+
+{% block jquery %}
+$.getScript('{% static 'user_profile/js/writeMessage.js' %}');
+{% endblock %}

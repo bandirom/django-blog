@@ -54,6 +54,9 @@ API_KEY = os.environ.get('API_KEY')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
 SITE_ID = 1
+CHAT_API_URL = os.environ.get('CHAT_API_URL')
+CHAT_API_KEY = os.environ.get('CHAT_API_KEY')
+CHAT_PROXY = os.environ.get('CHAT_PROXY')
 
 USER_AVATAR_MAX_SIZE = 4.0
 USER_FILE_MAX_SIZE = 10.0  # Mb

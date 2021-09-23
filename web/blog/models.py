@@ -115,7 +115,7 @@ class Comment(models.Model):
         return '{author}: {article}'.format(author=self.author, article=self.article.title)
 
     def likes(self) -> int:
-        return self.votes.count()
+        return self.votes.likes().count()
 
     def dislikes(self) -> int:
-        return self.votes.count()
+        return self.votes.dislikes().count()
