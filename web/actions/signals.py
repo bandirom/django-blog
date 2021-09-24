@@ -10,7 +10,7 @@ from user_profile.models import Profile
 
 @receiver(post_save, sender=Follower)
 def user_start_to_follow(sender, created: bool, instance: Follower, **kwargs):
-    template = 'actions/start_to_follow.html'
+    template = 'actions/action_templates/start_to_follow.html'
     data = {
         'subscriber': instance.subscriber,
         'to_user': instance.to_user
@@ -25,7 +25,7 @@ def user_change_avatar(sender, created: bool, instance: Profile, update_fields: 
         return
     if 'avatar' not in update_fields:
         return
-    template = 'actions/change_avatar.html'
+    template = 'actions/action_templates/change_avatar.html'
     data = {
         'avatar_url': instance.avatar,
         'user': instance.user
@@ -38,7 +38,7 @@ def user_change_avatar(sender, created: bool, instance: Profile, update_fields: 
 def user_like_article(sender, created: bool, instance: LikeDislike, **kwargs):
     if instance.content_type.model != LikeObjChoice.ARTICLE:
         return
-    template = 'actions/user_like_article.html'
+    template = 'actions/action_templates/user_like_article.html'
     data = {
         'user': instance.user,
         'article': instance.content_object,
