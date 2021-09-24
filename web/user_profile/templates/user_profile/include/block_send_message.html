@@ -1,6 +1,8 @@
+{% load main %}
+
 <div class="panel panel-default">
   <div class="panel-heading"><i class="fa fa-link fa-1x"></i> Message panel</div>
   <div class="panel-body">
-    <button class="btn btn-info" id="writeMessage" data-user_id="{{ id }}">Send Message</button>
+    <button class="btn btn-info" data-chat="{% chat_proxy %}" id="writeMessage" data-user_id="{{ id }}">Send Message</button>
   </div>
 </div>

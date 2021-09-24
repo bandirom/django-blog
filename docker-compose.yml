@@ -4,7 +4,7 @@ x-variables: &variables
   ENV_STAGE: local
 
 services:
-  web:
+  blog:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile

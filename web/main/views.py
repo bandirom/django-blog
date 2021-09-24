@@ -10,7 +10,7 @@ from rest_framework.authentication import SessionAuthentication
 from actions.serializers import ActionListSerializer
 from actions.services import ActionsService
 from .pagination import BasePageNumberPagination
-from .serializers import SetTimeZoneSerializer
+from .serializers import SetTimeZoneSerializer, JwtUserDataSerializer
 
 
 class TemplateAPIView(APIView):
@@ -65,10 +65,19 @@ class IndexTemplateView(ListModelMixin, GenericTemplateAPIView):
             return 'index.html'
         return 'actions/index.html'
 
+    def get_queryset(self):
+        return ActionsService.get_following_actions(self.request.user)
+
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated:
             return super().get(request, *args, **kwargs)
         return self.list(request, *args, **kwargs)
 
-    def get_queryset(self):
-        return ActionsService.get_following_actions(self.request.user)
+
+class JwtUserDataView(GenericAPIView):
+    serializer_class = JwtUserDataSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data)
