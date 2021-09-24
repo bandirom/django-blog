@@ -20,7 +20,7 @@ class JwtUserDataSerializer(serializers.Serializer):
     def validate_jwt(self, jwt: str):
         try:
             access_token = AccessToken(jwt)
-            self.user = User.objects.get(pk=access_token['user_id'])
+            self.user = User.objects.select_related('profile').get(pk=access_token['user_id'])
         except (TokenError, User.DoesNotExist) as e:
             raise serializers.ValidationError(e)
         return jwt
