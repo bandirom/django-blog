@@ -38,5 +38,6 @@
 {% endblock container %}
 
 {% block jquery %}
+{{ block.super }}
 $.getScript('{% static 'user_profile/js/writeMessage.js' %}');
 {% endblock %}
