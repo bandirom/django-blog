@@ -32,5 +32,5 @@ class JwtUserDataSerializer(serializers.Serializer):
         return {
             'id': self.user.id,
             'full_name': self.user.full_name(),
-            'avatar': urljoin(settings.BACKEND_SITE, self.user.profile.avatar.url),
+            'avatar': self.user.avatar_url,
         }

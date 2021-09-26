@@ -96,7 +96,7 @@ function followBodyRender(data, button) {
   let followUrl = button.data('follow-actions')
 
   body.empty()
-  $.each(user_list, function(i){ //Loop the array
+  $.each(user_list, function(i){
    let isShowFollowButton = !!user_list[i].follow
    console.log(isShowFollowButton)
    var templateString = `

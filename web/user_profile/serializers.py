@@ -13,7 +13,7 @@ User = get_user_model()
 
 class ShortUserSerializer(serializers.ModelSerializer):
     avatar = serializers.CharField(source='profile.avatar')
-    url = serializers.URLField(source='get_absolute_url')
+    url = serializers.URLField(source='full_profile_url')
 
     class Meta:
         model = User
@@ -84,9 +84,13 @@ class UserListSerializer(serializers.ModelSerializer):
 
 
 class UserShortInfoSerializer(serializers.ModelSerializer):
-    avatar = serializers.ImageField(source='profile.avatar')
+    avatar = serializers.URLField(source='avatar_url')
     url = serializers.URLField(source='get_absolute_url')
 
     class Meta:
         model = User
         fields = ('id', 'full_name', 'avatar', 'url')
+
+
+class UserChatListSerializer(serializers.Serializer):
+    user_ids = serializers.ListSerializer(child=serializers.IntegerField(min_value=1))

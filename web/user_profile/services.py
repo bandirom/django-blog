@@ -21,3 +21,8 @@ class UserProfileService:
     @staticmethod
     def user_queryset():
         return User.objects.exclude(is_active=False).select_related('profile')
+
+    @staticmethod
+    def get_users_by_list_id(user_ids: list):
+        queryset = UserProfileService.user_queryset()
+        return queryset.filter(id__in=user_ids)

@@ -1,5 +1,9 @@
+from urllib.parse import urljoin
+
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.reverse import reverse_lazy
@@ -47,3 +51,11 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse_lazy('user_profile:user_by_id', args=(self.id,))
+
+    @cached_property
+    def avatar_url(self) -> str:
+        return urljoin(settings.BACKEND_SITE, self.profile.avatar.url)
+
+    @cached_property
+    def full_profile_url(self):
+        return urljoin(settings.BACKEND_SITE, str(self.get_absolute_url()))
