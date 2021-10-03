@@ -1,9 +1,11 @@
+from typing import List
+
 from django.conf import settings
-from django.db.models import Count, QuerySet, Prefetch
+from django.db.models import Count, QuerySet, Prefetch, Q
 
 from main.decorators import except_shell
 from .choices import ArticleStatus
-from .models import Category, Article, Comment
+from .models import Category, Article, Comment, ArticleTag
 
 
 class BlogService:
@@ -52,3 +54,13 @@ class BlogService:
     @staticmethod
     def is_article_slug_exist(title: str) -> bool:
         return Article.objects.filter(slug=Article.get_slug(title)).exists()
+
+    @staticmethod
+    def popular_tags() -> List[dict]:
+        tags = ArticleTag.objects.annotate(
+            articles_num=Count('tagged_article', filter=Q(
+                article_tags__status=ArticleStatus.ACTIVE
+            ))
+        ).values('name', 'articles_num').order_by('-articles_num')[:8]
+        tags = [tag for tag in tags if tag['articles_num'] > 0]
+        return tags
