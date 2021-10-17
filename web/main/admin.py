@@ -32,10 +32,6 @@ class CustomUserAdmin(UserAdmin):
     inlines = (EmailsInline, ProfileInline)
     list_select_related = ('profile',)
     readonly_fields = ('id',)
-
-    def email_verified(self, obj):
-        return obj.email_address[0].verified if obj.email_address else False
-    email_verified.boolean = True
     search_fields = ('first_name', 'last_name', 'email')
 
     fieldsets = (
@@ -52,6 +48,13 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
+
+    def get_inlines(self, request, obj):
+        return self.inlines if obj else (EmailsInline,)
+
+    def email_verified(self, obj):
+        return obj.email_address[0].verified if obj.email_address else False
+    email_verified.boolean = True
 
     def get_queryset(self, request):
         email_prefetch = UserService.email_address_prefetch()

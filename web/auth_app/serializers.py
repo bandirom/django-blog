@@ -24,9 +24,9 @@ error_messages = {
 
 
 class UserSignUpSerializer(serializers.Serializer):
-    first_name = serializers.CharField(min_length=2, max_length=100, required=True)
-    last_name = serializers.CharField(min_length=2, max_length=100, required=True)
-    email = serializers.EmailField(required=True)
+    first_name = serializers.CharField(min_length=2, max_length=100)
+    last_name = serializers.CharField(min_length=2, max_length=100)
+    email = serializers.EmailField()
     password1 = serializers.CharField(write_only=True, min_length=8)
     password2 = serializers.CharField(write_only=True, min_length=8)
     birthday = serializers.DateField(required=False, source='profile.birthday')

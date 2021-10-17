@@ -4,7 +4,7 @@ $(function () {
 });
 
 function writeMessage() {
-  jwt = localStorage.getItem('jwt')
+  let jwt = localStorage.getItem('jwt')
   let button = $(this)
   let chatProxy = button.data('chat')
   let userId = button.data('user_id')
