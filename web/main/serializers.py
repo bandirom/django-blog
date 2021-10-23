@@ -7,6 +7,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import serializers
 
+from user_profile.serializers import UserShortInfoSerializer
+
 User = get_user_model()
 
 
@@ -27,10 +29,4 @@ class JwtUserDataSerializer(serializers.Serializer):
 
     @property
     def data(self) -> dict:
-        if not self.user:
-            return {}
-        return {
-            'id': self.user.id,
-            'full_name': self.user.full_name(),
-            'avatar': self.user.avatar_url,
-        }
+        return UserShortInfoSerializer(self.user, context=self.context).data
