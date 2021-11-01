@@ -33,6 +33,9 @@ class CustomUserAdmin(UserAdmin):
     list_select_related = ('profile',)
     readonly_fields = ('id',)
 
+    def get_inlines(self, request, obj):
+        return self.inlines if obj else (EmailsInline,)
+
     def email_verified(self, obj):
         return obj.email_address[0].verified if obj.email_address else False
     email_verified.boolean = True
