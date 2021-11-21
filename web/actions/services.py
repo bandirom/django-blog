@@ -7,7 +7,6 @@ from main.decorators import except_shell
 from .models import LikeDislike, Follower, Action
 from blog.models import Article, Comment
 
-
 User = get_user_model()
 
 

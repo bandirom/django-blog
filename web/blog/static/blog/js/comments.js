@@ -46,7 +46,6 @@ function addLinks(pagination, next) {
 
 function renderComments(pagination, data){
   comments = data.results
-  console.log(comments)
   $.each(comments, function(i){
     var templateString = `
       <li>
@@ -69,25 +68,7 @@ function renderComments(pagination, data){
 				</div>
 				<!-- Comments reply -->
 				<ul class="comments-list reply-list">
-          {% for child in comment.child %}
-					<li>
-						<div class="comment-avatar"><img src="http://i9.photobucket.com/albums/a88/creaticode/avatar_2_zps7de12f8b.jpg" alt=""></div>
 
-						<div class="comment-box">
-							<div class="comment-head">
-								<h6 class="comment-name"><a href="#"> {{ child.author }}</a></h6>
-								<span>{{ child.updated | date_time }}</span>
-                <i class="fa fa-heart commentLike"
-                   data-id="{{ child.id }}" data-vote=1
-                   data-type="comment" data-href="{% url 'actions:like_dislike' %}">
-                </i>
-							</div>
-							<div class="comment-content">
-								{{ child.content }}
-							</div>
-						</div>
-					</li>
-          {% endfor %}
 				</ul>
 			</li>
 
