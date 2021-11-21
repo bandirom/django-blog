@@ -27,7 +27,7 @@ pyamqp==0.1.0.7
 django-cors-headers==3.8.0
 
 # For testing
-flake8==3.9.2
+flake8==4.0.1
 
 # Async Support
 uvicorn==0.15.0
