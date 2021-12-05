@@ -9,7 +9,7 @@ services:
   nginx:
     ports:
       - "9000:9000"
-  web:
+  blog:
     environment:
       <<: *variables
       SWAGGER_URL: http://localhost:9000
