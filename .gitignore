@@ -1,3 +1,4 @@
+node_modules
 web/static/
 Pip*
 Pipfile*
@@ -19,6 +20,7 @@ venv
 backup
 .crt
 .key
+build
 modules.txt
 !web/media/no-avatar.png
 !web/media/no-image-available.jpg

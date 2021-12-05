@@ -16,9 +16,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = int(os.environ.get('DEBUG', default=1))
+DEBUG = int(os.environ.get('DEBUG', 1))
 
-ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
 AUTH_USER_MODEL = 'main.User'
 
@@ -31,7 +31,7 @@ GITHUB_URL = os.environ.get('GITHUB_URL', 'https://github.com')
 FRONTEND_SITE = os.environ.get('FRONTEND_SITE', 'http://localhost:8008')
 BACKEND_SITE = os.environ.get('BACKEND_SITE', 'http://localhost:8008')
 
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://redis:6379')
 
 USE_HTTPS = int(os.environ.get('USE_HTTPS', 0))
 ENABLE_SENTRY = int(os.environ.get('ENABLE_SENTRY', 0))
@@ -43,16 +43,12 @@ INTERNAL_IPS = []
 
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
-ADMINS = [
-    ('Nazarii', 'bandirom@ukr.net'),
-]
-
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
 
 API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
 
-HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
+HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 SITE_ID = 1
 CHAT_API_URL = os.environ.get('CHAT_API_URL')
 CHAT_API_KEY = os.environ.get('CHAT_API_KEY')
@@ -166,7 +162,7 @@ ASGI_APPLICATION = 'src.asgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('SQL_ENGINE'),
+        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.postgresql'),
         'NAME': os.environ.get('POSTGRES_DB'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
@@ -194,7 +190,7 @@ AUTH_PASSWORD_VALIDATORS = [
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('REDIS_SOCKET'),
+        'LOCATION': os.environ.get('REDIS_SOCKET', 'unix:///redis_socket/redis-server.sock?db=1'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -264,15 +260,23 @@ if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
     from sentry_sdk import init
     from sentry_sdk.integrations.django import DjangoIntegration
+    from sentry_sdk.integrations.redis import RedisIntegration
+    from sentry_sdk.integrations.celery import CeleryIntegration
 
     init(
         dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
+        integrations=[
+            DjangoIntegration(),
+            RedisIntegration(),
+            CeleryIntegration(),
+        ],
 
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
         # We recommend adjusting this value in production.
-        traces_sample_rate=1.0,
+        traces_sample_rate=float(os.environ.get('SENTRY_TRACES_SAMPLE_RATE', '1.0')),
+        environment=os.environ.get('SENTRY_ENV', 'development'),
+        sample_rate=float(os.environ.get('SENTRY_SAMPLE_RATE', '1.0')),
 
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
