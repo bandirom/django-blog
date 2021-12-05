@@ -1,7 +1,7 @@
-FROM python:3.10.0-alpine as builder
+FROM python:3.9.6-alpine as builder
 
 RUN apk update && \
-    apk add --no-cache postgresql-dev gcc python3-dev musl-dev openssl libffi-dev openssl-dev \
+    apk add --no-cache build-base postgresql-dev gcc python3-dev musl-dev openssl libffi-dev openssl-dev \
     # install Pillow dependencies
     jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev harfbuzz-dev fribidi-dev
 
@@ -10,11 +10,11 @@ ARG TEMP_PATH=/usr/src/web
 # install dependencies
 COPY ./web/src/requirements  $TEMP_PATH/requirements
 
-RUN pip install --upgrade pip && \
+RUN pip install --upgrade pip setuptools && \
     pip install --no-warn-script-location --prefix=/install -r $TEMP_PATH/requirements/production.txt
 
 
-FROM python:3.10.0-alpine
+FROM python:3.9.6-alpine
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
