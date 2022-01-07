@@ -14,16 +14,14 @@ services:
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
     ports:
-      - 8008:8000
+      - "8008:8000"
     environment:
       <<: *variables
     env_file:
       - docker/dev/env/.env
       - docker/dev/env/.db.env
       - docker/prod/env/.data.env
-    depends_on:
-      - db
-      - redis
+    depends_on: [db, redis]
     restart: unless-stopped
     networks:
       - microservice_network
@@ -65,6 +63,8 @@ services:
       - redis_socket:/redis_socket
     networks:
       - separated_network
+    logging:
+      driver: none
     healthcheck:
       test: [ "CMD", "redis-cli","ping" ]
       interval: 1m20s
@@ -85,8 +85,7 @@ services:
       - docker/dev/env/.env
       - docker/dev/env/.db.env
       - docker/prod/env/.data.env
-    depends_on:
-      - redis
+    depends_on: [redis]
     restart: unless-stopped
     networks:
       - separated_network

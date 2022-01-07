@@ -1,0 +1,63 @@
+name: Tests
+
+env:
+  COVERAGE_THRESHOLD: 95
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build project
+        run: docker-compose build
+      - name: Migration check
+        run: docker-compose run --entrypoint="" --no-deps web python manage.py makemigrations --check
+      - name: Tests
+        run: docker-compose run --entrypoint="" -u root web coverage run manage.py test
+      - name: Coverage check
+        run: docker-compose run --entrypoint="" -u root web coverage report --fail-under=$COVERAGE_THRESHOLD
+
+    services:
+      postgres:
+        image: bandirom/django-template-db:latest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_PASSWORD: postgres
+  test_black:
+    runs-on: ubuntu-latest
+    steps:
+      - name: CheckOut Repo
+        uses: actions/checkout@v2
+      - name: Run the black
+        id: tests
+        run: |
+          pip install black
+          cd web
+          black . --check
+
+  test_flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: CheckOut Repo
+        uses: actions/checkout@v2
+      - name: Run the black
+        run: |
+          pip install flake8
+          cd web
+          flake8 .

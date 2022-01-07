@@ -1,4 +1,4 @@
-FROM python:3.9.6-alpine
+FROM python:3.9.9-alpine3.13
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -16,9 +16,9 @@ RUN apk update && \
     apk add --no-cache curl postgresql-dev gcc python3-dev musl-dev openssl libffi-dev openssl-dev build-base \
     # install Pillow dependencies
     jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev harfbuzz-dev fribidi-dev && \
-	  pip install --upgrade pip && \
+    pip install --upgrade pip setuptools && \
     addgroup -g $GID -S $USER && \
-	  adduser -S $USER -G $USER --disabled-password --uid "$UID"
+    adduser -S $USER -G $USER --disabled-password --uid "$UID"
 
 COPY ./web/src/requirements  ./requirements
 RUN pip install -r ./requirements/local.txt
@@ -28,8 +28,7 @@ COPY --chown=$USER:$USER ./web $APP_HOME
 
 RUN chmod +x /*.sh && \
     mkdir -p $APP_HOME/static /redis_socket && \
-    chown -R $USER:$USER $APP_HOME/static && \
-    chmod -R 777 /redis_socket && \
-    flake8 .
+    chown -R $USER:$USER $APP_HOME && \
+    chmod -R 777 /redis_socket
 
 USER $USER

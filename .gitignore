@@ -21,6 +21,7 @@ backup
 .crt
 .key
 build
+*.mo
 modules.txt
 !web/media/no-avatar.png
 !web/media/no-image-available.jpg

@@ -1,0 +1,62 @@
+[tool.black]
+line-length = 110
+exclude = "migrations"
+skip-string-normalization = true
+
+[tool.pytest.ini_options]
+norecursedirs = [
+  ".git ",
+  "node_modules",
+]
+python_files = "*test*.py"
+python_classes = "*Test*"
+DJANGO_SETTINGS_MODULE = "src.settings_prod"
+log_cli = "true"
+log_cli_level = "info"
+
+
+[tool.coverage.run]
+omit = [
+  "*/migrations/*",
+  "src/settings*",
+  "manage.py",
+  "*/apps.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "^\\s*@(abc.)?abstractmethod",
+  "^\\s*@(typing.)?overload",
+  "^\\s*if (typing.)?TYPE_CHECKING:",
+  "^\\s*if (settings.)?DEBUG:",
+  "pragma: no ?cover",
+  "def __repr__",
+  "def __str__",
+  "if self.debug:",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+]
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.mypy]
+python_version = "3.9"
+cache_dir = ".cache/mypy"
+disallow_untyped_defs = true
+plugins = [
+  "mypy_django_plugin.main",
+  "mypy_drf_plugin.main"
+]
+
+[[tool.mypy.overrides]]
+module = ["*.migrations.*", "__init__"]
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "src.settings_prod"
+ignore_missing_model_attributes = true
+
+[tool.doc8]
+max_line_length = 110

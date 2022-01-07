@@ -16,9 +16,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = int(os.environ.get('DEBUG', 1))
+DEBUG = int(os.environ.get('DEBUG', 0))
 
 ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+
+SITE_ID = 1
+USER_AVATAR_MAX_SIZE = 4.0
 
 AUTH_USER_MODEL = 'main.User'
 
@@ -27,6 +30,7 @@ SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD', 'tester26')
 
 MICROSERVICE_TITLE = os.environ.get('MICROSERVICE_TITLE', 'Template')
 MICROSERVICE_PREFIX = os.environ.get('MICROSERVICE_PREFIX', '')
+
 GITHUB_URL = os.environ.get('GITHUB_URL', 'https://github.com')
 FRONTEND_SITE = os.environ.get('FRONTEND_SITE', 'http://localhost:8008')
 BACKEND_SITE = os.environ.get('BACKEND_SITE', 'http://localhost:8008')
@@ -113,24 +117,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'defender.middleware.FailedLoginMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'microservice_request.permissions.HasApiKeyOrIsAuthenticated',
-    ),
+    'DEFAULT_PERMISSION_CLASSES': ('microservice_request.permissions.HasApiKeyOrIsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'main.auth_backend.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-    ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
 
 if ENABLE_RENDERING:
-    """ For build CMS using DRF """
+    """For build CMS using DRF"""
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer',
@@ -193,7 +192,7 @@ CACHES = {
         'LOCATION': os.environ.get('REDIS_SOCKET', 'unix:///redis_socket/redis-server.sock?db=1'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+        },
     }
 }
 
@@ -216,21 +215,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = f'{MICROSERVICE_PREFIX}/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
-LANGUAGES = (
-    ('en', _('English')),
-)
+LANGUAGES = (('en', _('English')),)
 
 SESSION_COOKIE_NAME = 'sessionid_blog'
 CSRF_COOKIE_NAME = 'csrftoken_blog'
 
-ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = LANGUAGE_CODE
-ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'English'
-ROSETTA_SHOW_AT_ADMIN_PANEL = True
-ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = False
+if DEBUG:
+    ROSETTA_SHOW_AT_ADMIN_PANEL = True
+
 
 if JAEGER_AGENT_HOST := os.environ.get('JAEGER_AGENT_HOST'):
     from jaeger_client import Config
@@ -270,15 +264,13 @@ if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
             RedisIntegration(),
             CeleryIntegration(),
         ],
-
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
         # We recommend adjusting this value in production.
         traces_sample_rate=float(os.environ.get('SENTRY_TRACES_SAMPLE_RATE', '1.0')),
         environment=os.environ.get('SENTRY_ENV', 'development'),
         sample_rate=float(os.environ.get('SENTRY_SAMPLE_RATE', '1.0')),
-
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True
+        send_default_pii=True,
     )
