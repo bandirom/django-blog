@@ -10,26 +10,24 @@ services:
       dockerfile: docker/dev/web/Dockerfile
     entrypoint: /entrypoint.sh
     volumes:
-      - ./web/:/usr/src/web/
+      - ./web/:/usr/src/web/:cached
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
     ports:
-      - 8008:8000
+      - "8008:8000"
     environment:
       <<: *variables
     env_file:
       - docker/dev/env/.env
       - docker/dev/env/.db.env
       - docker/prod/env/.data.env
-    depends_on:
-      - db
-      - redis
+    depends_on: [db, redis]
     restart: unless-stopped
     networks:
       - microservice_network
       - separated_network
     extra_hosts:
-      DOCKER_GATEWAY_HOST: 172.17.0.1  # Linux OS get access from docker container to localhost
+      - "docker-gateway-host:172.17.0.1"  # Linux OS get access from docker container to localhost
       # host.docker.internal - For docker in Windows. No other action is required.
       # If You need to connect to PostgreSql in localhost, just use host.docker.internal instead of localhost
     healthcheck:
@@ -65,6 +63,8 @@ services:
       - redis_socket:/redis_socket
     networks:
       - separated_network
+    logging:
+      driver: none
     healthcheck:
       test: [ "CMD", "redis-cli","ping" ]
       interval: 1m20s
@@ -74,9 +74,9 @@ services:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
-    command: celery -A src worker -l info -Q celery
+    command: celery -A src worker -l info
     volumes:
-      - ./web/:/usr/src/web/
+      - ./web/:/usr/src/web/:cached
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
     environment:
@@ -85,12 +85,12 @@ services:
       - docker/dev/env/.env
       - docker/dev/env/.db.env
       - docker/prod/env/.data.env
-    depends_on:
-      - redis
+    depends_on: [redis]
     restart: unless-stopped
     networks:
       - separated_network
-
+    extra_hosts:
+      - "docker-gateway-host:172.17.0.1"
 
 volumes:
   postgres_data:

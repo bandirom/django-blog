@@ -22,7 +22,7 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-    def full_name(self):
+    def full_name(self) -> str:
         return super().get_full_name()
 
     def email_verified(self):

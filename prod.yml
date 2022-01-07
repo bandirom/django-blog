@@ -2,13 +2,15 @@ version: '3.7'
 
 services:
   nginx:
+    build:
+      context: .
+      dockerfile: docker/prod/nginx/Dockerfile
+    image: bandirom/django-template-nginx:${DOCKER_TAG:-latest}
     volumes:
       - static_volume:/home/ubuntu/web/static
       - media_volume:/home/ubuntu/web/media
-      - ./logs/nginx:/var/log/nginx
       - gunicorn_socket:/gunicorn_socket
-    depends_on:
-      - web
+    depends_on: [web]
     restart: always
     healthcheck:
       test: service nginx status || exit 1
@@ -17,10 +19,13 @@ services:
       retries: 3
     networks:
       - microservice_network
+    extra_hosts:
+      - "docker-gateway-host:172.17.0.1"
   web:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
+    image: bandirom/django-template:${DOCKER_TAG:-latest}
     entrypoint: /entrypoint.sh
     volumes:
       - static_volume:/home/ubuntu/web/static
@@ -28,7 +33,7 @@ services:
       - redis_socket:/redis_socket
       - gunicorn_socket:/gunicorn_socket
       - postgres_socket:/postgres_socket
-      - ./logs/django:/home/ubuntu/web/logs
+      - ./logs/django:/home/ubuntu/web/logs:delegated
     expose:
       - 8000
     environment:
@@ -38,9 +43,7 @@ services:
       - docker/prod/env/.db.env
       - docker/prod/env/.gunicorn.env
       - docker/prod/env/.data.env
-    depends_on:
-      - db
-      - redis
+    depends_on: [db, redis]
     restart: always
     networks:
       - microservice_network
@@ -50,26 +53,31 @@ services:
       interval: 1m30s
       timeout: 3s
       retries: 3
+    extra_hosts:
+      - "docker-gateway-host:172.17.0.1"
   celery:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    command: celery -A src worker -l info -Q celery
+    image: bandirom/django-template:${DOCKER_TAG:-latest}
+    command: celery -A src worker -l info
     env_file:
       - docker/prod/env/.env
       - docker/prod/env/.db.env
       - docker/prod/env/.data.env
-    depends_on:
-      - redis
+    depends_on: [redis]
     restart: always
     volumes:
       - redis_socket:/redis_socket
     networks:
       - separated_network
+    extra_hosts:
+      - "docker-gateway-host:172.17.0.1"
   db:
     build:
       context: .
       dockerfile: docker/prod/db/Dockerfile
+    image: bandirom/django-template-db:${DOCKER_TAG:-latest}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
       - postgres_socket:/postgres_socket
@@ -87,12 +95,15 @@ services:
     build:
       context: .
       dockerfile: docker/prod/redis/Dockerfile
+    image: bandirom/django-template-redis:${DOCKER_TAG:-latest}
     restart: always
     volumes:
       - redis_data:/data
       - redis_socket:/redis_socket
     networks:
       - separated_network
+    logging:
+      driver: none
     healthcheck:
       test: [ "CMD", "redis-cli","ping" ]
       interval: 1m20s
