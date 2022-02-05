@@ -22,6 +22,7 @@ backup
 .key
 build
 *.mo
+coverage.xml
 modules.txt
 !web/media/no-avatar.png
 !web/media/no-image-available.jpg
