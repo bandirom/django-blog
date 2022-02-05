@@ -22,4 +22,5 @@ backup
 .key
 build
 *.mo
+coverage.xml
 modules.txt
