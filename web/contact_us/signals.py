@@ -1,8 +1,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.conf import settings
 
-from auth_app.tasks import send_information_email
+from main.tasks import send_information_email
 from .models import Feedback
 from .services import ContactUsService
 
