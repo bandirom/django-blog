@@ -4,7 +4,6 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse_lazy
 
-from . import managers
 from .choices import ArticleStatus
 
 User = get_user_model()
@@ -52,8 +51,7 @@ class Article(models.Model):
         return super().save(**kwargs)
 
     def get_absolute_url(self):
-        url = 'blog:post-detail'
-        return reverse_lazy(url, kwargs={'slug': self.slug})
+        return reverse_lazy('blog:post-detail', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = _('Article')
