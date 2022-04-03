@@ -20,11 +20,11 @@ class LikeDislikeSerializer(serializers.Serializer):
     vote = serializers.ChoiceField(choices=LikeStatus.choices)
 
     def save(self):
-        vote = self.validated_data.get('vote')
+        vote = self.validated_dat['vote']
 
         icon_status = LikeIconStatus.LIKED if vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
-        model = self.validated_data.get('model')
-        object_id = self.validated_data.get('object_id')
+        model = self.validated_data['model']
+        object_id = self.validated_data['object_id']
         user = self.context['request'].user
         if model == LikeObjChoice.ARTICLE:
             obj: Article = BlogService.get_article(article_id=object_id)

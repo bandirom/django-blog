@@ -19,7 +19,7 @@ class ActionsService:
         return User.objects.get(id=user_id)
 
     @staticmethod
-    def get_content_object(model_object):
+    def get_content_object(model_object) -> ContentType:
         return ContentType.objects.get_for_model(model_object)
 
     @staticmethod
