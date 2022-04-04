@@ -53,7 +53,7 @@ services:
     volumes:
 #      - ./docker/prod/db/pg.conf:/etc/postgresql/postgresql.conf
       - postgres_data:/var/lib/postgresql/data/
-      - postgres_socket:/var/run/postgresql/
+#      - postgres_socket:/var/run/postgresql/
     env_file:
       - docker/prod/env/.db.env
     restart: always
