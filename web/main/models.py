@@ -1,6 +1,7 @@
 from typing import TypeVar
+from urllib.parse import urljoin
 
-from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.functional import cached_property
