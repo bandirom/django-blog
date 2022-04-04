@@ -9,7 +9,7 @@ threads: int = int(environ.get('GUNICORN_THREADS', 1))
 
 worker_class: str = 'uvicorn.workers.UvicornWorker'
 
-loglevel: str = 'info'
+loglevel: str = 'debug'
 
 accesslog = None  # environ.get('APP_HOME', '') + '/logs/gunicorn_access.log'
 errorlog = '-'  # environ.get('APP_HOME', '') + '/logs/gunicorn_errors.log'

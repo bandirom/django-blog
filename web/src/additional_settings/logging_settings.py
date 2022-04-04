@@ -32,21 +32,21 @@ LOGGING = {
             'formatter': 'verbose',
         },
         'django.server': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'django.server',
         },
     },
     'loggers': {
-        'django': {'level': 'INFO', 'propagate': True},
+        'django': {'level': 'DEBUG', 'propagate': True},
         'django.request': {
             'handlers': ['django.server'],
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'propagate': False,
         },
         'django.server': {
             'handlers': ['django.server'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': False,
         },
     },
