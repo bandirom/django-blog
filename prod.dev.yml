@@ -2,10 +2,10 @@ version: "3.7"
 
 x-variables: &variables
   ENV_STAGE: dev
-  USE_HTTPS: 1
+  USE_HTTPS: 0
 
 services:
-  web:
+  blog:
     ports:
       - "9005:8000"
     environment:
