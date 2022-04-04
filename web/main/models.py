@@ -1,6 +1,6 @@
-from urllib.parse import urljoin
+from typing import TypeVar
 
-from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.functional import cached_property
@@ -11,6 +11,8 @@ from rest_framework.reverse import reverse_lazy
 from blog.choices import ArticleStatus
 from .managers import UserManager
 
+UserType = TypeVar('UserType', bound='User')
+
 
 class User(AbstractUser):
 
@@ -18,16 +20,17 @@ class User(AbstractUser):
     email = models.EmailField(_('Email address'), unique=True)
     phone_number = PhoneNumberField(null=True, blank=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    USERNAME_FIELD: str = 'email'
+    REQUIRED_FIELDS: list[str] = []
     following = models.ManyToManyField('self', through='actions.Follower', symmetrical=False, related_name='followers')
+
     objects = UserManager()
 
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
 
     def full_name(self) -> str:

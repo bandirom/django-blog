@@ -14,7 +14,7 @@ from .additional_settings.smtp_settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'L7HTf4$@jQXj1sRSrOqVokthx1vgd1Zdq7H&PeHPLKXD')
 
 DEBUG = int(os.environ.get('DEBUG', 0))
 
@@ -43,7 +43,7 @@ ENABLE_SILK = int(os.environ.get('ENABLE_SILK', 0))
 ENABLE_DEBUG_TOOLBAR = int(os.environ.get('ENABLE_DEBUG_TOOLBAR', 0))
 ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 0))
 
-INTERNAL_IPS = []
+INTERNAL_IPS: list[str] = []
 
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
