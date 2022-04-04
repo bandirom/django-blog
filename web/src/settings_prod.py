@@ -5,6 +5,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://localhost:8000',
     'http://localhost:3000',
+    'https://blog.jollymanager.com',
+    'http://blog.jollymanager.com',
 ]
 
 X_FRAME_OPTIONS = 'DENY'
