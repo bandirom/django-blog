@@ -9,6 +9,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://blog.jollymanager.com',
 ]
 
+CSRF_TRUSTED_ORIGINS = ['https://blog.jollymanager.com']
+
 X_FRAME_OPTIONS = 'DENY'
 
 # Only via HTTPS
