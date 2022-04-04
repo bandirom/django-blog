@@ -1,7 +1,9 @@
 import re
 
+from dj_rest_auth.jwt_auth import set_jwt_refresh_cookie
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
 from rest_framework.status import HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_200_OK
@@ -116,3 +118,28 @@ def full_logout(request):
         response.data = {"detail": message}
         response.status_code = HTTP_200_OK
     return response
+
+
+def set_jwt_access_cookie(response, access_token):
+    from rest_framework_simplejwt.settings import api_settings as jwt_settings
+    cookie_name = getattr(settings, 'JWT_AUTH_COOKIE', None)
+    access_token_expiration = (timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
+    cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
+    cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
+    cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
+
+    if cookie_name:
+        response.set_cookie(
+            cookie_name,
+            access_token,
+            expires=access_token_expiration,
+            secure=cookie_secure,
+            httponly=cookie_httponly,
+            samesite=cookie_samesite,
+            domain=getattr(settings, 'JWT_COOKIE_DOMAIN', None)
+        )
+
+
+def set_jwt_cookies(response, access_token, refresh_token):
+    set_jwt_access_cookie(response, access_token)
+    set_jwt_refresh_cookie(response, refresh_token)
