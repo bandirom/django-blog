@@ -1,10 +1,9 @@
 from django.conf import settings
-from rest_framework.test import APITestCase
 from rest_framework.status import HTTP_200_OK
+from rest_framework.test import APITestCase
 
 
 class MiddlewareTest(APITestCase):
-
     def test_health_check_middleware(self):
         url = settings.HEALTH_CHECK_URL
         response = self.client.get(url)

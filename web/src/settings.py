@@ -2,11 +2,11 @@ import os
 
 from django.utils.translation import gettext_lazy as _
 
-from .additional_settings.defender_settings import *
-from .additional_settings.swagger_settings import *
 from .additional_settings.cacheops_settings import *
-from .additional_settings.logging_settings import *
 from .additional_settings.celery_settings import *
+from .additional_settings.defender_settings import *
+from .additional_settings.logging_settings import *
+from .additional_settings.swagger_settings import *
 from .additional_settings.allauth_settings import *
 from .additional_settings.jwt_settings import *
 from .additional_settings.summernote_settings import *
@@ -14,11 +14,14 @@ from .additional_settings.smtp_settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'L7HTf4$@jQXj1sRSrOqVokthx1vgd1Zdq7H&PeHPLKXD')
 
-DEBUG = int(os.environ.get('DEBUG', default=1))
+DEBUG = int(os.environ.get('DEBUG', 0))
 
-ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+
+SITE_ID = 1
+USER_AVATAR_MAX_SIZE = 4.0
 
 AUTH_USER_MODEL = 'main.User'
 
@@ -27,11 +30,12 @@ SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD', 'tester26')
 
 MICROSERVICE_TITLE = os.environ.get('MICROSERVICE_TITLE', 'Template')
 MICROSERVICE_PREFIX = os.environ.get('MICROSERVICE_PREFIX', '')
+
 GITHUB_URL = os.environ.get('GITHUB_URL', 'https://github.com')
 FRONTEND_SITE = os.environ.get('FRONTEND_SITE', 'http://localhost:8008')
 BACKEND_SITE = os.environ.get('BACKEND_SITE', 'http://localhost:8008')
 
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://redis:6379')
 
 USE_HTTPS = int(os.environ.get('USE_HTTPS', 0))
 ENABLE_SENTRY = int(os.environ.get('ENABLE_SENTRY', 0))
@@ -39,20 +43,16 @@ ENABLE_SILK = int(os.environ.get('ENABLE_SILK', 0))
 ENABLE_DEBUG_TOOLBAR = int(os.environ.get('ENABLE_DEBUG_TOOLBAR', 0))
 ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 0))
 
-INTERNAL_IPS = []
+INTERNAL_IPS: list[str] = []
 
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
-
-ADMINS = [
-    ('Nazarii', 'bandirom@ukr.net'),
-]
 
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
 
 API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
 
-HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL')
+HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 SITE_ID = 1
 CHAT_API_URL = os.environ.get('CHAT_API_URL')
 CHAT_API_KEY = os.environ.get('CHAT_API_KEY')
@@ -117,24 +117,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'defender.middleware.FailedLoginMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'microservice_request.permissions.HasApiKeyOrIsAuthenticated',
-    ),
+    'DEFAULT_PERMISSION_CLASSES': ('microservice_request.permissions.HasApiKeyOrIsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'main.auth_backend.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-    ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
 
 if ENABLE_RENDERING:
-    """ For build CMS using DRF """
+    """For build CMS using DRF"""
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer',
@@ -166,7 +161,7 @@ ASGI_APPLICATION = 'src.asgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('SQL_ENGINE'),
+        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.postgresql'),
         'NAME': os.environ.get('POSTGRES_DB'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
@@ -194,10 +189,10 @@ AUTH_PASSWORD_VALIDATORS = [
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('REDIS_SOCKET'),
+        'LOCATION': os.environ.get('REDIS_SOCKET', 'unix:///redis_socket/redis-server.sock?db=1'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+        },
     }
 }
 
@@ -220,61 +215,37 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = f'{MICROSERVICE_PREFIX}/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
-LANGUAGES = (
-    ('en', _('English')),
-)
+LANGUAGES = (('en', _('English')),)
 
 SESSION_COOKIE_NAME = 'sessionid_blog'
 CSRF_COOKIE_NAME = 'csrftoken_blog'
 
-ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = LANGUAGE_CODE
-ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'English'
-ROSETTA_SHOW_AT_ADMIN_PANEL = True
-ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = False
-
-if JAEGER_AGENT_HOST := os.environ.get('JAEGER_AGENT_HOST'):
-    from jaeger_client import Config
-    from jaeger_client.config import DEFAULT_REPORTING_PORT
-    from django_opentracing import DjangoTracing
-
-    """If you don't need to trace all requests, comment middleware and set OPENTRACING_TRACE_ALL = False
-        More information https://github.com/opentracing-contrib/python-django/#tracing-individual-requests
-    """
-    MIDDLEWARE.insert(0, 'django_opentracing.OpenTracingMiddleware')
-    OPENTRACING_TRACE_ALL = True
-    tracer = Config(
-        config={
-            'sampler': {'type': 'const', 'param': 1},
-            'local_agent': {
-                'reporting_port': os.environ.get('JAEGER_AGENT_PORT', DEFAULT_REPORTING_PORT),
-                'reporting_host': JAEGER_AGENT_HOST,
-            },
-            'logging': int(os.environ.get('JAEGER_LOGGING', False)),
-        },
-        service_name=MICROSERVICE_TITLE,
-        validate=True,
-    ).initialize_tracer()
-    OPENTRACING_TRACING = DjangoTracing(tracer)
+if DEBUG:
+    ROSETTA_SHOW_AT_ADMIN_PANEL = True
 
 if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
     from sentry_sdk import init
+    from sentry_sdk.integrations.celery import CeleryIntegration
     from sentry_sdk.integrations.django import DjangoIntegration
+    from sentry_sdk.integrations.redis import RedisIntegration
 
     init(
         dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-
+        integrations=[
+            DjangoIntegration(),
+            RedisIntegration(),
+            CeleryIntegration(),
+        ],
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
         # We recommend adjusting this value in production.
-        traces_sample_rate=1.0,
-
+        traces_sample_rate=float(os.environ.get('SENTRY_TRACES_SAMPLE_RATE', '1.0')),
+        environment=os.environ.get('SENTRY_ENV', 'development'),
+        sample_rate=float(os.environ.get('SENTRY_SAMPLE_RATE', '1.0')),
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True
+        send_default_pii=True,
     )

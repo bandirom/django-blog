@@ -1,5 +1,6 @@
-from typing import Union
-from os import environ
+from typing import Optional, Union
+
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.utils.translation import activate
@@ -10,9 +11,13 @@ from src.celery import app
 
 @app.task(name='email.send_information_email')
 def send_information_email(
-    subject: str, template_name: str, context: dict, to_email: Union[list[str], str],
-    letter_language: str = 'en', **kwargs
-):
+    subject: str,
+    template_name: str,
+    context: dict,
+    to_email: Union[list[str], str],
+    letter_language: str = 'en',
+    **kwargs: Optional[any],
+) -> bool:
     """
     :param subject: email subject
     :param template_name: template path to email template
@@ -34,12 +39,12 @@ def send_information_email(
     html_email: str = loader.render_to_string(template_name, context)
     email_message.attach_alternative(html_email, 'text/html')
     if file_path := kwargs.get('file_path'):
-        file_path = environ.get('APP_HOME', environ.get('HOME')) + file_path
+        file_path = settings.BASE_DIR + file_path
         email_message.attach_file(file_path, kwargs.get('mimetype'))
-    send_email(email_message)
+    return send_email(email_message)
 
 
 @smtp_shell
-def send_email(email_message):
+def send_email(email_message: EmailMultiAlternatives) -> bool:
     email_message.send()
     return True

@@ -1,37 +1,19 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.test.client import RequestFactory
 
 from main import utils
 
 
 class UtilsTestCase(TestCase):
-
-    def test_find_by_key(self):
-        data = {
-            'tes': 't',
-            'dev': 'elop',
-            'dict': {
-                'AWS': {'founder': 'Jeffrey Preston', 'date': 2006},
-                'Tesla': {'founder': 'Elon Musk', 'date': 2003}
-            },
-        }
-        self.assertEqual(utils.find_by_key(data, 'tes'), 't')
-        self.assertEqual(utils.find_by_key(data, 'AWS'), data['dict']['AWS'])
-        self.assertEqual(utils.find_by_key(data, 'founder'), data['dict']['AWS']['founder'])
-        data = {
-            'list_dict': [
-                {'clouds': ['AWS', 'GCP', 'Azure', 'Digital Ocean']},
-                {'brands': ['Samsung', 'Tesla', 'Renault']},
-            ],
-        }
-        self.assertEqual(utils.find_by_key(data, 'clouds'), data['list_dict'][0]['clouds'])
-
     def test_parse_str_with_space(self):
         str1 = 'We are the champions'
         self.assertEqual(utils.parse_str_with_space(str1), str1)
         str2 = ' You are looking great   '
         self.assertEqual(utils.parse_str_with_space(str2), 'You are looking great')
         str3 = ' This    double  life you    lead is   eating you   up from  within    '
-        self.assertEqual(utils.parse_str_with_space(str3), 'This double life you lead is eating you up from within')
+        self.assertEqual(
+            utils.parse_str_with_space(str3), 'This double life you lead is eating you up from within'
+        )
 
     def test_find_dict_in_list(self):
         list_1 = [
@@ -62,3 +44,19 @@ class UtilsTestCase(TestCase):
         self.assertEqual(result, list_1[3])
         result = utils.find_dict_in_list(target=list_1, dict_key='key2', lookup_value=False)
         self.assertEqual(result, list_1[2])
+
+    @override_settings(
+        LANGUAGES=(
+            ('en', 'English'),
+            ('fr', 'French'),
+            ('uk', 'Ukrainian'),
+        )
+    )
+    def test_supported_languages(self):
+        factory = RequestFactory()
+        request = factory.get('/')
+        self.assertEqual(utils.get_supported_user_language(request), 'en')
+        request.META['HTTP_ACCEPT_LANGUAGE'] = 'uk'
+        self.assertEqual(utils.get_supported_user_language(request), 'uk')
+        request.META['HTTP_ACCEPT_LANGUAGE'] = 'ru;q=0.9,en-US;q=0.8,en;q=0.7,ru-RU;q=0.6'
+        self.assertEqual(utils.get_supported_user_language(request), 'en')

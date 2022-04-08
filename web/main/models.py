@@ -1,3 +1,4 @@
+from typing import TypeVar
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -11,6 +12,8 @@ from rest_framework.reverse import reverse_lazy
 from blog.choices import ArticleStatus
 from .managers import UserManager
 
+UserType = TypeVar('UserType', bound='User')
+
 
 class User(AbstractUser):
 
@@ -18,19 +21,20 @@ class User(AbstractUser):
     email = models.EmailField(_('Email address'), unique=True)
     phone_number = PhoneNumberField(null=True, blank=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    USERNAME_FIELD: str = 'email'
+    REQUIRED_FIELDS: list[str] = []
     following = models.ManyToManyField('self', through='actions.Follower', symmetrical=False, related_name='followers')
+
     objects = UserManager()
 
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
 
-    def full_name(self):
+    def full_name(self) -> str:
         return super().get_full_name()
 
     def email_verified(self) -> bool:
