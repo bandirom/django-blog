@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "blogchart.fullname" . }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+  labels:
+    {{- include "blogchart.labels" . | nindent 4 }}
+spec:
+{{- if .Values.persistentVolumeClaim.storageClassName }}
+  storageClassName: {{ .Values.persistentVolumeClaim.storageClassName }}
+{{- end }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.storageSize }}

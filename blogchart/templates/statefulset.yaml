@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "blogchart.fullname" . }}
+  labels:
+    {{- include "blogchart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  serviceName: {{ include "blogchart.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "blogchart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "blogchart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "blogchart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SECRET_KEY
+              value: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}
+            - name: HEALTH_CHECK_URL
+              value: {{ .Values.project.healthCheckUrl }}
+            - name: REDIS_URL
+              value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
+            - name: POSTGRES_HOST
+              value: {{ default (printf "%s-postgresql" .Release.Name) .Values.postgresql.host | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+            - name: POSTGRES_USER
+              value: {{ .Values.postgresql.username | quote }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 5
+            httpGet:
+              path: {{ .Values.healthCheckUrl }}
+              port: http
+#              httpHeaders:
+#                - name: Host
+#                  value: {{ (split "," .Values.siteDomains)._0 | quote }}
+          readinessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 5
+            httpGet:
+              path: {{ .Values.healthCheckUrl }}
+              port: http
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: {{ (printf "%s-media-storage" .Release.Name) }}
+              mountPath: "/web/media"
+      volumes:
+        - name: {{ (printf "%s-media-storage" .Release.Name) }}
+          persistentVolumeClaim:
+            claimName: {{ include "blogchart.fullname" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
