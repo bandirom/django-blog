@@ -44,12 +44,19 @@ spec:
             - name: POSTGRES_HOST
               value: {{ default (printf "%s-postgresql" .Release.Name) .Values.postgresql.host | quote }}
             - name: POSTGRES_DB
-              value: {{ .Values.postgresql.postgresqlDatabase | quote }}
+              value: {{ .Values.postgresql.auth.database | quote }}
             - name: POSTGRES_USER
-              value: {{ .Values.postgresql.username | quote }}
+              value: {{ .Values.postgresql.auth.username | quote }}
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-postgresql" .Release.Name) .Values.postgresql.secret | quote }}
+                  key: password
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8000
               protocol: TCP
           livenessProbe:
             initialDelaySeconds: 20
@@ -58,9 +65,6 @@ spec:
             httpGet:
               path: {{ .Values.healthCheckUrl }}
               port: http
-#              httpHeaders:
-#                - name: Host
-#                  value: {{ (split "," .Values.siteDomains)._0 | quote }}
           readinessProbe:
             initialDelaySeconds: 20
             periodSeconds: 60

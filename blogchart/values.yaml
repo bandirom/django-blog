@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: bandirom/blog
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -75,6 +75,14 @@ affinity: {}
 persistentVolumeClaim:
   storageClassName: ""
   storageSize: 3Gi
+
+postgresql:
+  enabled: true
+  auth:
+    database: "blog-db"
+    username: "blog"
+  secret: false
+  host: false
 
 
 redis:
