@@ -86,5 +86,7 @@ project:
   postgresUser: "postgres"
   healthCheckUrl: "/application/health/"
   microserviceName: "Blog Microservice"
+
 celery:
-  brokerUrl:
+  command: "celery -A src worker -l info"
+  entrypoint: ""
