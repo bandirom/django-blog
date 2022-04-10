@@ -89,8 +89,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: {{ .Values.celery.command }}
-          entrypoint: {{ .Values.celery.entrypoint }}
+          args:
+          {{- range .Values.celery.args }}
+            - {{ . | toYaml | indent 4 | trim }}
+          {{- end }}
+          command:
+            - ""
           env:
             - name: SECRET_KEY
               value: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}

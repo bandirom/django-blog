@@ -88,5 +88,10 @@ project:
   microserviceName: "Blog Microservice"
 
 celery:
-  command: "celery -A src worker -l info"
-  entrypoint: ""
+  args:
+    - "celery"
+    - "-A"
+    - "src"
+    - "worker"
+    - "-l"
+    - "info"
