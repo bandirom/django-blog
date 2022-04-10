@@ -39,21 +39,27 @@ spec:
               value: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}
             - name: HEALTH_CHECK_URL
               value: {{ .Values.project.healthCheckUrl }}
+            - name: MICROSERVICE_TITLE
+              value: {{ .Values.project.microserviceName }}
             - name: REDIS_URL
+              value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
+            - name: CELERY_BROKER_URL
+              value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
+            - name: CELERY_RESULT_BACKEND
               value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
             - name: POSTGRES_HOST
               value: {{ default (printf "%s-postgresql" .Release.Name) .Values.postgresql.host | quote }}
             - name: POSTGRES_DB
               value: {{ .Values.postgresql.auth.database | quote }}
             - name: POSTGRES_USER
-              value: {{ .Values.postgresql.auth.username | quote }}
+              value: {{ .Values.project.postgresUser | quote }}
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ default (printf "%s-postgresql" .Release.Name) .Values.postgresql.secret | quote }}
-                  key: password
+                  name: {{ .Release.Name }}-postgresql
+                  key: postgres-password
           ports:
             - name: http
               containerPort: 8000
