@@ -6,7 +6,7 @@ register = template.Library()
 
 
 @register.simple_tag
-def microservice_title():
+def microservice_title() -> str:
     return settings.MICROSERVICE_TITLE
 
 
@@ -23,5 +23,5 @@ def date(value: str):
 
 
 @register.simple_tag
-def timezone_cookie_name():
+def timezone_cookie_name() -> str:
     return getattr(settings, 'TIMEZONE_COOKIE_NAME', 'timezone')

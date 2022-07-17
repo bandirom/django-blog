@@ -14,7 +14,7 @@ from .additional_settings.smtp_settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'L7HTf4$@jQXj1sRSrOqVokthx1vgd1Zdq7H&PeHPLKXD')
 
 DEBUG = int(os.environ.get('DEBUG', 0))
 
@@ -39,9 +39,8 @@ USE_HTTPS = int(os.environ.get('USE_HTTPS', 0))
 ENABLE_SENTRY = int(os.environ.get('ENABLE_SENTRY', 0))
 ENABLE_SILK = int(os.environ.get('ENABLE_SILK', 0))
 ENABLE_DEBUG_TOOLBAR = int(os.environ.get('ENABLE_DEBUG_TOOLBAR', 0))
-ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 0))
 
-INTERNAL_IPS = []
+INTERNAL_IPS: list[str] = []
 
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
@@ -114,12 +113,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
 
-if ENABLE_RENDERING:
-    """For build CMS using DRF"""
-    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.TemplateHTMLRenderer',
-    )
 
 ROOT_URLCONF = 'src.urls'
 
@@ -192,9 +185,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-TIMEZONE_COOKIE_NAME = 'timezone'
-TIMEZONE_COOKIE_AGE = 15552000  # 60*60*24*180
-
 STATIC_URL = f'{MICROSERVICE_PREFIX}/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -208,8 +198,8 @@ LANGUAGES = (('en', _('English')),)
 SESSION_COOKIE_NAME = 'sessionid'
 CSRF_COOKIE_NAME = 'csrftoken'
 
-if DEBUG:
-    ROSETTA_SHOW_AT_ADMIN_PANEL = True
+ROSETTA_SHOW_AT_ADMIN_PANEL = DEBUG
+
 
 if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
