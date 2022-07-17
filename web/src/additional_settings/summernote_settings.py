@@ -20,11 +20,10 @@ SUMMERNOTE_CONFIG = {
         'codemirror': {
             'mode': 'htmlmixed',
             'lineNumbers': 'true',
-
         },
         'attachment_absolute_uri': True,
         'attachment_require_authentication': True,
         # 'attachment_model': 'main.models.Attachment',
         # 'attachment_upload_to': '%Y-%m-%dT',
-    }
+    },
 }

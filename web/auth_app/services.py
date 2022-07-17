@@ -4,37 +4,22 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
-from rest_framework.status import HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .utils import captcha_request, get_client_ip
 from main.decorators import except_shell
 
 User = get_user_model()
 
 
 class AuthAppService:
-
     @staticmethod
     def validate_email(email):
         re_email = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,30})+$'
         if not re.search(re_email, email):
             return False, _("Entered email address is not valid")
         return True, ''
-
-    @staticmethod
-    def validate_captcha(captcha, request):
-        url = "https://google.com/recaptcha/api/siteverify"
-        params = {
-            'secret': settings.GOOGLE_CAPTCHA_SECRET_KEY,
-            'response': captcha,
-            'remoteip': get_client_ip(request)
-        }
-        response = captcha_request(url=url, params=params)
-        data = response.json()
-        status = data.get("success", False)
-        return status, data
 
     @staticmethod
     @except_shell((User.DoesNotExist,))

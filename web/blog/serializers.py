@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Category, Article, Comment
+from .models import Article, Category, Comment
 
 User = get_user_model()
 
@@ -13,7 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Comment
         fields = ('id', 'user', 'author', 'content', 'updated')
@@ -44,4 +43,7 @@ class FullArticleSerializer(ArticleSerializer):
     comments = CommentSerializer(source='comment_set', many=True)
 
     class Meta(ArticleSerializer.Meta):
-        fields = ArticleSerializer.Meta.fields + ('content', 'comments',)
+        fields = ArticleSerializer.Meta.fields + (
+            'content',
+            'comments',
+        )

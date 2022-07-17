@@ -1,10 +1,7 @@
 import logging
-from django.contrib.auth import logout as django_logout
 
 from dj_rest_auth import views as auth_views
-from dj_rest_auth.registration.views import (
-    VerifyEmailView as _VerifyEmailView,
-)
+from django.contrib.auth import logout as django_logout
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 
@@ -25,16 +22,6 @@ class SignUpView(CreateAPIView):
 
 class PasswordResetView(auth_views.PasswordResetView):
     serializer_class = serializers.PasswordResetSerializer
-
-
-class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
-    serializer_class = serializers.PasswordResetConfirmSerializer
-
-
-class VerifyEmailView(_VerifyEmailView):
-
-    def get_serializer(self, *args, **kwargs):
-        return serializers.VerifyEmailSerializer(*args, **kwargs)
 
 
 class LogoutView(auth_views.LogoutView):

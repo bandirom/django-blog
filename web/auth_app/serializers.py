@@ -1,14 +1,12 @@
-from allauth.account.adapter import get_adapter
-from allauth.account.utils import setup_user_email
-from allauth.utils import email_address_exists
 from dj_rest_auth import serializers as auth_serializers
-from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from main.services import CeleryService
+
 from .forms import PassResetForm
 from .services import AuthAppService
 
@@ -28,14 +26,12 @@ class UserSignUpSerializer(serializers.Serializer):
     password1 = serializers.CharField(write_only=True, min_length=8)
     password2 = serializers.CharField(write_only=True, min_length=8)
 
-    def validate_password1(self, password):
-        return get_adapter().clean_password(password)
+    def validate_password1(self, password: str):
+        validate_password(password)
+        return password
 
-    def validate_email(self, email) -> str:
-        status, msg = AuthAppService.validate_email(email)
-        if not status:
-            raise serializers.ValidationError(msg)
-        if email and email_address_exists(email):
+    def validate_email(self, email: str) -> str:
+        if "email_address_exists(email)":
             raise serializers.ValidationError(_("User is already registered with this e-mail address."))
         return email
 
@@ -51,35 +47,25 @@ class UserSignUpSerializer(serializers.Serializer):
         if self.validated_data.get('captcha'):
             del self.validated_data['captcha']
         user = User.objects.create(**self.validated_data, is_active=False)
-        setup_user_email(request=request, user=user, addresses=[])
         # CeleryService.send_email_confirm(user)
         return user
 
 
-class LoginSerializer(auth_serializers.LoginSerializer):
-    username = None
+class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
+    password = serializers.CharField()
 
-    def validate(self, attrs):
+    def authenticate(self, **kwargs):
+        return authenticate(self.context['request'], **kwargs)
+
+    def validate(self, attrs: dict):
         email = attrs.get('email')
         password = attrs.get('password')
-        user = self._validate_email(email, password)
-        if user:
-            if not user.is_active:
-                msg = {'email': error_messages['not_active']}
-                raise serializers.ValidationError(msg)
-            email_address = user.emailaddress_set.get(email=user.email)
-            if not email_address.verified:
-                msg = {'email': error_messages['not_verified']}
-                raise serializers.ValidationError(msg)
-        else:
+        user = self.authenticate(email=email, password=password)
+        if not user:
             user = AuthAppService.get_user(email)
             if not user:
                 msg = {'email': error_messages['wrong_credentials']}
-                raise serializers.ValidationError(msg)
-            email_address = user.emailaddress_set.get(email=user.email)
-            if not email_address.verified:
-                msg = {'email': error_messages['not_verified']}
                 raise serializers.ValidationError(msg)
             if not user.is_active:
                 msg = {'email': error_messages['not_active']}

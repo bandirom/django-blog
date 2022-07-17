@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from django import template
 from django.conf import settings
 
@@ -17,7 +18,7 @@ def github_link():
 
 @register.filter(name='date_time')
 def date(value: str):
-    """ 2021-04-11T18:02:37.066850Z """
+    """2021-04-11T18:02:37.066850Z"""
     time = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%fZ')
     return time.strftime('%b %dth, %Y')
 

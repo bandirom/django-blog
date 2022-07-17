@@ -6,23 +6,29 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse_lazy
-# from main.services import CeleryService, UserService
-from main.services import UserService, CeleryService
+
+from main.services import CeleryService, UserService
 
 
 class PassResetForm(PasswordResetForm):
-
     def get_reset_url(self, uid, token):
         path = "auth_app:password_reset_confirm"
         url = reverse_lazy(path, kwargs={'uidb64': uid, 'token': token})
         return settings.FRONTEND_SITE + str(url)
 
-    def save(self, domain_override=None,
-             subject_template_name='account/email/password_reset_subject.txt',
-             email_template_name='account/email/password_reset_email.html',
-             use_https=False, token_generator=default_token_generator,
-             from_email=None, request=None, html_email_template_name='account/email/password_reset_email.html',
-             extra_email_context=None, **kwargs):
+    def save(
+        self,
+        domain_override=None,
+        subject_template_name='account/email/password_reset_subject.txt',
+        email_template_name='account/email/password_reset_email.html',
+        use_https=False,
+        token_generator=default_token_generator,
+        from_email=None,
+        request=None,
+        html_email_template_name='account/email/password_reset_email.html',
+        extra_email_context=None,
+        **kwargs
+    ):
         """
         Generate a one-use only link for resetting password and send it to the user.
         """
@@ -39,6 +45,6 @@ class PassResetForm(PasswordResetForm):
             'content': {
                 'user': user.get_full_name(),
                 'reset_url': url,
-            }
+            },
         }
         CeleryService.send_password_reset(data=data)
