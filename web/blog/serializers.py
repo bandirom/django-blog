@@ -1,5 +1,6 @@
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
 
 from actions.serializers import LikeDislikeRelationSerializer
 from user_profile.serializers import ShortUserSerializer
@@ -9,9 +10,11 @@ from actions.choices import LikeIconStatus, LikeStatus
 from main.taggit_serializers import TagListSerializerField, TaggitSerializer
 
 
+User = get_user_model()
+
+
 class ParentCommentSerializer(serializers.ModelSerializer):
     user = ShortUserSerializer()
-
     like_status = serializers.SerializerMethodField(method_name='get_like_status')
 
     def get_like_status(self, obj) -> str:
@@ -25,6 +28,12 @@ class ParentCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'author', 'content', 'updated', 'article', 'user', 'like_status')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'full_name', 'email')
 
 
 class CommentSerializer(serializers.ModelSerializer):

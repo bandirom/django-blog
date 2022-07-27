@@ -1,7 +1,8 @@
-from typing import TypeVar
+from typing import TypeVar, Optional
 from urllib.parse import urljoin
 
 from django.conf import settings
+from django.core import signing
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.functional import cached_property
@@ -17,7 +18,7 @@ UserType = TypeVar('UserType', bound='User')
 
 class User(AbstractUser):
 
-    username = None
+    username = None  # type: ignore
     email = models.EmailField(_('Email address'), unique=True)
     phone_number = PhoneNumberField(null=True, blank=True)
 
@@ -25,7 +26,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS: list[str] = []
     following = models.ManyToManyField('self', through='actions.Follower', symmetrical=False, related_name='followers')
 
-    objects = UserManager()
+    objects = UserManager()  # type: ignore
 
     class Meta:
         verbose_name = _('User')
@@ -34,12 +35,9 @@ class User(AbstractUser):
     def __str__(self) -> str:
         return self.email
 
+    @property
     def full_name(self) -> str:
         return super().get_full_name()
-
-    def email_verified(self) -> bool:
-        return self.emailaddress_set.get(primary=True).verified
-    email_verified.boolean = True
 
     def user_likes(self) -> int:
         return self.likes.all().count()
@@ -58,8 +56,22 @@ class User(AbstractUser):
 
     @cached_property
     def avatar_url(self) -> str:
-        return urljoin(settings.BACKEND_SITE, self.profile.avatar.url)
+        return urljoin(settings.BACKEND_URL, self.profile.avatar.url)
 
     @cached_property
-    def full_profile_url(self):
-        return urljoin(settings.BACKEND_SITE, str(self.get_absolute_url()))
+    def full_profile_url(self) -> str:
+        return urljoin(settings.BACKEND_URL, str(self.get_absolute_url()))
+
+    @property
+    def confirmation_key(self) -> str:
+        return signing.dumps(obj=self.pk)
+
+    @classmethod
+    def from_key(cls, key: str) -> Optional[UserType]:
+        max_age = 60 * 60 * 24 * settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
+        try:
+            pk = signing.loads(key, max_age=max_age)
+            user = cls.objects.get(id=pk)
+        except (signing.SignatureExpired, signing.BadSignature, cls.DoesNotExist):
+            user = None
+        return user

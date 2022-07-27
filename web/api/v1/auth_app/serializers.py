@@ -1,14 +1,10 @@
-from dj_rest_auth import serializers as auth_serializers
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
 
+from api.v1.auth_app.services import AuthAppService, Confirmation
 from user_profile.choices import GenderChoice
-
-from .forms import PassResetForm
-from .services import AuthAppService
 
 User = get_user_model()
 
@@ -53,24 +49,30 @@ class UserSignUpSerializer(serializers.Serializer):
         user.profile.birthday = profile_data.get('birthday')
         user.profile.gender = profile_data.get('gender')
         user.profile.save()
-        # CeleryService.send_email_confirm(user)
+        Confirmation(user).send_confirmation_email()
         return user
 
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
 
-class UserSignUpWithCaptchaSerializer(UserSignUpSerializer):
-    pass
+    def authenticate(self, **kwargs):
+        return authenticate(self.context['request'], **kwargs)
 
-
-
-class PasswordResetSerializer(auth_serializers.PasswordResetSerializer):
-    password_reset_form_class = PassResetForm
-
-
-class PasswordResetConfirmSerializer(auth_serializers.PasswordResetConfirmSerializer):
-    new_password1 = serializers.CharField(max_length=128, min_length=8)
-    new_password2 = serializers.CharField(max_length=128, min_length=8)
-
-
-class VerifyEmailSerializer(serializers.Serializer):
-    key = serializers.CharField()
+    def validate(self, attrs: dict):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        user = self.authenticate(email=email, password=password)
+        if not user:
+            user = AuthAppService.get_user(email)
+            if not user:
+                msg = {'email': error_messages['wrong_credentials']}
+                raise serializers.ValidationError(msg)
+            if not user.is_active:
+                msg = {'email': error_messages['not_active']}
+                raise serializers.ValidationError(msg)
+            msg = {'email': error_messages['wrong_credentials']}
+            raise serializers.ValidationError(msg)
+        attrs['user'] = user
+        return attrs

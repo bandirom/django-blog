@@ -30,4 +30,4 @@ class Profile(models.Model):
         return True if self.avatar.url.find("no-avatar.png") != -1 else False
 
     def __str__(self):
-        return f"{self.user.full_name()} profile"
+        return f"{self.user.full_name} profile"

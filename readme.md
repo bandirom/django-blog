@@ -1,12 +1,5 @@
-![GitHub](https://img.shields.io/github/license/bandirom/DjangoTemplateWithDocker?style=plastic)
-![Codecov](https://img.shields.io/codecov/c/gh/bandirom/DjangoTemplateWithDocker?style=plastic)
-[![Documentation Status](https://readthedocs.org/projects/djangotemplatewithdocker/badge/?version=latest)](https://djangotemplatewithdocker.readthedocs.io/en/latest/?badge=latest)
-[![Docker Image CI](https://github.com/bandirom/DjangoTemplateWithDocker/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/bandirom/DjangoTemplateWithDocker/actions/workflows/main.yml)
-[![Github All Releases](https://img.shields.io/github/downloads/bandirom/DjangoTemplateWithDocker/total.svg?style=plastic)]()
+## Django Blog project
 
-# Django template in docker with docker-compose
-
-### Features of the template:
 
 #### Project features:
 * Docker/Docker-compose environment
@@ -16,9 +9,8 @@
 * Celery worker
 * Redis service for caching using socket. Also message broker for queue
 * RabbitMQ configuration
-* Debug mode (PyCharm Professional)
 * ASGI support
-* Flake8 integration
+* Linters integration (flake8, black, isort)
 * Swagger in Django Admin Panel
 * Ready for deploy by one click
 * Separated configuration for dev and prod (requirements and settings)
@@ -30,9 +22,9 @@
 
 ### How to use:
 
-#### Clone the repo:
+#### Clone the repo or click "Use this template" button:
 
-    git clone https://github.com/bandirom/DjangoTemplateWithDocker.git ./project_name
+    git clone https://github.com/bandirom/django-blog.git
     
 
 #### Before running add your superuser email/password and project name in docker/prod/env/.data.env file
@@ -59,7 +51,6 @@
 
 ##### For testing mail backend you can use MailHog service
     docker-compose -f docker-compose -f docker/modules/mailhog.yml up -d --build
-    docker-compose -f prod.yml -f prod.dev.yml -f docker/modules/mailhog.yml up -d --build
 
 <b>Don't forget to set SMTP mail backend in settings</b>
 
@@ -80,7 +71,3 @@ To set https for 2 and more nginx servers:
 Run command:
 
     docker-compose -f prod.yml -f prod.certbot.yml up -d --build
-    
-### Will be added 
-
-* PgBouncer

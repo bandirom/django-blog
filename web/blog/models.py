@@ -1,6 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse_lazy
@@ -96,7 +96,9 @@ class Article(models.Model):
 
 class Comment(models.Model):
     author = models.EmailField()
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='comment_set', blank=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name='comment_set', blank=True
+    )
     content = models.TextField(max_length=200)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comment_set')
     created = models.DateTimeField(auto_now_add=True)

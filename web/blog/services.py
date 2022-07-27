@@ -1,6 +1,5 @@
 from typing import List
 
-from django.conf import settings
 from django.db.models import Count, QuerySet, Prefetch, Q
 
 from main.decorators import except_shell

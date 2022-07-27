@@ -2,14 +2,14 @@ import os
 
 from django.utils.translation import gettext_lazy as _
 
+from .additional_settings.allauth_settings import *
 from .additional_settings.cacheops_settings import *
 from .additional_settings.celery_settings import *
 from .additional_settings.defender_settings import *
-from .additional_settings.logging_settings import *
-from .additional_settings.swagger_settings import *
-from .additional_settings.allauth_settings import *
 from .additional_settings.jwt_settings import *
+from .additional_settings.logging_settings import *
 from .additional_settings.summernote_settings import *
+from .additional_settings.swagger_settings import *
 from .additional_settings.smtp_settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,9 +20,6 @@ DEBUG = int(os.environ.get('DEBUG', 0))
 
 ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
-SITE_ID = 1
-USER_AVATAR_MAX_SIZE = 4.0
-
 AUTH_USER_MODEL = 'main.User'
 
 SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', 'test@test.com')
@@ -32,8 +29,6 @@ MICROSERVICE_TITLE = os.environ.get('MICROSERVICE_TITLE', 'Template')
 MICROSERVICE_PREFIX = os.environ.get('MICROSERVICE_PREFIX', '')
 
 GITHUB_URL = os.environ.get('GITHUB_URL', 'https://github.com')
-FRONTEND_SITE = os.environ.get('FRONTEND_SITE', 'http://localhost:8008')
-BACKEND_SITE = os.environ.get('BACKEND_SITE', 'http://localhost:8008')
 
 REDIS_URL = os.environ.get('REDIS_URL', 'redis://redis:6379')
 
@@ -41,13 +36,14 @@ USE_HTTPS = int(os.environ.get('USE_HTTPS', 0))
 ENABLE_SENTRY = int(os.environ.get('ENABLE_SENTRY', 0))
 ENABLE_SILK = int(os.environ.get('ENABLE_SILK', 0))
 ENABLE_DEBUG_TOOLBAR = int(os.environ.get('ENABLE_DEBUG_TOOLBAR', 0))
-ENABLE_RENDERING = int(os.environ.get('ENABLE_RENDERING', 0))
 
 INTERNAL_IPS: list[str] = []
 
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:8008')
+BACKEND_URL = os.environ.get('BACKEND_URL', 'http://localhost:8008')
 
 API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
@@ -72,25 +68,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
 ]
 
 THIRD_PARTY_APPS = [
     'dj_rest_auth',
-    'dj_rest_auth.registration',
     'rest_framework_simplejwt.token_blacklist',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
     'defender',
     'rest_framework',
     'drf_yasg',
     'corsheaders',
     'rosetta',
     'django_summernote',
-
 ]
 
 LOCAL_APPS = [
@@ -100,7 +88,6 @@ LOCAL_APPS = [
     'contact_us.apps.ContactUsConfig',
     'user_profile.apps.UserProfileConfig',
     'actions.apps.ActionsConfig',
-
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
@@ -128,12 +115,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
 
-if ENABLE_RENDERING:
-    """For build CMS using DRF"""
-    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.TemplateHTMLRenderer',
-    )
 
 ROOT_URLCONF = 'src.urls'
 
@@ -189,7 +170,7 @@ AUTH_PASSWORD_VALIDATORS = [
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('REDIS_URL',  'redis://redis:6379/1'),
+        'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         },
@@ -206,9 +187,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-TIMEZONE_COOKIE_NAME = 'timezone'
-TIMEZONE_COOKIE_AGE = 15552000  # 60*60*24*180
-
 STATIC_URL = f'{MICROSERVICE_PREFIX}/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -222,8 +200,8 @@ LANGUAGES = (('en', _('English')),)
 SESSION_COOKIE_NAME = 'sessionid_blog'
 CSRF_COOKIE_NAME = 'csrftoken_blog'
 
-if DEBUG:
-    ROSETTA_SHOW_AT_ADMIN_PANEL = True
+ROSETTA_SHOW_AT_ADMIN_PANEL = DEBUG
+
 
 if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/

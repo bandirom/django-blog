@@ -9,6 +9,7 @@ admin_url = settings.ADMIN_URL
 
 urlpatterns = [
     path('', include('main.urls')),
+    path('api/', include('api.urls')),
     path('auth/', include('auth_app.urls')),
     path('', include('user_profile.urls')),
     path('', include('blog.urls')),
@@ -26,9 +27,8 @@ urlpatterns += swagger_url
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    if settings.ENABLE_SILK:
-        urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
-    if settings.ENABLE_DEBUG_TOOLBAR:
-        from debug_toolbar import urls
 
-        urlpatterns += [path('__debug__/', include(urls))]
+    if settings.ENABLE_SILK:
+        urlpatterns.append(path('silk/', include('silk.urls', namespace='silk')))
+    if settings.ENABLE_DEBUG_TOOLBAR:
+        urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))

@@ -1,7 +1,7 @@
 {% load static i18n %}
 {% if user.is_authenticated %}
 
-<form id="logoutForm" action="{% url 'auth_app:logout' %}" method="post" >
+<form id="logoutForm" action="{% url 'api:v1:auth_app:logout' %}" method="post" >
     {% csrf_token %}
     <ul class="nav navbar-nav navbar-right">
         <li><span class="navbar-brand">

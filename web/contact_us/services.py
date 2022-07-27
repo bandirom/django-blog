@@ -8,7 +8,7 @@ class ContactUsService:
     def reverse_review_feedback_link(instance) -> str:
         app_name = instance._meta.app_label
         url = reverse(f"admin:{app_name}_feedback_change", args=(instance.id,))
-        return settings.BACKEND_SITE + url
+        return settings.BACKEND_URL + url
 
     @staticmethod
     def get_admin_email_data(feedback) -> dict:

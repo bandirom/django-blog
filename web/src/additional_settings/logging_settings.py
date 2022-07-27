@@ -27,26 +27,26 @@ LOGGING = {
             'class': 'logging.NullHandler',
         },
         'default': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
         'django.server': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'django.server',
         },
     },
     'loggers': {
-        'django': {'level': 'DEBUG', 'propagate': True},
+        'django': {'level': 'INFO', 'propagate': True},
         'django.request': {
             'handlers': ['django.server'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
         'django.server': {
             'handlers': ['django.server'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
     },
