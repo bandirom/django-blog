@@ -4,7 +4,10 @@ import requests
 from dj_rest_auth.jwt_auth import set_jwt_refresh_cookie
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
 from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -22,35 +25,69 @@ User = get_user_model()
 if TYPE_CHECKING:
     from main.models import UserType
 
-
-class Confirmation:
-    FRONTEND_INVITE_PATH = '/invite/confirm/'
+class BaseEmailHandler:
+    FRONTEND_PATH = ''
     FRONTEND_URL = settings.FRONTEND_URL
+    TEMPLATE_NAME = ''
 
     def __init__(self, user: "UserType", language: str = 'en'):
         self.user = user
         self._locale: str = language if not language else get_language()
 
+    @property
+    def locale(self) -> str:
+        return self._locale
+
+
+class Confirmation(BaseEmailHandler):
+    FRONTEND_PATH = '/confirm/'
+    TEMPLATE_NAME = 'emails/verify_email.html'
+
     def _get_activate_url(self) -> str:
-        url = urljoin(self.FRONTEND_URL, self.FRONTEND_INVITE_PATH)
+        url = urljoin(self.FRONTEND_URL, self.FRONTEND_PATH)
         query_params: str = urlencode({
             'key': self.user.confirmation_key,
         }, safe=':+')
         return f'{url}?{query_params}'
 
-    @property
-    def locale(self) -> str:
-        return self._locale
 
     def send_confirmation_email(self):
         kwargs = {
             'subject': _('Register confirmation email'),
-            'template_name': 'emails/verify_email.html',
+            'template_name': self.TEMPLATE_NAME,
             'to_email': self.user.email,
             'letter_language': self.locale,
             'context': {
                 'user': self.user.full_name,
                 'activate_url': self._get_activate_url(),
+            },
+        }
+        send_information_email.apply_async(kwargs=kwargs)
+
+
+class PasswordReset(BaseEmailHandler):
+    TEMPLATE_NAME = 'emails/password_reset.html'
+
+    def _get_reset_url(self, uid: str, token: str):
+        url = urljoin(self.FRONTEND_URL, self.FRONTEND_PATH)
+        query_params: str = urlencode({
+            'uid': uid,
+            'token': token,
+        }, safe=':+')
+        return f'{url}?{query_params}'
+
+    def send_password_reset_email(self):
+        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        token = default_token_generator.make_token(self.user)
+        reset_url = self._get_reset_url(uid=uid, token=token)
+        kwargs = {
+            'subject': _('Password Reset'),
+            'template_name': self.TEMPLATE_NAME,
+            'to_email': self.user.email,
+            'letter_language': self.locale,
+            'context': {
+                'user': self.user.full_name,
+                'reset_url': reset_url,
             },
         }
         send_information_email.apply_async(kwargs=kwargs)
@@ -71,13 +108,19 @@ class AuthAppService:
         }
         response = requests.get(url=url, params=params)
         data = response.json()
-        status = data.get("success", False)
-        return status, data
+        _status = data.get("success", False)
+        return _status, data
 
     @staticmethod
     @except_shell((User.DoesNotExist,))
     def get_user(email: str) -> User:
         return User.objects.get(email=email)
+
+    def password_reset(self, email: str):
+        user = self.get_user(email)
+        if not user:
+            return
+        PasswordReset(user).send_password_reset_email()
 
 
 def full_logout(request):

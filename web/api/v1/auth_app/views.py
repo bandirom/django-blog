@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.utils import timezone
-from rest_framework.generics import CreateAPIView
+from rest_framework import status
+from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
@@ -9,8 +10,9 @@ from django.contrib.auth import logout as django_logout
 from . import serializers
 from dj_rest_auth import views as auth_views
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
+from django.utils.translation import gettext_lazy as _
 
-from .services import set_jwt_cookies, full_logout
+from .services import set_jwt_cookies, full_logout, AuthAppService
 
 
 class SignUpView(CreateAPIView):
@@ -57,3 +59,19 @@ class LogoutView(auth_views.LogoutView):
     def logout(self, request):
         response = full_logout(request)
         return response
+
+
+class PasswordResetView(GenericAPIView):
+    serializer_class = serializers.PasswordResetSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        service = AuthAppService()
+        service.password_reset(serializer.data['email'])
+        return Response(
+            {'detail': _('Password reset e-mail has been sent.')},
+            status=status.HTTP_200_OK,
+        )

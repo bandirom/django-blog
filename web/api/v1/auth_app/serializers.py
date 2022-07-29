@@ -76,3 +76,7 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(msg)
         attrs['user'] = user
         return attrs
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
