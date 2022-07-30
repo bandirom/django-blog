@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Sum
-from .choices import LikeStatus, LikeObjChoice
+
+from .choices import LikeObjChoice, LikeStatus
 
 
 class LikeDislikeManager(models.Manager):

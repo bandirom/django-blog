@@ -1,17 +1,16 @@
 import logging
 
+from rest_framework import mixins, status
 from rest_framework.permissions import AllowAny
-
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import mixins
-from main.pagination import BasePageNumberPagination
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from main.pagination import BasePageNumberPagination
 from main.views import TemplateAPIView
-from .serializers import CategorySerializer
+
 from . import serializers
 from .filters import ArticleFilter
+from .serializers import CategorySerializer
 from .services import BlogService
 
 logger = logging.getLogger(__name__)

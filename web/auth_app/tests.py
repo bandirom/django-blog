@@ -1,14 +1,14 @@
 import re
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from django.core import mail
 from django.http import SimpleCookie
 from django.test import override_settings
-from django.core import mail
-
+from rest_framework import status
 from rest_framework.reverse import reverse_lazy
 from rest_framework.test import APITestCase
-from rest_framework import status
 
 from api.v1.auth_app.serializers import error_messages
 from main.services import UserService

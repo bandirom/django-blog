@@ -1,12 +1,14 @@
 import logging
-from django.utils.translation import gettext_lazy as _
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.generics import GenericAPIView, RetrieveAPIView
+
 from dj_rest_auth.serializers import PasswordChangeSerializer
-from .services import UserProfileService
+from django.utils.translation import gettext_lazy as _
+from rest_framework import status
+from rest_framework.generics import GenericAPIView, RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
 from . import serializers
+from .services import UserProfileService
 
 logger = logging.getLogger(__name__)
 

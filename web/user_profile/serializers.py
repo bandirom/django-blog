@@ -1,12 +1,13 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
 from rest_framework import serializers
-from .models import Profile
-from .choices import GenderChoice
+
 from actions.choices import FollowIconStatus
 from actions.services import ActionsService
 
+from .choices import GenderChoice
+from .models import Profile
 
 User = get_user_model()
 

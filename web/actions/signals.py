@@ -2,10 +2,11 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 
-from .services import ActionsService
-from .models import Follower, LikeDislike
-from .choices import LikeObjChoice, LikeStatus
 from user_profile.models import Profile
+
+from .choices import LikeObjChoice, LikeStatus
+from .models import Follower, LikeDislike
+from .services import ActionsService
 
 
 @receiver(post_save, sender=Follower)

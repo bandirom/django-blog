@@ -1,10 +1,11 @@
 from typing import List
 
-from django.db.models import Count, QuerySet, Prefetch, Q
+from django.db.models import Count, Prefetch, Q, QuerySet
 
 from main.decorators import except_shell
+
 from .choices import ArticleStatus
-from .models import Category, Article, Comment, ArticleTag
+from .models import Article, ArticleTag, Category, Comment
 
 
 class BlogService:

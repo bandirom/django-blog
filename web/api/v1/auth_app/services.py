@@ -1,5 +1,6 @@
 from datetime import date
-from urllib.parse import urljoin, urlencode
+from typing import TYPE_CHECKING, Literal, NamedTuple
+from urllib.parse import urlencode, urljoin
 
 import requests
 from dj_rest_auth.jwt_auth import set_jwt_refresh_cookie
@@ -16,14 +17,12 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from auth_app.utils import get_client_ip
 from main.decorators import except_shell
 from main.tasks import send_information_email
-from typing import TYPE_CHECKING, NamedTuple, Literal
-
 from user_profile.choices import GenderChoice
 from user_profile.models import Profile
 

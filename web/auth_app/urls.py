@@ -3,7 +3,6 @@ from django.views.generic import TemplateView
 
 from main.views import TemplateAPIView
 
-
 app_name = 'auth_app'
 
 urlpatterns = [

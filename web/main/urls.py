@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import TemplateAPIView, SetUserTimeZone, JwtUserDataView
+from .views import JwtUserDataView, SetUserTimeZone, TemplateAPIView
 
 urlpatterns = [
     path('', TemplateAPIView.as_view(template_name='index.html'), name='index'),

@@ -3,9 +3,10 @@ from typing import Union
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
-from main.decorators import except_shell
-from .models import LikeDislike, Follower, Action
 from blog.models import Article, Comment
+from main.decorators import except_shell
+
+from .models import Action, Follower, LikeDislike
 
 User = get_user_model()
 

@@ -1,6 +1,7 @@
-from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib import admin
-from .models import LikeDislike, Follower, Action
+from django.contrib.contenttypes.admin import GenericTabularInline
+
+from .models import Action, Follower, LikeDislike
 
 
 @admin.register(LikeDislike)

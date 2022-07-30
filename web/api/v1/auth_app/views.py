@@ -1,18 +1,17 @@
+from dj_rest_auth import views as auth_views
 from django.conf import settings
+from django.contrib.auth import logout as django_logout
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
-from django.contrib.auth import logout as django_logout
+from rest_framework_simplejwt.settings import api_settings as jwt_settings
 
 from . import serializers
-from dj_rest_auth import views as auth_views
-from rest_framework_simplejwt.settings import api_settings as jwt_settings
-from django.utils.translation import gettext_lazy as _
-
-from .services import set_jwt_cookies, full_logout, AuthAppService
+from .services import AuthAppService, full_logout, set_jwt_cookies
 
 
 class SignUpView(GenericAPIView):

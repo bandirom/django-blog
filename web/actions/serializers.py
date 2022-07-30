@@ -4,12 +4,12 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from blog.services import BlogService
 from blog.models import Article, Comment
+from blog.services import BlogService
 
-from .choices import LikeStatus, LikeObjChoice, LikeIconStatus, FollowIconStatus
+from .choices import FollowIconStatus, LikeIconStatus, LikeObjChoice, LikeStatus
+from .models import Action, LikeDislike
 from .services import ActionsService
-from .models import LikeDislike, Action
 
 User = get_user_model()
 

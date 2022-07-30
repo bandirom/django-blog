@@ -1,16 +1,17 @@
-from typing import TypeVar, Optional
+from typing import Optional, TypeVar
 from urllib.parse import urljoin
 
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.core import signing
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.reverse import reverse_lazy
 
 from blog.choices import ArticleStatus
+
 from .managers import UserManager
 
 UserType = TypeVar('UserType', bound='User')

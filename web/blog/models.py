@@ -4,9 +4,11 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from rest_framework.reverse import reverse_lazy
-from taggit.models import TaggedItemBase, TagBase
 from taggit.managers import TaggableManager
+from taggit.models import TagBase, TaggedItemBase
+
 from actions.models import LikeDislike
+
 from .choices import ArticleStatus
 
 User = get_user_model()

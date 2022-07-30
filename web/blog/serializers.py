@@ -1,14 +1,14 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 
-from actions.serializers import LikeDislikeRelationSerializer
-from user_profile.serializers import ShortUserSerializer
-from .models import Category, Article, Comment
-from .services import BlogService
 from actions.choices import LikeIconStatus, LikeStatus
-from main.taggit_serializers import TagListSerializerField, TaggitSerializer
+from actions.serializers import LikeDislikeRelationSerializer
+from main.taggit_serializers import TaggitSerializer, TagListSerializerField
+from user_profile.serializers import ShortUserSerializer
 
+from .models import Article, Category, Comment
+from .services import BlogService
 
 User = get_user_model()
 

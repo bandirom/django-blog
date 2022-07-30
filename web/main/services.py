@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+
 from main.decorators import except_shell
 
 User = get_user_model()

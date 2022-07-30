@@ -1,11 +1,10 @@
 from django.contrib.auth import get_user_model
-
 from rest_framework import status
 from rest_framework.reverse import reverse_lazy
-
 from rest_framework.test import APITestCase
-from blog.models import Article, Category, ArticleStatus
-from actions.choices import LikeObjChoice, LikeStatus, LikeIconStatus
+
+from actions.choices import LikeIconStatus, LikeObjChoice, LikeStatus
+from blog.models import Article, ArticleStatus, Category
 
 User = get_user_model()
 

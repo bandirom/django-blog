@@ -3,16 +3,17 @@ from typing import TYPE_CHECKING
 from django.conf import settings
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
-from rest_framework.mixins import ListModelMixin
 from rest_framework.views import APIView
 
 from actions.serializers import ActionListSerializer
 from actions.services import ActionsService
+
 from .pagination import BasePageNumberPagination
-from .serializers import SetTimeZoneSerializer, JwtUserDataSerializer
+from .serializers import JwtUserDataSerializer, SetTimeZoneSerializer
 
 if TYPE_CHECKING:
     from rest_framework.request import Request

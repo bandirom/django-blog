@@ -2,8 +2,9 @@ from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
 
 from actions.admin import LikeDislikeInline
+
 from .forms import ArticleForm
-from .models import Article, Category, Comment, ArticleTag
+from .models import Article, ArticleTag, Category, Comment
 
 
 class CommentsInline(admin.TabularInline):
