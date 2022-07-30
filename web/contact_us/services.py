@@ -3,7 +3,6 @@ from rest_framework.reverse import reverse
 
 
 class ContactUsService:
-
     @staticmethod
     def reverse_review_feedback_link(instance) -> str:
         app_name = instance._meta.app_label

@@ -7,7 +7,6 @@ User = get_user_model()
 
 
 class UserProfileService:
-
     @staticmethod
     def get_user_profile(user_id: int):
         user_articles = Count('article_set', filter=Q(article_set__status=ArticleStatus.ACTIVE))

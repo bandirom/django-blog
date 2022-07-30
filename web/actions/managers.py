@@ -22,10 +22,11 @@ class LikeDislikeManager(models.Manager):
         return self.filter(content_type__model=LikeObjChoice.COMMENT).order_by('-comments__updated')
 
     def get_queryset(self):
-        return super().get_queryset().select_related('user', 'content_type').prefetch_related('content_object')
+        return (
+            super().get_queryset().select_related('user', 'content_type').prefetch_related('content_object')
+        )
 
 
 class FollowerManager(models.Manager):
-
     def get_queryset(self):
         return super().get_queryset().select_related('subscriber', 'to_user')

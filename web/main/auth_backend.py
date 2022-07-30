@@ -11,7 +11,6 @@ User = get_user_model()
 
 
 class JWTCookieAuthentication(_JWTCookieAuthentication):
-
     def get_user(self, validated_token):
         """
         Attempts to find and return a user using the given validated token.

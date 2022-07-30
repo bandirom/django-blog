@@ -3,14 +3,14 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.http import SimpleCookie
-from django.test import TestCase, override_settings
+from django.test import override_settings
 from django.core import mail
 
 from rest_framework.reverse import reverse_lazy
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-from auth_app.serializers import error_messages
+from api.v1.auth_app.serializers import error_messages
 from main.services import UserService
 
 User = get_user_model()
@@ -21,17 +21,10 @@ locmem_email_backend = override_settings(
 )
 
 
-# refresh_from_db()
-
-
 class AuthApiTestCase(APITestCase):
-
     @classmethod
     def setUpTestData(cls):
-        data = {
-            'email': 'bandirom@ukr.net',
-            'password': make_password('tester26')
-        }
+        data = {'email': 'bandirom@ukr.net', 'password': make_password('tester26')}
         cls.user = User.objects.create(**data, is_active=False)
         cls.user.emailaddress_set.create(email=cls.user.email, primary=True, verified=False)
 

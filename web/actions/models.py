@@ -9,17 +9,16 @@ User = get_user_model()
 
 
 def like_content_limit():
-    return (
-        models.Q(app_label='blog', model='article') |
-        models.Q(app_label='blog', model='comment')
-    )
+    return models.Q(app_label='blog', model='article') | models.Q(app_label='blog', model='comment')
 
 
 class LikeDislike(models.Model):
     vote = models.SmallIntegerField(choices=LikeStatus.choices)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=like_content_limit)
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, limit_choices_to=like_content_limit
+    )
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
     date = models.DateTimeField(auto_now=True)
@@ -27,7 +26,9 @@ class LikeDislike(models.Model):
     objects = LikeDislikeManager()
 
     def __str__(self):
-        return "{user}: {vote} - {content}".format(user=self.user, vote=self.vote, content=self.content_object)
+        return "{user}: {vote} - {content}".format(
+            user=self.user, vote=self.vote, content=self.content_object
+        )
 
 
 class Follower(models.Model):
@@ -47,16 +48,18 @@ class Follower(models.Model):
 
 def action_content_limit():
     return (
-        models.Q(app_label='actions', model='follower') |
-        models.Q(app_label='actions', model='likedislike') |
-        models.Q(app_label='user_profile', model='profile')
+        models.Q(app_label='actions', model='follower')
+        | models.Q(app_label='actions', model='likedislike')
+        | models.Q(app_label='user_profile', model='profile')
     )
 
 
 class Action(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='actions')
     action = models.CharField(max_length=500)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=action_content_limit)
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, limit_choices_to=action_content_limit
+    )
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
     date = models.DateTimeField(auto_now_add=True, db_index=True)

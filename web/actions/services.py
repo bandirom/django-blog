@@ -11,7 +11,6 @@ User = get_user_model()
 
 
 class ActionsService:
-
     @staticmethod
     @except_shell(User.DoesNotExist)
     def get_user_by_id(user_id: int):

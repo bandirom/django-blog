@@ -78,7 +78,8 @@ class FollowSerializer(serializers.Serializer):
 
 
 class UserFollowSerializer(serializers.ModelSerializer):
-    """ For list of user following and followers """
+    """For list of user following and followers"""
+
     profile_url = serializers.URLField(source='get_absolute_url')
     avatar = serializers.ImageField(source='profile.avatar')
 

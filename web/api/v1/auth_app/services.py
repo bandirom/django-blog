@@ -36,6 +36,14 @@ class PasswordResetConfirmData(NamedTuple):
     password_2: str
 
 
+class CreateUserData(NamedTuple):
+    first_name: str
+    last_name: str
+    email: str
+    password_1: str
+    password_2: str
+
+
 class BaseEmailHandler:
     FRONTEND_PATH = ''
     FRONTEND_URL = settings.FRONTEND_URL
@@ -56,9 +64,12 @@ class Confirmation(BaseEmailHandler):
 
     def _get_activate_url(self) -> str:
         url = urljoin(self.FRONTEND_URL, self.FRONTEND_PATH)
-        query_params: str = urlencode({
-            'key': self.user.confirmation_key,
-        }, safe=':+')
+        query_params: str = urlencode(
+            {
+                'key': self.user.confirmation_key,
+            },
+            safe=':+',
+        )
         return f'{url}?{query_params}'
 
     def send_confirmation_email(self):
@@ -81,10 +92,13 @@ class PasswordReset(BaseEmailHandler):
 
     def _get_reset_url(self, uid: str, token: str) -> str:
         url = urljoin(self.FRONTEND_URL, self.FRONTEND_PATH)
-        query_params: str = urlencode({
-            'uid': uid,
-            'token': token,
-        }, safe=':+')
+        query_params: str = urlencode(
+            {
+                'uid': uid,
+                'token': token,
+            },
+            safe=':+',
+        )
         return f'{url}?{query_params}'
 
     def send_password_reset_email(self):
@@ -108,7 +122,6 @@ from django.utils.http import urlsafe_base64_decode
 
 
 class PasswordResetConfirmHandler:
-
     def __init__(self, *, uid: str, token: str):
         self._token = token
         self._uid = uid
@@ -127,7 +140,12 @@ class PasswordResetConfirmHandler:
         try:
             uid = force_str(urlsafe_base64_decode(uid))
             return User.objects.get(id=uid)
-        except (User.DoesNotExist, OverflowError, TypeError, ValueError,):
+        except (
+            User.DoesNotExist,
+            OverflowError,
+            TypeError,
+            ValueError,
+        ):
             raise ValidationError({'uid': ['Invalid value']})
 
     def _validate_token(self):
@@ -146,7 +164,7 @@ class AuthAppService:
         params = {
             'secret': settings.GOOGLE_CAPTCHA_SECRET_KEY,
             'response': captcha,
-            'remoteip': get_client_ip(request)
+            'remoteip': get_client_ip(request),
         }
         response = requests.get(url=url, params=params)
         data = response.json()
@@ -171,6 +189,10 @@ class AuthAppService:
         user = handler.user
         user.set_password(data.password_1)
         user.save(update_fields=['password'])
+
+    def create_user(self, validated_data: dict):
+        data = CreateUserData(**validated_data)
+        print(f'{data=}')
 
 
 def full_logout(request):
@@ -214,7 +236,7 @@ def full_logout(request):
 
 def set_jwt_access_cookie(response, access_token):
     cookie_name = getattr(settings, 'JWT_AUTH_COOKIE', None)
-    access_token_expiration = (timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
+    access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
     cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
     cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
     cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
@@ -227,7 +249,7 @@ def set_jwt_access_cookie(response, access_token):
             secure=cookie_secure,
             httponly=cookie_httponly,
             samesite=cookie_samesite,
-            domain=getattr(settings, 'JWT_COOKIE_DOMAIN', None)
+            domain=getattr(settings, 'JWT_COOKIE_DOMAIN', None),
         )
 
 

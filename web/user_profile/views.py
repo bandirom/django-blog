@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class ProfileViewSet(GenericViewSet):
-
     def get_serializer_class(self):
         if self.action == 'profile':
             return serializers.UserSerializer
@@ -71,9 +70,7 @@ class UserListView(GenericAPIView):
 
     def get(self, request):
         serializer = self.get_serializer(self.get_queryset(), many=True)
-        data = {
-            'user_list': serializer.data
-        }
+        data = {'user_list': serializer.data}
         return Response(data, status=status.HTTP_200_OK, template_name=self.template_name)
 
 

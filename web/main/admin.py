@@ -13,7 +13,12 @@ User = get_user_model()
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     ordering = ('-id',)
-    list_display = ('email', 'full_name', 'phone_number', 'is_active',)
+    list_display = (
+        'email',
+        'full_name',
+        'phone_number',
+        'is_active',
+    )
     inlines = (ProfileInline,)
     list_select_related = ('profile',)
     readonly_fields = ('id',)

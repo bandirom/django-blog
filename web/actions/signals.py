@@ -11,10 +11,7 @@ from user_profile.models import Profile
 @receiver(post_save, sender=Follower)
 def user_start_to_follow(sender, created: bool, instance: Follower, **kwargs):
     template = 'actions/action_templates/start_to_follow.html'
-    data = {
-        'subscriber': instance.subscriber,
-        'to_user': instance.to_user
-    }
+    data = {'subscriber': instance.subscriber, 'to_user': instance.to_user}
     action = render_to_string(template, data)
     ActionsService.create_action(instance.subscriber, action, instance)
 
@@ -26,10 +23,7 @@ def user_change_avatar(sender, created: bool, instance: Profile, update_fields: 
     if 'avatar' not in update_fields:
         return
     template = 'actions/action_templates/change_avatar.html'
-    data = {
-        'avatar_url': instance.avatar,
-        'user': instance.user
-    }
+    data = {'avatar_url': instance.avatar, 'user': instance.user}
     action = render_to_string(template, data)
     ActionsService.create_action(instance.user, action, instance)
 

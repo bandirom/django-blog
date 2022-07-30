@@ -15,9 +15,20 @@ from django.utils.translation import gettext_lazy as _
 from .services import set_jwt_cookies, full_logout, AuthAppService
 
 
-class SignUpView(CreateAPIView):
+class SignUpView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = serializers.UserSignUpSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        service = AuthAppService()
+        service.create_user(serializer.validated_data)
+        return Response(
+            {'detail': _('Confirmation email has been sent')},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class LoginView(auth_views.LoginView):
@@ -26,8 +37,8 @@ class LoginView(auth_views.LoginView):
     def get_response(self):
         serializer_class = self.get_response_serializer()
 
-        access_token_expiration = (timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
-        refresh_token_expiration = (timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
+        access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
+        refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
         return_expiration_times = getattr(settings, 'JWT_AUTH_RETURN_EXPIRATION', False)
 
         data = {
@@ -88,5 +99,20 @@ class PasswordResetConfirmView(GenericAPIView):
         service.password_reset_confirm(serializer.validated_data)
         return Response(
             {'detail': _('Password has been reset with the new password.')},
+            status=status.HTTP_200_OK,
+        )
+
+
+class VerifyEmailView(GenericAPIView):
+    serializer_class = serializers.VerifyEmailSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = AuthAppService()
+        service.password_reset_confirm(serializer.validated_data)
+        return Response(
+            {'detail': _('Email verified')},
             status=status.HTTP_200_OK,
         )

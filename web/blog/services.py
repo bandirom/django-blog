@@ -8,26 +8,26 @@ from .models import Category, Article, Comment, ArticleTag
 
 
 class BlogService:
-
     @staticmethod
     def category_queryset() -> QuerySet[Category]:
         return Category.objects.all()
 
     @staticmethod
     def get_active_articles() -> QuerySet[Article]:
-        comment_prefetch = Prefetch('comment_set', queryset=BlogService.get_comments_queryset(), to_attr='comments')
-        return (Article.objects
-                .select_related('category', 'author')
-                .prefetch_related(comment_prefetch)
-                .filter(status=ArticleStatus.ACTIVE)
-                .annotate(comments_count=Count('comment_set'))
-                )
+        comment_prefetch = Prefetch(
+            'comment_set', queryset=BlogService.get_comments_queryset(), to_attr='comments'
+        )
+        return (
+            Article.objects.select_related('category', 'author')
+            .prefetch_related(comment_prefetch)
+            .filter(status=ArticleStatus.ACTIVE)
+            .annotate(comments_count=Count('comment_set'))
+        )
 
     @staticmethod
     def get_comments_queryset() -> QuerySet[Comment]:
         return (
-            Comment.objects
-            .select_related('user', 'article', 'parent')
+            Comment.objects.select_related('user', 'article', 'parent')
             .filter(article__status=ArticleStatus.ACTIVE)
             .order_by('id')
         )
@@ -56,10 +56,12 @@ class BlogService:
 
     @staticmethod
     def popular_tags() -> List[dict]:
-        tags = ArticleTag.objects.annotate(
-            articles_num=Count('tagged_article', filter=Q(
-                article_tags__status=ArticleStatus.ACTIVE
-            ))
-        ).values('name', 'articles_num').order_by('-articles_num')[:8]
+        tags = (
+            ArticleTag.objects.annotate(
+                articles_num=Count('tagged_article', filter=Q(article_tags__status=ArticleStatus.ACTIVE))
+            )
+            .values('name', 'articles_num')
+            .order_by('-articles_num')[:8]
+        )
         tags = [tag for tag in tags if tag['articles_num'] > 0]
         return tags

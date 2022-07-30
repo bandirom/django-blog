@@ -23,7 +23,11 @@ class ShortUserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('birthday', 'avatar', 'gender',)
+        fields = (
+            'birthday',
+            'avatar',
+            'gender',
+        )
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -32,8 +36,18 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'id', 'full_name', 'first_name', 'last_name', 'email', 'profile', 'is_active',
-            'phone_number', 'user_likes', 'user_posts', 'followers_count', 'following_count'
+            'id',
+            'full_name',
+            'first_name',
+            'last_name',
+            'email',
+            'profile',
+            'is_active',
+            'phone_number',
+            'user_likes',
+            'user_posts',
+            'followers_count',
+            'following_count',
         )
         read_only_fields = ('full_name', 'user_likes', 'user_posts')
 
@@ -50,7 +64,9 @@ class UserImageSerializer(serializers.ModelSerializer):
 
     def validate_avatar(self, avatar):
         if avatar.size > settings.USER_AVATAR_MAX_SIZE * 1024 * 1024:
-            raise serializers.ValidationError(_("Max size is {size} MB".format(size=settings.USER_AVATAR_MAX_SIZE)))
+            raise serializers.ValidationError(
+                _("Max size is {size} MB".format(size=settings.USER_AVATAR_MAX_SIZE))
+            )
         return avatar
 
     def save(self, *args, **kwargs):

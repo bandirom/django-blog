@@ -33,9 +33,10 @@ class TemplateAPIView(APIView):
 
 
 class GenericTemplateAPIView(GenericAPIView):
-    """ Help to build CMS System using DRF, JWT and Cookies
-        path('some-path/', TemplateAPIView.as_view(template_name='template.html'))
+    """Help to build CMS System using DRF, JWT and Cookies
+    path('some-path/', TemplateAPIView.as_view(template_name='template.html'))
     """
+
     swagger_schema = None
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer, TemplateHTMLRenderer)

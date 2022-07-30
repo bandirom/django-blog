@@ -103,7 +103,9 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comment_set')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='parent_set', blank=True, null=True)
+    parent = models.ForeignKey(
+        'self', on_delete=models.CASCADE, related_name='parent_set', blank=True, null=True
+    )
     votes = GenericRelation(LikeDislike, related_query_name='comments')
 
     objects = models.Manager()

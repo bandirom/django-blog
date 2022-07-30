@@ -61,8 +61,10 @@ class ArticleViewSet(ViewSet):
         return response
 
 
-class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet):
-    permission_classes = (AllowAny, )
+class CommentViewSet(
+    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet
+):
+    permission_classes = (AllowAny,)
     http_method_names = ('get', 'post', 'put', 'delete')
     pagination_class = BasePageNumberPagination
 
@@ -117,7 +119,5 @@ class CreateArticleTemplateView(TemplateAPIView):
 
     def get(self, request, *args, **kwargs):
         serializer = CategorySerializer(self.get_queryset(), many=True)
-        data = {
-            'categories': serializer.data
-        }
+        data = {'categories': serializer.data}
         return Response(data, status=status.HTTP_200_OK)
