@@ -1,3 +1,4 @@
+from datetime import date
 from urllib.parse import urljoin, urlencode
 
 import requests
@@ -5,6 +6,7 @@ from dj_rest_auth.jwt_auth import set_jwt_refresh_cookie
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
+from django.db import transaction
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
@@ -20,8 +22,10 @@ from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from auth_app.utils import get_client_ip
 from main.decorators import except_shell
 from main.tasks import send_information_email
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple, Literal
 
+from user_profile.choices import GenderChoice
+from user_profile.models import Profile
 
 if TYPE_CHECKING:
     from main.models import UserType
@@ -42,6 +46,8 @@ class CreateUserData(NamedTuple):
     email: str
     password_1: str
     password_2: str
+    birthday: date = None
+    gender: GenderChoice = None
 
 
 class BaseEmailHandler:
@@ -190,9 +196,22 @@ class AuthAppService:
         user.set_password(data.password_1)
         user.save(update_fields=['password'])
 
+    @transaction.atomic()
     def create_user(self, validated_data: dict):
         data = CreateUserData(**validated_data)
-        print(f'{data=}')
+        user = User.objects.create_user(
+            email=data.email,
+            first_name=data.first_name,
+            last_name=data.last_name,
+            password=data.password_1,
+            is_active=False,
+        )
+        Profile.objects.create(
+            user=user,
+            birthday=data.birthday,
+            gender=data.gender,
+        )
+        Confirmation(user).send_confirmation_email()
 
 
 def full_logout(request):
