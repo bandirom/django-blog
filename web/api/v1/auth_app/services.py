@@ -10,7 +10,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.db import transaction
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -121,9 +121,6 @@ class PasswordReset(BaseEmailHandler):
             },
         }
         send_information_email.apply_async(kwargs=kwargs)
-
-
-from django.utils.http import urlsafe_base64_decode
 
 
 class PasswordResetConfirmHandler:
