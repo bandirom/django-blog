@@ -75,3 +75,18 @@ class PasswordResetView(GenericAPIView):
             {'detail': _('Password reset e-mail has been sent.')},
             status=status.HTTP_200_OK,
         )
+
+
+class PasswordResetConfirmView(GenericAPIView):
+    serializer_class = serializers.PasswordResetConfirmSerializer
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = AuthAppService()
+        service.password_reset_confirm(serializer.validated_data)
+        return Response(
+            {'detail': _('Password has been reset with the new password.')},
+            status=status.HTTP_200_OK,
+        )

@@ -80,3 +80,19 @@ class LoginSerializer(serializers.Serializer):
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    password_1 = serializers.CharField(min_length=8, max_length=64)
+    password_2 = serializers.CharField(min_length=8, max_length=64)
+    uid = serializers.CharField()
+    token = serializers.CharField()
+
+    def validate_password_1(self, password: str) -> str:
+        validate_password(password)
+        return password
+
+    def validate(self, data: dict) -> dict:
+        if data['password_1'] != data['password_2']:
+            raise serializers.ValidationError(_('The two password fields did not match.'))
+        return data

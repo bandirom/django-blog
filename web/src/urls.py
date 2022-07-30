@@ -10,7 +10,7 @@ admin_url = settings.ADMIN_URL
 urlpatterns = [
     path('', include('main.urls')),
     path('api/', include('api.urls')),
-    path('auth/', include('auth_app.urls')),
+    path('', include('auth_app.urls')),
     path('', include('user_profile.urls')),
     path('', include('blog.urls')),
     path('', include('contact_us.urls')),

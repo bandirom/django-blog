@@ -1,23 +1,22 @@
 $(function () {
-  set_reset_params()
   $('#resetConfirmForm').submit(confirmReset);
 });
-
-function set_reset_params() {
-  const url = window.location.pathname;
-  const parts = url.match(/\/auth\/password-reset\/([\w]+)[\/]?([\w]+\-[\w]+)?/);
-  $('#uid').val(parts[1])
-  $('#token').val(parts[2])
-}
 
 function confirmReset(e) {
   let form = $(this);
   e.preventDefault();
+  var urlParams = new URLSearchParams(window.location.search);
+  const data = {
+    uid: urlParams.get('uid'),
+    token: urlParams.get('token'),
+    password_1: $("input[name=password_1]").val(),
+    password_2: $("input[name=password_2]").val(),
+  }
+
   $.ajax({
     url: form.attr("action"),
-    type: form.attr('method'),
-    dataType: 'json',
-    data: form.serialize(),
+    type: "POST",
+    data: data,
     success: function (data) {
       let msg = data.detail + '\n You will be redirect to Sign In page'
       $('#successReset').append('<div class="help-block">' + msg + "</div>");
