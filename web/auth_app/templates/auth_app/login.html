@@ -10,7 +10,7 @@
 
 <div class="row" style="margin-top:20px">
   <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-    <form id="loginForm" role="form" action="{% url 'auth_app:api_login' %}" method="post">
+    <form id="loginForm" role="form" action="{% url 'api:v1:auth_app:sign-in' %}" method="post">
       {% csrf_token %}
       <fieldset>
         <h2>Please Sign In</h2>
@@ -24,7 +24,7 @@
         <span class="button-checkbox">
 					<button type="button" class="btn" data-color="info">Remember Me</button>
                     <input type="checkbox" name="remember_me" id="remember_me" checked="checked" class="hidden">
-					<a href="" class="btn btn-link pull-right">Forgot Password?</a>
+          <a href="#" class="btn btn-link pull-right" data-target="#pwdModal" data-toggle="modal">Forgot Password?</a>
 				</span>
         <hr class="colorgraph">
         <div class="row">
@@ -39,6 +39,8 @@
     </form>
   </div>
 </div>
+{% include 'auth_app/includes/forgot_password_modal.html' %}
+
 {% endblock container %}
 
 {% block jquery %}

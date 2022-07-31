@@ -73,6 +73,7 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'rosetta',
     'django_summernote',
+    'django_filters',
 ]
 
 LOCAL_APPS = [

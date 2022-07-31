@@ -1,5 +1,4 @@
 $(function () {
-  // $(document).on("click", "a.login", login);
   $('#loginForm').submit(login);
 });
 
