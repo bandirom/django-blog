@@ -4,6 +4,7 @@ from dj_rest_auth.serializers import PasswordChangeSerializer
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, RetrieveAPIView
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -14,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 class ProfileViewSet(GenericViewSet):
+    renderer_classes = (JSONRenderer, TemplateHTMLRenderer)
+
     def get_serializer_class(self):
         if self.action == 'profile':
             return serializers.UserSerializer
@@ -30,13 +33,13 @@ class ProfileViewSet(GenericViewSet):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def get_template_name(self):
+    @property
+    def template_name(self):
         return 'user_profile/profile.html'
 
     def profile(self, request):
         serializer = self.get_serializer(instance=self.get_object())
         response = Response(serializer.data, status=status.HTTP_200_OK)
-        response.template_name = self.get_template_name()
         return response
 
     def image_update(self, request):
@@ -66,6 +69,7 @@ class ProfileViewSet(GenericViewSet):
 class UserListView(GenericAPIView):
     serializer_class = serializers.UserListSerializer
     template_name = 'user_profile/user_list.html'
+    renderer_classes = (JSONRenderer, TemplateHTMLRenderer)
 
     def get_queryset(self):
         return UserProfileService.user_queryset().exclude(id=self.request.user.id)
@@ -79,6 +83,7 @@ class UserListView(GenericAPIView):
 class UserProfileByIdView(GenericAPIView):
     serializer_class = serializers.UserSerializer
     template_name = 'user_profile/profile_read_only.html'
+    renderer_classes = (JSONRenderer, TemplateHTMLRenderer)
 
     def get_object(self):
         obj = UserProfileService.get_user_profile(self.kwargs.get('user_id'))
