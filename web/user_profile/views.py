@@ -8,6 +8,8 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from api.v1.profile.serializers import UserShortInfoSerializer
+
 from . import serializers
 from .services import UserProfileService
 
@@ -96,21 +98,9 @@ class UserProfileByIdView(GenericAPIView):
 
 
 class UserShortInfoView(RetrieveAPIView):
-    serializer_class = serializers.UserShortInfoSerializer
+    serializer_class = UserShortInfoSerializer
 
     def get_queryset(self):
         return UserProfileService.user_queryset()
 
 
-class UserChatListView(GenericAPIView):
-    serializer_class = serializers.UserChatListSerializer
-
-    def get_queryset(self):
-        return UserProfileService.user_queryset()
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        queryset = UserProfileService.get_users_by_list_id(serializer.validated_data['user_ids'])
-        r_serializer = serializers.UserShortInfoSerializer(queryset, many=True)
-        return Response(r_serializer.data, status=status.HTTP_200_OK)

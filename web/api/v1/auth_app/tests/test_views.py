@@ -26,7 +26,6 @@ class AuthApiTestCase(APITestCase):
     def setUpTestData(cls):
         data = {'email': 'bandirom@ukr.net', 'password': make_password('tester26')}
         cls.user = User.objects.create(**data, is_active=False)
-        cls.user.emailaddress_set.create(email=cls.user.email, primary=True, verified=False)
 
     def test_login(self):
         login_url = reverse_lazy('auth_app:api_login')
@@ -39,9 +38,6 @@ class AuthApiTestCase(APITestCase):
         response = self.client.post(login_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.content)
         self.assertEqual(response.json(), {'email': [error_messages['not_verified']]})
-        email = self.user.emailaddress_set.get(primary=True)
-        email.verified = True
-        email.save()
         response = self.client.post(login_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.content)
         self.assertEqual(response.json(), {'email': [error_messages['not_active']]})
@@ -79,7 +75,6 @@ class AuthApiTestCase(APITestCase):
         self.assertEqual(response.json(), {'email': [error_messages['already_registered']]})
         user = UserService.get_user(email=data['email'])
         self.assertFalse(user.is_active)
-        self.assertFalse(user.email_verified())
         string = str(mail.outbox[0].message())
         pattern = r'(http?://[^\"\s]+)'
         result = re.findall(pattern, string)
@@ -91,7 +86,6 @@ class AuthApiTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
         user = UserService.get_user('new_user@test.com')
         self.assertTrue(user.is_active)
-        self.assertTrue(user.email_verified())
 
     @locmem_email_backend
     def test_password_reset(self):

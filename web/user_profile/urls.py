@@ -25,7 +25,6 @@ urlpatterns = [
         name='api_change_pass',
     ),
     path('user/list/', views.UserListView.as_view(), name='user_list'),
-    path('user/chat/', views.UserChatListView.as_view(), name='users_in_chat'),
     path('user/<user_id>/', views.UserProfileByIdView.as_view(), name='user_by_id'),
 ]
 
