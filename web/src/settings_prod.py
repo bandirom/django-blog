@@ -8,6 +8,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://blog.jollymanager.com',
     'http://blog.jollymanager.com',
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ['https://blog.jollymanager.com']
 
