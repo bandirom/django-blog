@@ -14,7 +14,7 @@
 * Swagger in Django Admin Panel
 * Ready for deploy by one click
 * Separated configuration for dev and prod (requirements and settings)
-* GitHub Actions
+* CI/CD: GitHub Actions/GitlabCI
 * Redefined default User model (main.models.py)
 * MailHog, Jaeger, RabbitMQ integrations
 * Multi-stage build for prod versions
