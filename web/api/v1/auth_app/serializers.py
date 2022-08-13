@@ -45,26 +45,6 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
-    def authenticate(self, **kwargs):
-        return authenticate(self.context['request'], **kwargs)
-
-    def validate(self, data: dict):
-        email = data.get('email')
-        password = data.get('password')
-        user = self.authenticate(email=email, password=password)
-        if not user:
-            user = AuthAppService.get_user(email)
-            if not user:
-                msg = {'email': error_messages['wrong_credentials']}
-                raise serializers.ValidationError(msg)
-            if not user.is_active:
-                msg = {'email': error_messages['not_active']}
-                raise serializers.ValidationError(msg)
-            msg = {'email': error_messages['wrong_credentials']}
-            raise serializers.ValidationError(msg)
-        data['user'] = user
-        return data
-
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()

@@ -1,11 +1,10 @@
 from datetime import date
-from typing import TYPE_CHECKING, Literal, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 from urllib.parse import urlencode, urljoin
 
 import requests
-from dj_rest_auth.jwt_auth import set_jwt_refresh_cookie
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.db import transaction
 from django.utils import timezone
@@ -16,10 +15,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from api.v1.auth_app.utils import LoginResponseSerializer
 from auth_app.utils import get_client_ip
 from main.decorators import except_shell
 from main.tasks import send_information_email
@@ -155,6 +156,105 @@ class PasswordResetConfirmHandler:
             raise ValidationError({'token': ['Invalid value']})
 
 
+class LoginService:
+    response_serializer = LoginResponseSerializer
+
+    error_messages = {
+        'not_active': _('Your account is not active. Please contact Your administrator'),
+        'wrong_credentials': _('Entered email or password is incorrect'),
+    }
+
+    def __init__(self, request):
+        self.request = request
+
+    def _authenticate(self, **kwargs: str):
+        return authenticate(self.request, **kwargs)
+
+    @staticmethod
+    @except_shell((User.DoesNotExist,))
+    def get_user(email: str) -> User:
+        return User.objects.get(email=email)
+
+    def validate_user_credentials(self, email: str, password: str) -> User:
+        user = self._authenticate(email=email, password=password)
+        if not user:
+            user = self.get_user(email)
+            if not user:
+                msg = {'email': self.error_messages['wrong_credentials']}
+                raise ValidationError(msg)
+            if not user.is_active:
+                msg = {'email': self.error_messages['not_active']}
+                raise ValidationError(msg)
+            msg = {'email': self.error_messages['wrong_credentials']}
+            raise ValidationError(msg)
+        return user
+
+    def __user_tokens(self, user: User) -> tuple[str, str]:
+        refresh: RefreshToken = RefreshToken().for_user(user)
+        return refresh.access_token, str(refresh)
+
+    def get_response(self, user: User):
+        access_token, refresh_token = self.__user_tokens(user)
+        access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
+        refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
+        return_expiration_times = getattr(settings, 'JWT_AUTH_RETURN_EXPIRATION', False)
+        data = {
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'user': user,
+        }
+        if return_expiration_times:
+            data['access_token_expiration'] = access_token_expiration
+            data['refresh_token_expiration'] = refresh_token_expiration
+        serializer = self.response_serializer(data)
+
+        response = Response(serializer.data, status=HTTP_200_OK)
+        self._set_jwt_cookies(response, access_token, refresh_token)
+        return response
+
+    def _set_jwt_cookies(self, response, access_token, refresh_token):
+        self._set_jwt_access_cookie(response, access_token)
+        self._set_jwt_refresh_cookie(response, refresh_token)
+
+    def _set_jwt_access_cookie(self, response, access_token):
+        cookie_name = getattr(settings, 'JWT_AUTH_COOKIE', None)
+        access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
+        cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
+        cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
+        cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
+
+        if cookie_name:
+            response.set_cookie(
+                cookie_name,
+                access_token,
+                expires=access_token_expiration,
+                secure=cookie_secure,
+                httponly=cookie_httponly,
+                samesite=cookie_samesite,
+                domain=getattr(settings, 'JWT_COOKIE_DOMAIN', None),
+            )
+
+    def _set_jwt_refresh_cookie(self, response, refresh_token):
+        refresh_token_expiration = (timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
+        refresh_cookie_name = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE', None)
+        refresh_cookie_path = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE_PATH', '/')
+        cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
+        cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
+        cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
+
+        if refresh_cookie_name:
+            response.set_cookie(
+                refresh_cookie_name,
+                refresh_token,
+                expires=refresh_token_expiration,
+                secure=cookie_secure,
+                httponly=cookie_httponly,
+                samesite=cookie_samesite,
+                path=refresh_cookie_path,
+            )
+
+
+
 class AuthAppService:
     @staticmethod
     def is_user_exist(email: str) -> bool:
@@ -249,25 +349,3 @@ def full_logout(request):
     return response
 
 
-def set_jwt_access_cookie(response, access_token):
-    cookie_name = getattr(settings, 'JWT_AUTH_COOKIE', None)
-    access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
-    cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
-    cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
-    cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
-
-    if cookie_name:
-        response.set_cookie(
-            cookie_name,
-            access_token,
-            expires=access_token_expiration,
-            secure=cookie_secure,
-            httponly=cookie_httponly,
-            samesite=cookie_samesite,
-            domain=getattr(settings, 'JWT_COOKIE_DOMAIN', None),
-        )
-
-
-def set_jwt_cookies(response, access_token, refresh_token):
-    set_jwt_access_cookie(response, access_token)
-    set_jwt_refresh_cookie(response, refresh_token)

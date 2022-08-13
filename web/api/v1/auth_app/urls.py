@@ -6,7 +6,7 @@ from . import views
 app_name = 'auth_app'
 
 urlpatterns = [
-    path('sing-in/', views.LoginView.as_view(), name='sign-in'),
+    path('sign-in/', views.LoginView.as_view(), name='sign-in'),
     path('sign-up/', views.SignUpView.as_view(), name='sign-up'),
     path('sign-up/verify/', views.VerifyEmailView.as_view(), name='sign-up-verify'),
     path('logout/', views.LogoutView.as_view(), name='logout'),

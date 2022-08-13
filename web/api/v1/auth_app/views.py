@@ -1,17 +1,13 @@
 from dj_rest_auth import views as auth_views
-from django.conf import settings
 from django.contrib.auth import logout as django_logout
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
-from rest_framework_simplejwt.settings import api_settings as jwt_settings
 
 from . import serializers
-from .services import AuthAppService, full_logout, set_jwt_cookies
+from .services import AuthAppService, LoginService, full_logout
 
 
 class SignUpView(GenericAPIView):
@@ -30,34 +26,17 @@ class SignUpView(GenericAPIView):
         )
 
 
-class LoginView(auth_views.LoginView):
+class LoginView(GenericAPIView):
     serializer_class = serializers.LoginSerializer
+    permission_classes = (AllowAny,)
 
-    def get_response(self):
-        serializer_class = self.get_response_serializer()
-
-        access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
-        refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
-        return_expiration_times = getattr(settings, 'JWT_AUTH_RETURN_EXPIRATION', False)
-
-        data = {
-            'user': self.user,
-            'access_token': self.access_token,
-            'refresh_token': self.refresh_token,
-        }
-
-        if return_expiration_times:
-            data['access_token_expiration'] = access_token_expiration
-            data['refresh_token_expiration'] = refresh_token_expiration
-
-        serializer = serializer_class(
-            instance=data,
-            context=self.get_serializer_context(),
-        )
-
-        response = Response(serializer.data, status=HTTP_200_OK)
-        set_jwt_cookies(response, self.access_token, self.refresh_token)
-        return response
+    def post(self, request):
+        serializer = self.get_serializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        service = LoginService(request)
+        user = service.validate_user_credentials(email=data['email'], password=data['password'])
+        return service.get_response(user)
 
 
 class LogoutView(auth_views.LogoutView):
