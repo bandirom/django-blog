@@ -102,5 +102,3 @@ class UserShortInfoView(RetrieveAPIView):
 
     def get_queryset(self):
         return UserProfileService.user_queryset()
-
-

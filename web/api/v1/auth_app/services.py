@@ -235,7 +235,7 @@ class LoginService:
             )
 
     def _set_jwt_refresh_cookie(self, response, refresh_token):
-        refresh_token_expiration = (timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
+        refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
         refresh_cookie_name = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE', None)
         refresh_cookie_path = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE_PATH', '/')
         cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
@@ -252,7 +252,6 @@ class LoginService:
                 samesite=cookie_samesite,
                 path=refresh_cookie_path,
             )
-
 
 
 class AuthAppService:
@@ -347,5 +346,3 @@ def full_logout(request):
         response.data = {"detail": message}
         response.status_code = status.HTTP_200_OK
     return response
-
-

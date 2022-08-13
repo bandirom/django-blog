@@ -16,7 +16,11 @@ class UserShortInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'avatar',)
+        fields = (
+            'id',
+            'full_name',
+            'avatar',
+        )
 
 
 class JwtUserDataSerializer(serializers.Serializer):
