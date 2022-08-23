@@ -13,9 +13,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from main.decorators import except_shell
 from main.tasks import send_information_email
-
 
 if TYPE_CHECKING:
     from main.models import UserType
@@ -56,7 +56,7 @@ class Confirmation(BaseEmailHandler):
             {
                 'key': self.user.confirmation_key,
             },
-            safe=':+'
+            safe=':+',
         )
         return f'{url}?{query_params}'
 
