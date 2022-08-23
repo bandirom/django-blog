@@ -42,6 +42,20 @@ class User(AbstractUser):
     def full_name(self) -> str:
         return super().get_full_name()
 
+    @property
+    def confirmation_key(self) -> str:
+        return signing.dumps(obj=self.pk)
+
+    @classmethod
+    def from_key(cls, key: str) -> Optional[UserType]:
+        max_age = 60 * 60 * 24 * settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
+        try:
+            pk = signing.loads(key, max_age=max_age)
+            user = cls.objects.get(id=pk)
+        except (signing.SignatureExpired, signing.BadSignature, cls.DoesNotExist):
+            user = None
+        return user
+
     def user_likes(self) -> int:
         return self.likes.all().count()
 
@@ -64,17 +78,3 @@ class User(AbstractUser):
     @cached_property
     def full_profile_url(self) -> str:
         return urljoin(settings.BACKEND_URL, str(self.get_absolute_url()))
-
-    @property
-    def confirmation_key(self) -> str:
-        return signing.dumps(obj=self.pk)
-
-    @classmethod
-    def from_key(cls, key: str) -> Optional[UserType]:
-        max_age = 60 * 60 * 24 * settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
-        try:
-            pk = signing.loads(key, max_age=max_age)
-            user = cls.objects.get(id=pk)
-        except (signing.SignatureExpired, signing.BadSignature, cls.DoesNotExist):
-            user = None
-        return user
