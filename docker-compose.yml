@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: docker/dev/web/Dockerfile
     volumes:
-      - ./web/:/usr/src/web/:cached
+      - ./web/:/usr/src/web/
       - postgres_socket:/postgres_socket
     ports:
       - "8008:8000"
@@ -70,7 +70,7 @@ services:
     entrypoint: ""
     command: celery -A src worker --beat -l info
     volumes:
-      - ./web/:/usr/src/web/:cached
+      - ./web/:/usr/src/web/
       - postgres_socket:/postgres_socket
     environment:
       <<: *variables
