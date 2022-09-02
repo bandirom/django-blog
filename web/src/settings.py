@@ -51,6 +51,7 @@ API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
+EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 

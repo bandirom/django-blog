@@ -1,19 +1,16 @@
-from datetime import date
-from typing import TYPE_CHECKING, Literal, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 from urllib.parse import urlencode, urljoin
 
-import requests
-from dj_rest_auth.jwt_auth import set_jwt_refresh_cookie
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from api.email_services import BaseEmailHandler
 from main.decorators import except_shell
 from main.tasks import send_information_email
 
@@ -32,22 +29,9 @@ class CreateUserData(NamedTuple):
     password_2: str
 
 
-class BaseEmailHandler:
-    FRONTEND_PATH = ''
+class ConfirmationEmailHandler(BaseEmailHandler):
     FRONTEND_URL = settings.FRONTEND_URL
-    TEMPLATE_NAME = ''
-
-    def __init__(self, user: User, language: str = 'en'):
-        self.user = user
-        self._locale: str = language if not language else get_language()
-
-    @property
-    def locale(self) -> str:
-        return self._locale
-
-
-class Confirmation(BaseEmailHandler):
-    FRONTEND_PATH = '/confirm/'
+    FRONTEND_PATH = '/confirm'
     TEMPLATE_NAME = 'emails/verify_email.html'
 
     def _get_activate_url(self) -> str:
@@ -60,18 +44,15 @@ class Confirmation(BaseEmailHandler):
         )
         return f'{url}?{query_params}'
 
-    def send_confirmation_email(self):
-        kwargs = {
+    def email_kwargs(self, **kwargs) -> dict:
+        return {
             'subject': _('Register confirmation email'),
-            'template_name': self.TEMPLATE_NAME,
             'to_email': self.user.email,
-            'letter_language': self.locale,
             'context': {
                 'user': self.user.full_name,
                 'activate_url': self._get_activate_url(),
             },
         }
-        send_information_email.apply_async(kwargs=kwargs)
 
 
 class AuthAppService:
