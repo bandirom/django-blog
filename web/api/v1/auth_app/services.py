@@ -4,13 +4,12 @@ from urllib.parse import urlencode, urljoin
 
 import requests
 from django.conf import settings
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.tokens import default_token_generator
 from django.db import transaction
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -20,8 +19,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.v1.auth_app.utils import LoginResponseSerializer
-from auth_app.utils import get_client_ip
+from api.email_services import BaseEmailHandler
+from api.v1.auth_app.utils import LoginResponseSerializer, get_client_ip
 from main.decorators import except_shell
 from main.tasks import send_information_email
 from user_profile.choices import GenderChoice
@@ -50,21 +49,8 @@ class CreateUserData(NamedTuple):
     gender: GenderChoice = None
 
 
-class BaseEmailHandler:
-    FRONTEND_PATH = ''
-    FRONTEND_URL = settings.FRONTEND_URL
-    TEMPLATE_NAME = ''
-
-    def __init__(self, user: User, language: str = 'en'):
-        self.user = user
-        self._locale: str = language if not language else get_language()
-
-    @property
-    def locale(self) -> str:
-        return self._locale
-
-
 class Confirmation(BaseEmailHandler):
+    FRONTEND_URL = settings.FRONTEND_URL
     FRONTEND_PATH = '/confirm/'
     TEMPLATE_NAME = 'emails/verify_email.html'
 
@@ -93,6 +79,7 @@ class Confirmation(BaseEmailHandler):
 
 
 class PasswordReset(BaseEmailHandler):
+    FRONTEND_URL = settings.FRONTEND_URL
     TEMPLATE_NAME = 'emails/password_reset.html'
     FRONTEND_PATH = '/reset/confirm'
 
