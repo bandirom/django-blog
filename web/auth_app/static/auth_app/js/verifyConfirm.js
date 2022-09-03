@@ -4,8 +4,8 @@ $(function () {
 
 function verifyEmail() {
   const api_url = $('#verifyConfirm').data('href')
-  let index = window.location.pathname.split('/');
-  let data = {'key': index[3]}
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  let data = {'key': urlSearchParams.get('key')}
   $.ajax({
     url: api_url,
     type: 'post',

@@ -89,7 +89,7 @@ class VerifyEmailView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         service = AuthAppService()
-        service.password_reset_confirm(serializer.validated_data)
+        service.verify_email_confirm(key=serializer.data['key'])
         return Response(
             {'detail': _('Email verified')},
             status=status.HTTP_200_OK,

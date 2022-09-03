@@ -49,9 +49,9 @@ class CreateUserData(NamedTuple):
     gender: GenderChoice = None
 
 
-class Confirmation(BaseEmailHandler):
+class ConfirmationEmailHandler(BaseEmailHandler):
     FRONTEND_URL = settings.FRONTEND_URL
-    FRONTEND_PATH = '/confirm/'
+    FRONTEND_PATH = '/confirm'
     TEMPLATE_NAME = 'emails/verify_email.html'
 
     def _get_activate_url(self) -> str:
@@ -64,18 +64,15 @@ class Confirmation(BaseEmailHandler):
         )
         return f'{url}?{query_params}'
 
-    def send_confirmation_email(self):
-        kwargs = {
+    def email_kwargs(self, **kwargs) -> dict:
+        return {
             'subject': _('Register confirmation email'),
-            'template_name': self.TEMPLATE_NAME,
             'to_email': self.user.email,
-            'letter_language': self.locale,
             'context': {
                 'user': self.user.full_name,
                 'activate_url': self._get_activate_url(),
             },
         }
-        send_information_email.apply_async(kwargs=kwargs)
 
 
 class PasswordReset(BaseEmailHandler):
@@ -94,21 +91,18 @@ class PasswordReset(BaseEmailHandler):
         )
         return f'{url}?{query_params}'
 
-    def send_password_reset_email(self):
+    def email_kwargs(self, **kwargs) -> dict:
         uid = urlsafe_base64_encode(force_bytes(self.user.pk))
         token = default_token_generator.make_token(self.user)
         reset_url = self._get_reset_url(uid=uid, token=token)
-        kwargs = {
+        return {
             'subject': _('Password Reset'),
-            'template_name': self.TEMPLATE_NAME,
             'to_email': self.user.email,
-            'letter_language': self.locale,
             'context': {
                 'user': self.user.full_name,
                 'reset_url': reset_url,
             },
         }
-        send_information_email.apply_async(kwargs=kwargs)
 
 
 class PasswordResetConfirmHandler:
@@ -268,7 +262,7 @@ class AuthAppService:
         user = self.get_user(email)
         if not user:
             return
-        PasswordReset(user).send_password_reset_email()
+        PasswordReset(user).send_email()
 
     def password_reset_confirm(self, validated_data: dict) -> None:
         data = PasswordResetConfirmData(**validated_data)
@@ -277,6 +271,15 @@ class AuthAppService:
         user = handler.user
         user.set_password(data.password_1)
         user.save(update_fields=['password'])
+
+    def verify_email_confirm(self, key: str):
+        user = User.from_key(key)
+        if not user:
+            raise ValidationError({'key': _('Invalid or expired confirmation key')})
+        if user.is_active:
+            raise ValidationError({'key': _('User already verified')})
+        user.is_active = True
+        user.save(update_fields=['is_active'])
 
     @transaction.atomic()
     def create_user(self, validated_data: dict):
@@ -293,7 +296,7 @@ class AuthAppService:
             birthday=data.birthday,
             gender=data.gender,
         )
-        Confirmation(user).send_confirmation_email()
+        ConfirmationEmailHandler(user).send_email()
 
 
 def full_logout(request):
