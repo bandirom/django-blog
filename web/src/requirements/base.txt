@@ -6,6 +6,7 @@ redis~=4.3.3
 djangorestframework==3.13.1
 drf-yasg~=1.21
 celery~=5.2
+graphene-django==2.15.0
 
 ### Optional dependencies ###
 

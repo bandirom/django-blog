@@ -2,6 +2,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.views.decorators.csrf import csrf_exempt
+from graphene_django.views import GraphQLView
 
 from .yasg import urlpatterns as swagger_url
 
@@ -20,6 +22,7 @@ urlpatterns = [
     path('api/', include('rest_framework.urls')),
     path('rosetta/', include('rosetta.urls')),
     path('summernote/', include('django_summernote.urls')),
+    path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ]
 
 urlpatterns += swagger_url
