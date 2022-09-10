@@ -36,6 +36,19 @@ class CategoryQuery(graphene.ObjectType):
     all_categories = DjangoFilterConnectionField(CategoryNode)
 
 
+class CategoryConnection(relay.Connection):
+    class Meta:
+        node = CategoryNode
+
+
+class PaginationCategoryQuery:
+    categories = relay.ConnectionField(CategoryConnection)
+
+    @staticmethod
+    def resolve_categories(root, info, **kwargs):  # first, last, before, after
+        return Category.objects.all()
+
+
 class CategoryMutation(graphene.ObjectType):
     pass
 
