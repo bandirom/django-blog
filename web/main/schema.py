@@ -1,21 +1,17 @@
 import graphene
 
-from blog.schema import CategoryQuery, CategoryMutation, PaginationCategoryQuery
+from blog.schema import CategoryMutation, CategoryQuery, PaginationCategoryQuery
 
 
-class Query(
-    CategoryQuery,
-    PaginationCategoryQuery,
-    graphene.ObjectType
-):
+class Query(CategoryQuery, PaginationCategoryQuery, graphene.ObjectType):
     pass
 
 
-class Mutation(
-    CategoryMutation,
-    graphene.ObjectType
-):
+class Mutation(CategoryMutation, graphene.ObjectType):
     pass
 
 
-schema = graphene.Schema(query=Query, )
+schema = graphene.Schema(
+    query=Query,
+    # mutation=Mutation,
+)

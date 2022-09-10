@@ -1,11 +1,10 @@
 import graphene
-from graphene_django import DjangoObjectType
-from graphene import relay, ObjectType
+from graphene import ObjectType, relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import ResolveInfo
 
-from blog.models import Category, Article
+from blog.models import Article, Category
 
 
 class ArticleType(DjangoObjectType):
@@ -20,7 +19,7 @@ class CategoryNode(DjangoObjectType):
     class Meta:
         model = Category
         filter_fields = {
-            'name': ['exact', 'icontains']
+            'name': ['exact', 'icontains'],
         }
         interfaces = (relay.Node,)
         fields = ('id', 'name', 'article_set')
@@ -52,20 +51,21 @@ class PaginationCategoryQuery:
 class CategoryMutation(graphene.ObjectType):
     pass
 
-# class CategoryQuery(graphene.ObjectType):
-    # category = graphene.Field(CategoryNode, id=graphene.Int(required=False), name=graphene.String())
-    # all_categories = graphene.List(CategoryType)
-    # @staticmethod
-    # def resolve_all_categories(root, info):
-    #     return Category.objects.prefetch_related('article_set').all()
 
-    # @staticmethod
-    # def resolve_category(root, info: ResolveInfo, id=None, name=None):
-    #     print(id, name)
-    #     try:
-    #         if name:
-    #             return Category.objects.get(name=name)
-    #         elif id:
-    #             return Category.objects.get(id=id)
-    #     except Category.DoesNotExist:
-    #         return None
+# class CategoryQuery(graphene.ObjectType):
+# category = graphene.Field(CategoryNode, id=graphene.Int(required=False), name=graphene.String())
+# all_categories = graphene.List(CategoryType)
+# @staticmethod
+# def resolve_all_categories(root, info):
+#     return Category.objects.prefetch_related('article_set').all()
+
+# @staticmethod
+# def resolve_category(root, info: ResolveInfo, id=None, name=None):
+#     print(id, name)
+#     try:
+#         if name:
+#             return Category.objects.get(name=name)
+#         elif id:
+#             return Category.objects.get(id=id)
+#     except Category.DoesNotExist:
+#         return None

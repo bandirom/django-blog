@@ -4,7 +4,7 @@ from urllib.parse import urlencode, urljoin
 
 import requests
 from django.conf import settings
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.db import transaction
 from django.utils import timezone
