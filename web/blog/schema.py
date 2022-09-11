@@ -48,9 +48,30 @@ class PaginationCategoryQuery:
         return Category.objects.all()
 
 
-class CategoryMutation(graphene.ObjectType):
-    pass
+class CategoryInput(graphene.InputObjectType):
+    # id = graphene.ID()
+    name = graphene.String()
 
+
+class CreateCategory(graphene.Mutation):
+    class Arguments:
+        category_data = CategoryInput(required=True)
+
+    category = graphene.Field(CategoryNode)
+
+
+    def clean(self, category_data):
+        print(f'{category_data=}')
+
+    @staticmethod
+    def mutate(root, info, category_data: CategoryInput):
+        print('mutate', category_data)
+        category = Category.objects.create(name=category_data.name)
+        return CreateCategory(category=category)
+
+
+class CategoryMutation(graphene.ObjectType):
+    create_category = CreateCategory.Field()
 
 # class CategoryQuery(graphene.ObjectType):
 # category = graphene.Field(CategoryNode, id=graphene.Int(required=False), name=graphene.String())
