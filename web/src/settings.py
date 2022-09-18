@@ -2,8 +2,6 @@ import os
 
 from django.utils.translation import gettext_lazy as _
 
-from .additional_settings.allauth_settings import *
-from .additional_settings.cacheops_settings import *
 from .additional_settings.celery_settings import *
 from .additional_settings.defender_settings import *
 from .additional_settings.jwt_settings import *
@@ -206,7 +204,7 @@ SESSION_COOKIE_NAME = 'sessionid_blog'
 CSRF_COOKIE_NAME = 'csrftoken_blog'
 
 ROSETTA_SHOW_AT_ADMIN_PANEL = DEBUG
-
+REST_AUTH_TOKEN_MODEL = None
 
 if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
