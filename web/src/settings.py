@@ -2,11 +2,7 @@ import os
 
 from django.utils.translation import gettext_lazy as _
 
-from .additional_settings.allauth_settings import *
-from .additional_settings.cacheops_settings import *
 from .additional_settings.celery_settings import *
-from .additional_settings.defender_settings import *
-from .additional_settings.jwt_settings import *
 from .additional_settings.logging_settings import *
 from .additional_settings.smtp_settings import *
 from .additional_settings.summernote_settings import *
@@ -20,7 +16,6 @@ DEBUG = int(os.environ.get('DEBUG', 0))
 
 ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
-SITE_ID = 1
 USER_AVATAR_MAX_SIZE = 4.0
 
 AUTH_USER_MODEL = 'main.User'
@@ -54,6 +49,7 @@ HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+REST_AUTH_TOKEN_MODEL = None
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -62,7 +58,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
 ]
 
 THIRD_PARTY_APPS = [
@@ -101,7 +96,7 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('microservice_request.permissions.HasApiKeyOrIsAuthenticated',),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -163,11 +158,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CACHES = {
     'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': REDIS_URL,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
     }
 }
 
@@ -196,6 +188,8 @@ CSRF_COOKIE_NAME = 'csrftoken'
 
 ROSETTA_SHOW_AT_ADMIN_PANEL = DEBUG
 
+DEFENDER_REDIS_URL = REDIS_URL + '/1'
+DEFENDER_USE_CELERY = False
 
 if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
     # More information on site https://sentry.io/
