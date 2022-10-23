@@ -1,5 +1,9 @@
 from django.urls import path
 
+from . import views
+
 app_name = 'contact_us'
 
-urlpatterns = []
+urlpatterns = [
+    path('feedback/', views.FeedbackView.as_view(), name='feedback'),
+]

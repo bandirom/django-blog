@@ -2,10 +2,6 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 
 
-class CharFilter(filters.BaseInFilter, filters.CharFilter):
-    pass
-
-
 class ArticleFilter(filters.FilterSet):
     search = filters.CharFilter(method='search_filter')
 

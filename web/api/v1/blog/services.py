@@ -1,8 +1,7 @@
-from django.conf import settings
 from django.db.models import Count
 
-from .choices import ArticleStatus
-from .models import Article, Category, Comment
+from blog.choices import ArticleStatus
+from blog.models import Article, Category
 
 
 class BlogService:

@@ -11,7 +11,7 @@
 
 <div class="row">
   <div class="col-md-8">
-    <form action="{% url 'contact_us:feedback' %}" method="post">
+    <form action="{% url 'api:v1:contact_us:feedback' %}" method="post">
       {% csrf_token %}
       {% if not user.is_authenticated %}
       <input class="form-control" name="name" placeholder="Name..."/><br/>

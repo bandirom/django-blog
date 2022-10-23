@@ -8,7 +8,6 @@ from . import views
 app_name = 'blog'
 
 router = DefaultRouter()
-router.register('categories', views.CategoryViewSet, basename='categories')
 router.register('posts', views.ArticleViewSet, basename='post')
 
 urlpatterns = [
