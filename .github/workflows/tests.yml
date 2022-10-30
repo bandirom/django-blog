@@ -1,7 +1,7 @@
 name: Tests
 
 env:
-  COVERAGE_THRESHOLD: 95
+  COVERAGE_THRESHOLD: 80
 
 on:
   push:
