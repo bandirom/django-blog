@@ -21,7 +21,7 @@ class ViewSet(ModelViewSet):
 class ArticleViewSet(ViewSet):
     filterset_class = ArticleFilter
 
-    def get_template_name(self):
+    def template_name(self):
         if self.action == 'list':
             return 'blog/post_list.html'
         elif self.action == 'retrieve':
@@ -34,13 +34,3 @@ class ArticleViewSet(ViewSet):
 
     def get_queryset(self):
         return BlogService.get_active_articles()
-
-    def list(self, request, **kwargs):
-        response = super().list(request, **kwargs)
-        response.template_name = self.get_template_name()
-        return response
-
-    def retrieve(self, request, **kwargs):
-        response = super().retrieve(request, **kwargs)
-        response.template_name = self.get_template_name()
-        return response
