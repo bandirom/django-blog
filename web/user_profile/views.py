@@ -22,8 +22,6 @@ class ProfileViewSet(GenericViewSet):
     def get_serializer_class(self):
         if self.action == 'profile':
             return serializers.UserSerializer
-        elif self.action == 'image_update':
-            return serializers.UserImageSerializer
         elif self.action == 'change_password':
             return PasswordChangeSerializer
         elif self.action == 'update':
@@ -43,17 +41,6 @@ class ProfileViewSet(GenericViewSet):
         serializer = self.get_serializer(instance=self.get_object())
         response = Response(serializer.data, status=status.HTTP_200_OK)
         return response
-
-    def image_update(self, request):
-        """
-        Change user avatar
-
-        POST request
-        """
-        serializer = self.get_serializer(data=request.data, instance=request.user.profile)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def change_password(self, request):
         serializer = self.get_serializer(data=request.data, instance=request.user)

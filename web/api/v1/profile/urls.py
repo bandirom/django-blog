@@ -7,4 +7,5 @@ app_name = 'profile'
 urlpatterns = [
     path('jwt/', views.JwtUserDataView.as_view(), name='user_data_by_jwt'),
     path('chat/', views.UserChatListView.as_view(), name='user_list_data'),
+    path('avatar/update/', views.AvatarUpdateView.as_view(), name='avatar_update'),
 ]

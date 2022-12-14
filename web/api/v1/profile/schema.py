@@ -20,9 +20,9 @@ class CreateUserInput(graphene.InputObjectType):
 
 
 class CreateUser(graphene.Mutation):
-
     class Arguments:
         user_data = CreateUserInput(required=True)
+
     user = graphene.Field(UserNode)
 
     @staticmethod

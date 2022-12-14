@@ -59,7 +59,6 @@ class CreateCategory(graphene.Mutation):
 
     category = graphene.Field(CategoryNode)
 
-
     def clean(self, category_data):
         print(f'{category_data=}')
 
@@ -72,6 +71,7 @@ class CreateCategory(graphene.Mutation):
 
 class CategoryMutation(graphene.ObjectType):
     create_category = CreateCategory.Field()
+
 
 # class CategoryQuery(graphene.ObjectType):
 # category = graphene.Field(CategoryNode, id=graphene.Int(required=False), name=graphene.String())
