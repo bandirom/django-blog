@@ -55,7 +55,7 @@ class UserImageSerializer(serializers.ModelSerializer):
             )
         return avatar
 
-    def save(self, *args, **kwargs):
+    def save(self):
         if self.instance.avatar and not self.instance.is_default_image():
             self.instance.set_image_to_default()
         self.instance.avatar = self.validated_data['avatar']
