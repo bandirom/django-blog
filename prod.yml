@@ -1,4 +1,6 @@
-version: "3.7"
+x-variables: &variables
+  ENV_STAGE: dev
+  USE_HTTPS: 0
 
 services:
   blog:
@@ -76,8 +78,6 @@ services:
       - redis_socket:/redis_socket
     networks:
       - separated_network
-    logging:
-      driver: none
     healthcheck:
       test: [ "CMD", "redis-cli","ping" ]
       interval: 1m20s
