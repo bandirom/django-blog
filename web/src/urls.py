@@ -18,7 +18,6 @@ urlpatterns = [
     path('', include('contact_us.urls')),
     path('actions/', include('actions.urls')),
     path(f'{admin_url}/', admin.site.urls),
-    path(f'{admin_url}/defender/', include('defender.urls')),
     path('api/', include('rest_framework.urls')),
     path('rosetta/', include('rosetta.urls')),
     path('summernote/', include('django_summernote.urls')),

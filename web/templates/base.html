@@ -12,6 +12,7 @@
 
   <title>{% block title %} Blog Post {% endblock title%} </title>
   <link href="{% static 'main/css/main.css' %}" rel="stylesheet">
+  <link href="{% static 'main/css/toast.css' %}" rel="stylesheet">
 
   {% block head %}{% endblock head %}
 </head>
@@ -30,11 +31,15 @@
   <hr>
   {% include 'includes/footer.html' %}
 </div>
+<div class="toast">Sample toast message</div>
+
 <script src="{% static 'main/js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'main/js/toast.js' %}"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 <script>
   $(document).ready(function(){
+    Toast.init()
     $.getScript('{% static 'auth_app/js/logout.js' %}');
     {% block jquery %} {% endblock jquery %}
 

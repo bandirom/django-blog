@@ -3,7 +3,6 @@ import os
 from django.utils.translation import gettext_lazy as _
 
 from .additional_settings.celery_settings import *
-from .additional_settings.defender_settings import *
 from .additional_settings.jwt_settings import *
 from .additional_settings.logging_settings import *
 from .additional_settings.smtp_settings import *
@@ -74,7 +73,6 @@ INSTALLED_APPS = [
 THIRD_PARTY_APPS = [
     'dj_rest_auth',
     'rest_framework_simplejwt.token_blacklist',
-    'defender',
     'rest_framework',
     'drf_yasg',
     'corsheaders',
@@ -105,7 +103,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'defender.middleware.FailedLoginMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 ]
 
@@ -172,11 +169,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CACHES = {
     'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': REDIS_URL,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
     }
 }
 
