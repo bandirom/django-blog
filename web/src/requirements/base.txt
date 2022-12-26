@@ -14,7 +14,7 @@ graphene-django==3.0
 pyamqp==0.1.0.7
 
 # Filtering
-django-filter==22.1
+django-filter~=22.1
 
 # Cors headers
 django-cors-headers~=3.13
@@ -39,10 +39,10 @@ sentry-sdk~=1.11
 django-microservice-request~=0.5
 
 # TextEditor
-django-summernote~=0.8.20.0
+django-summernote==0.8.20.0
 
 # Tags
-django-taggit==3.1
+django-taggit~=3.1
 
 # Countries
 django-countries~=7.5
@@ -50,5 +50,3 @@ django-countries~=7.5
 # PhoneNumberField
 django-phonenumber-field~=7.0
 phonenumberslite~=8.13
-
-rsa==4.7.2

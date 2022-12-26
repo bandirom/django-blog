@@ -46,7 +46,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-title = settings.MICROSERVICE_TITLE
+title = settings.PROJECT_TITLE
 
 admin.site.site_title = title
 admin.site.site_header = title
