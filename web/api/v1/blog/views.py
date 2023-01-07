@@ -12,13 +12,16 @@ class ArticleListView(ListAPIView):
     permission_classes = ()
 
     def get_queryset(self):
-        return BlogService.get_active_articles()
+        return BlogService().get_active_articles()
 
 
 class ArticleDetailView(GenericAPIView):
     permission_classes = ()
     serializer_class = serializers.FullArticleSerializer
 
-    def get(self, request):
+    def get_object(self):
+        return BlogService().get_article_by_slug(self.kwargs['slug'])
 
-        return Response()
+    def get(self, request, slug: str):
+        serializer = self.get_serializer(self.get_object())
+        return Response(serializer.data)

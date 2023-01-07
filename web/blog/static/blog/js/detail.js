@@ -1,6 +1,23 @@
 $(function () {
+  getDetailData()
   $('#formReview').submit(leftComment);
 });
+
+
+function getDetailData() {
+  const slug = window.location.pathname.split('/')[2]
+  const url = `/api/v1/article/detail/${slug}/`
+  $.ajax({
+      type: "GET",
+      url: url,
+      success: handleRenderPage,
+  })
+}
+
+const handleRenderPage = (data) => {
+  console.log('success', data)
+}
+
 
 function addParentToComment(commentAuthor, parent_id) {
   document.getElementById("commentParent").value = parent_id;

@@ -14,7 +14,7 @@
       <p class="lead"><i class="fa fa-user"></i> by <a href="">{{ author.full_name }}</a>
       </p>
       <hr>
-      <p><i class="fa fa-calendar"></i> Posted on {{ created | date_time }}</p>
+      <p><i class="fa fa-calendar"></i> Posted on {{ created }}</p>
       <p><i class="fa fa-tags"></i> Tags:
         {% for tag in tag_list %}
           <a href="#"><span class="badge badge-info">{{ tag }}</span></a>

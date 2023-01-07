@@ -14,8 +14,7 @@ class BlogService:
     def category_queryset() -> QuerySet[Category]:
         return Category.objects.all()
 
-    @staticmethod
-    def get_active_articles() -> QuerySet[Article]:
+    def get_active_articles(self) -> QuerySet[Article]:
         comment_prefetch = Prefetch(
             'comment_set', queryset=BlogService.get_comments_queryset(), to_attr='comments'
         )
@@ -42,10 +41,13 @@ class BlogService:
     def get_article_comments(article_id: int):
         return Comment.objects.filter(article_id=article_id, parent__isnull=True)
 
-    @staticmethod
     @except_shell((Article.DoesNotExist,))
-    def get_article(article_id: int):
+    def get_article(self, article_id: int) -> Article:
         return Article.objects.select_related('category').prefetch_related('comment_set').get(id=article_id)
+
+    @except_shell((Article.DoesNotExist,))
+    def get_article_by_slug(self, slug: str) -> Article:
+        return self.get_active_articles().get(slug=slug)
 
     @staticmethod
     @except_shell((Comment.DoesNotExist,))
