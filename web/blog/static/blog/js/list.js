@@ -1,20 +1,25 @@
+$(function () {
+  apiRequest()
 
+})
 let requestedNewPage = false
 
 $(window).scroll(function () {
-  let pagination = $('#pagination')
+  const pagination = $('#pagination')
   if (pagination.height() - $(this).height() <= $(this).scrollTop() && !requestedNewPage) {
     nextUrl = pagination.attr('data-href-next')
     if (nextUrl && nextUrl != 'None'){
        requestedNewPage = true
        console.log(nextUrl)
-       apiRequest(pagination)
+       apiRequest()
     }
   }
 });
 
 
-function apiRequest(pagination){
+function apiRequest() {
+  let pagination = $('#pagination')
+  console.log('apiRequest')
   $.ajax({
       type: "GET",
       url: pagination.attr('data-href-next'),

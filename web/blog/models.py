@@ -75,8 +75,8 @@ class Article(models.Model):
         self.slug = self.get_slug(self.title)
         return super().save(**kwargs)
 
-    def get_absolute_url(self):
-        return reverse_lazy('blog:post-detail', kwargs={'slug': self.slug})
+    def get_absolute_url(self) -> str:
+        return reverse_lazy('blog:blog-detail', kwargs={'slug': self.slug})
 
     def likes(self) -> int:
         return self.votes.likes().count()
