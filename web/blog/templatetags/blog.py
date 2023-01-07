@@ -1,7 +1,7 @@
 from django import template
 
+from api.v1.blog.services import BlogService
 from blog.serializers import CategorySerializer
-from blog.services import BlogService
 
 register = template.Library()
 

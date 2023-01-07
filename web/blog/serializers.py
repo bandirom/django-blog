@@ -8,7 +8,7 @@ from main.taggit_serializers import TaggitSerializer, TagListSerializerField
 from user_profile.serializers import ShortUserSerializer
 
 from .models import Article, Category, Comment
-from .services import BlogService
+from api.v1.blog.services import BlogService
 
 User = get_user_model()
 

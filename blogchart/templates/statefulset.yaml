@@ -39,7 +39,7 @@ spec:
               value: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}
             - name: HEALTH_CHECK_URL
               value: {{ .Values.project.healthCheckUrl }}
-            - name: MICROSERVICE_TITLE
+            - name: PROJECT_TITLE
               value: {{ .Values.project.microserviceName }}
             - name: REDIS_URL
               value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
