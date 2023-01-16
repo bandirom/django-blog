@@ -119,7 +119,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField()
     like_status = serializers.SerializerMethodField(method_name='get_like_status')
 
-    def get_like_status(self, obj) -> str:
+    def get_like_status(self, obj: Article) -> str:
         user = self.context['request'].user
         if not user.is_authenticated:
             return LikeIconStatus.UNDONE
