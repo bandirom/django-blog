@@ -4,11 +4,11 @@ from rest_framework import serializers
 
 from actions.choices import LikeIconStatus, LikeStatus
 from actions.serializers import LikeDislikeRelationSerializer
-from main.taggit_serializers import TaggitSerializer, TagListSerializerField
+from api.v1.blog.services import BlogService
 from user_profile.serializers import ShortUserSerializer
 
 from .models import Article, Category, Comment
-from api.v1.blog.services import BlogService
+from main.taggit_serializers import TaggitSerializer, TagListSerializerField
 
 User = get_user_model()
 

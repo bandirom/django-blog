@@ -4,9 +4,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
 from blog.models import Article, Comment
-from main.decorators import except_shell
 
 from .models import Action, Follower, LikeDislike
+from main.decorators import except_shell
 
 User = get_user_model()
 

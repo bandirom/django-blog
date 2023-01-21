@@ -3,10 +3,9 @@ from typing import List
 from django.db.models import Count, Prefetch, Q, QuerySet
 
 from blog.choices import ArticleStatus
-from main.decorators import except_shell
-
-
 from blog.models import Article, ArticleTag, Category, Comment
+
+from main.decorators import except_shell
 
 
 class BlogService:

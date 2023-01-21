@@ -5,8 +5,9 @@ from actions.serializers import LikeDislikeRelationSerializer
 from api.v1.blog.services import BlogService
 from blog.models import Article
 from blog.serializers import CategorySerializer, CommentSerializer
-from main.taggit_serializers import TagListSerializerField, TaggitSerializer
 from user_profile.serializers import ShortUserSerializer
+
+from main.taggit_serializers import TaggitSerializer, TagListSerializerField
 
 
 class ArticleSerializer(serializers.ModelSerializer):

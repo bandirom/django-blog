@@ -1,8 +1,7 @@
 from django.urls import path
 
-from main.views import TemplateAPIView
-
 from . import views
+from main.views import TemplateAPIView
 
 app_name = 'contact_us'
 

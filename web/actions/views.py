@@ -6,10 +6,9 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from main.pagination import BasePageNumberPagination
-
 from . import serializers
 from .services import ActionsService
+from main.pagination import BasePageNumberPagination
 
 logger = logging.getLogger(__name__)
 

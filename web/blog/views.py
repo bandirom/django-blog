@@ -5,12 +5,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from main.pagination import BasePageNumberPagination
-from main.views import TemplateAPIView
+from api.v1.blog.services import BlogService
 
 from . import serializers
 from .serializers import CategorySerializer
-from api.v1.blog.services import BlogService
+from main.pagination import BasePageNumberPagination
+from main.views import TemplateAPIView
 
 logger = logging.getLogger(__name__)
 
