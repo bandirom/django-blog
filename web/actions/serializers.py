@@ -20,7 +20,7 @@ class LikeDislikeSerializer(serializers.Serializer):
     vote = serializers.ChoiceField(choices=LikeStatus.choices)
 
     def save(self):
-        vote = self.validated_dat['vote']
+        vote = self.validated_data['vote']
 
         icon_status = LikeIconStatus.LIKED if vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
         model = self.validated_data['model']
