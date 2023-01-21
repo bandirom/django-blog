@@ -6,6 +6,7 @@ from django.test import Client
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from main.models import UserType
+from user_profile.models import Profile
 
 pyteststmark = [pytest.mark.django_db]
 
@@ -19,12 +20,14 @@ class UserToken(NamedTuple):
 
 @pytest.fixture()
 def user() -> User:
-    return User.objects.create_user(
+    user = User.objects.create_user(
         email='harley.quinn@email.com',
         password='some_p@ssword',
         first_name='Margot',
         last_name='Robbie',
     )
+    Profile.objects.create(user=user)
+    return user
 
 
 @pytest.fixture()
