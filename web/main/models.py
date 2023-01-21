@@ -1,4 +1,4 @@
-from typing import Optional, TypeVar
+from typing import Optional, Self, TypeVar
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -47,7 +47,7 @@ class User(AbstractUser):
         return signing.dumps(obj=self.pk)
 
     @classmethod
-    def from_key(cls, key: str) -> Optional[UserType]:
+    def from_key(cls, key: str) -> Optional[Self]:
         max_age = 60 * 60 * 24 * settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
         try:
             pk = signing.loads(key, max_age=max_age)
