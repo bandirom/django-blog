@@ -2,7 +2,7 @@
 django-silk~=5.0
 
 # Test coverage
-coverage[toml]~=6.5
+coverage[toml]~=7.0
 
 # Freeze time in tests
 freezegun~=1.2
@@ -19,5 +19,9 @@ django-debug-toolbar-request-history~=0.1
 
 # Linters
 black~=22.6
-flake8~=5.0
+flake8~=6.0
 isort~=5.10
+
+pytest~=7.2
+pytest-django~=4.5
+pytest-mock~=3.10
