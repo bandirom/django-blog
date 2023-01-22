@@ -5,8 +5,9 @@ from django.contrib.auth import get_user_model
 from django.test import Client
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from main.models import UserType
 from user_profile.models import Profile
+
+from main.models import UserType
 
 pyteststmark = [pytest.mark.django_db]
 

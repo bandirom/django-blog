@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
-from blog.models import Article, Comment
-from main.models import UserType
 from actions.choices import LikeObjChoice, LikeStatus
+from blog.models import Article, Comment
+
+from main.models import UserType
 
 User: UserType = get_user_model()
 
