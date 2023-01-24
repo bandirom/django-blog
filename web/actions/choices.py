@@ -12,10 +12,10 @@ class LikeObjChoice(TextChoices):
     COMMENT = ('comment', _('Comment'))
 
 
-class LikeIconStatus(TextChoices):
-    LIKED = ('liked', _('Liked'))
-    DISLIKED = ('disliked', _('Disliked'))
-    UNDONE = ('undone', _('Undone'))
+class LikeIconStatus(IntegerChoices):
+    LIKED = 1
+    DISLIKED = -1
+    EMPTY = 0
 
 
 class FollowIconStatus(TextChoices):

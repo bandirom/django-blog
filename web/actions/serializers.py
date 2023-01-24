@@ -36,7 +36,7 @@ class LikeDislikeSerializer(serializers.Serializer):
                 like_dislike.save(update_fields=['vote'])
             else:
                 like_dislike.delete()
-                icon_status = LikeIconStatus.UNDONE
+                icon_status = LikeIconStatus.EMPTY
         else:
             obj.votes.create(user=user, vote=vote)
         return self._response_data(icon_status, obj)

@@ -3,7 +3,7 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
-from actions.choices import LikeObjChoice, LikeStatus
+from actions.choices import LikeObjChoice, LikeStatus, LikeIconStatus
 from actions.models import LikeDislike
 from blog.models import Article, Comment
 
@@ -42,10 +42,29 @@ class LikeService:
         content_type = self.get_content_type_for_model()
         return LikeDislike.objects.get(content_type=content_type, object_id=self.object_id, user=self.user)
 
-    def create_like_object(self, obj) -> Optional[LikeDislike]:
-        return obj.votes.create(user=self.user, vote=self.vote)
+    def create_like_object(self) -> Optional[LikeDislike]:
+        return self.instance.votes.create(user=self.user, vote=self.vote)
 
     def update_like_object(self, obj: LikeDislike) -> LikeDislike:
         obj.vote = self.vote
         obj.save(update_fields=['vote'])
         return obj
+
+    def make_like(self) -> dict:
+        _status = LikeIconStatus.LIKED if self.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
+
+        if like_obj := self.get_like_object():
+            if like_obj.vote is not self.vote:
+                self.update_like_object(like_obj)
+            else:
+                like_obj.delete()
+                _status = LikeIconStatus.EMPTY
+        else:
+            self.instance.votes.create()
+
+        data = {
+            'status': _status,
+            'like_count': self.instance.likes(),
+            'dislike_count': self.instance.dislikes(),
+        }
+        return data
