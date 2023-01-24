@@ -46,7 +46,6 @@ class LikeDislikeSerializer(serializers.Serializer):
             'status': icon_status,
             'like_count': obj.likes(),
             'dislike_count': obj.dislikes(),
-            'sum_rating': obj.votes.sum_rating(),
         }
         return data
 

@@ -1,7 +1,10 @@
+from typing import Optional
+
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
 from actions.choices import LikeObjChoice, LikeStatus
+from actions.models import LikeDislike
 from blog.models import Article, Comment
 
 from main.models import UserType
@@ -33,4 +36,16 @@ class LikeService:
                 obj = self.get_article()
             case LikeObjChoice.COMMENT:
                 obj = self.get_comment()
+        return obj
+
+    def get_like_object(self) -> LikeDislike:
+        content_type = self.get_content_type_for_model()
+        return LikeDislike.objects.get(content_type=content_type, object_id=self.object_id, user=self.user)
+
+    def create_like_object(self, obj) -> Optional[LikeDislike]:
+        return obj.votes.create(user=self.user, vote=self.vote)
+
+    def update_like_object(self, obj: LikeDislike) -> LikeDislike:
+        obj.vote = self.vote
+        obj.save(update_fields=['vote'])
         return obj
