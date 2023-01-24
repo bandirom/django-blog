@@ -20,7 +20,7 @@
         {% endfor %}
       </p>
       <ul>
-        <li id="likeArticle" data-href="{% url 'actions:like_dislike' %}" data-id="{{ id }}" data-type="article"
+        <li id="likeArticle" data-href="{% url 'api:v1:actions:like' %}" data-id="{{ id }}" data-type="article"
             data-vote=1 title="{% trans 'Like' %}">
           <i id="articleLikeIcon"
                   {% if like_status == 'liked' %} class="fas fa-thumbs-up"

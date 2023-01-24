@@ -1,13 +1,18 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+
 from . import serializers
 from .services import LikeService
+
+swagger_tags = ['Like']
 
 
 class LikeDislikeView(GenericAPIView):
     serializer_class = serializers.LikeDislikeSerializer
 
+    @swagger_auto_schema(tags=swagger_tags)
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
