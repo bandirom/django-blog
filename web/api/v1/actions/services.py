@@ -44,7 +44,7 @@ class LikeService:
             content_type=content_type, object_id=self.object_id, user=self.user
         ).first()
 
-    def create_like_object(self) -> Optional[LikeDislike]:
+    def create_like_object(self) -> LikeDislike:
         return self.instance.votes.create(user=self.user, vote=self.vote)
 
     def update_like_object(self, obj: LikeDislike) -> LikeDislike:
