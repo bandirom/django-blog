@@ -7,3 +7,7 @@ class LikeDislikeSerializer(serializers.Serializer):
     object_id = serializers.IntegerField(min_value=1)
     model = serializers.ChoiceField(choices=LikeObjChoice.choices)
     vote = serializers.ChoiceField(choices=LikeStatus.choices)
+
+
+class FollowSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField(min_value=1)

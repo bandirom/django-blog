@@ -4,7 +4,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from . import serializers
-from .services import LikeService
+from .services import FollowService, LikeService
 
 swagger_tags = ['Like']
 
@@ -24,4 +24,15 @@ class LikeDislikeView(GenericAPIView):
         )
 
         response_data: dict = service.make_like()
+        return Response(response_data, status.HTTP_200_OK)
+
+
+class FollowView(GenericAPIView):
+    serializer_class = serializers.FollowSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = FollowService(user=request.user, user_id=serializer.data['user_id'])
+        response_data = service.subscribe()
         return Response(response_data, status.HTTP_200_OK)

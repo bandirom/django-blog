@@ -11,7 +11,7 @@
               <img src="{{ user.avatar }}" alt="Avatar" class="pull-left span2 clearfix avatar img-circle img-thumbnail" width="120px"
                    style='margin-right:10px'>
               <div class="caption" class="pull-left">
-                <a href="#" data-href="{% url 'actions:follower' %}" data-id="{{ user.id }}"
+                <a href="#" data-href="{% url 'api:v1:actions:follow' %}" data-id="{{ user.id }}"
                    class="btn btn-primary icon  pull-right followMe">{{ user.follow }}</a>
                 <h4>
                   <a href="{% url 'user_profile:user_by_id' user.id %}">{{ user.full_name }}</a>

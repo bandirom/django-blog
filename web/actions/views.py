@@ -13,16 +13,6 @@ from main.pagination import BasePageNumberPagination
 logger = logging.getLogger(__name__)
 
 
-class FollowView(GenericAPIView):
-    serializer_class = serializers.FollowSerializer
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        response_data: dict = serializer.save()
-        return Response(response_data, status.HTTP_200_OK)
-
-
 class UserFollowersView(ListModelMixin, GenericViewSet):
     serializer_class = serializers.UserFollowSerializer
     pagination_class = BasePageNumberPagination

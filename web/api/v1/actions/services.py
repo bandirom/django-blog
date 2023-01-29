@@ -3,8 +3,8 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
-from actions.choices import LikeIconStatus, LikeObjChoice, LikeStatus
-from actions.models import LikeDislike
+from actions.choices import FollowIconStatus, LikeIconStatus, LikeObjChoice, LikeStatus
+from actions.models import Follower, LikeDislike
 from blog.models import Article, Comment
 
 from main.models import UserType
@@ -70,3 +70,29 @@ class LikeService:
             'dislike_count': self.instance.dislikes(),
         }
         return data
+
+
+class FollowService:
+    def __init__(self, user: User, user_id: int):
+        self.user = user
+        self.to_user_id = user_id
+
+    def is_user_subscribed(self) -> bool:
+        return Follower.objects.filter(subscriber=self.user, to_user_id=self.to_user_id).exists()
+
+    def subscribe_to_user(self) -> Follower:
+        return Follower.objects.create(subscriber=self.user, to_user_id=self.to_user_id)
+
+    def unfollow_user(self):
+        return Follower.objects.filter(subscriber=self.user, to_user_id=self.to_user_id).delete()
+
+    def subscribe(self) -> dict:
+        if not self.is_user_subscribed():
+            self.subscribe_to_user()
+            follow_status = FollowIconStatus.UNFOLLOW
+        else:
+            self.unfollow_user()
+            follow_status = FollowIconStatus.FOLLOW
+        return {
+            'status': follow_status,
+        }

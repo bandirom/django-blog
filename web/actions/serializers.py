@@ -14,26 +14,6 @@ class LikeDislikeRelationSerializer(serializers.ModelSerializer):
         fields = ('vote', 'user', 'date')
 
 
-class FollowSerializer(serializers.Serializer):
-    user_id = serializers.IntegerField(min_value=1)
-
-    def save(self) -> dict:
-        user = self.context['request'].user
-        user_id = self.validated_data.get('user_id')
-        if not ActionsService.is_user_followed(user, user_id):
-            ActionsService.follow_user(user, user_id)
-            follow_status = FollowIconStatus.UNFOLLOW
-        else:
-            ActionsService.unfollow_user(user, user_id)
-            follow_status = FollowIconStatus.FOLLOW
-        return self.response_data(follow_status)
-
-    def response_data(self, follow_status: str) -> dict:
-        return {
-            'status': follow_status,
-        }
-
-
 class UserFollowSerializer(serializers.ModelSerializer):
     """For list of user following and followers"""
 
