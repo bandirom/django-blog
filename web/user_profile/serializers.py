@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from actions.choices import FollowIconStatus
-from actions.services import ActionsService
+from api.v1.actions.services import FollowService
 
 from .choices import GenderChoice
 from .models import Profile
@@ -71,7 +71,7 @@ class UserListSerializer(serializers.ModelSerializer):
 
     def get_follow_status(self, obj) -> str:
         user = self.context['request'].user
-        is_follow = ActionsService.is_user_followed(user, obj.id)
+        is_follow = FollowService(user, obj.id).is_user_subscribed()
         return FollowIconStatus.UNFOLLOW if is_follow else FollowIconStatus.FOLLOW
 
     class Meta:

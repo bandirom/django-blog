@@ -2,10 +2,10 @@
   <div class="panel-heading">Followers <i class="fa fa-link fa-1x"></i></div>
   <div class="panel-body">
     <button class="btn btn-info" id="followersButton" data-follow-actions="{% url 'api:v1:actions:follow' %}"
-            data-href="{% url 'actions:user_followers_by_user_id' id %}">
+            data-href="{% url 'api:v1:actions:followers_by_user_id' id %}">
       Followers ({{ followers_count }})</button>
     <button class="btn btn-info" id="followingButton" data-follow-actions="{% url 'api:v1:actions:follow' %}"
-            data-href="{% url 'actions:user_following_by_user_id' id %}">
+            data-href="{% url 'api:v1:actions:following_by_user_id' id %}">
       Following ({{ following_count }})</button>
   </div>
 </div>

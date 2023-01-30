@@ -7,6 +7,7 @@ from actions.choices import FollowIconStatus, LikeIconStatus, LikeObjChoice, Lik
 from actions.models import Follower, LikeDislike
 from blog.models import Article, Comment
 
+from main.decorators import except_shell
 from main.models import UserType
 
 User: UserType = get_user_model()
@@ -48,7 +49,7 @@ class LikeService:
         return self.instance.votes.create(user=self.user, vote=self.vote)
 
     def update_like_object(self, obj: LikeDislike) -> LikeDislike:
-        obj.vote = self.vote
+        obj.vote = self.voteActionsService
         obj.save(update_fields=['vote'])
         return obj
 
@@ -96,3 +97,15 @@ class FollowService:
         return {
             'status': follow_status,
         }
+
+
+class FollowersService:
+    @except_shell(User.DoesNotExist)
+    def get_user_by_id(self, user_id: int):
+        return User.objects.get(id=user_id)
+
+    def get_user_followers(self, user: User):
+        return user.followers.select_related('profile').all()
+
+    def get_user_following(self, user: User):
+        return user.following.select_related('profile').all()
