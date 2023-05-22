@@ -14,7 +14,6 @@ User: 'UserType' = get_user_model()
 
 
 class BaseEmailHandler(ABC):
-
     TEMPLATE_NAME: str = NotImplemented
 
     def __init__(self, user: Optional[User] = None, language: Optional[str] = None):

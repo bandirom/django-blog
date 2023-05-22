@@ -5,9 +5,9 @@ from os import environ
 JWT_COOKIE_DOMAIN = environ.get('JWT_COOKIE_DOMAIN')
 
 CORS_ALLOW_CREDENTIALS = True
-REST_AUTH_TOKEN_MODEL = None
 
 REST_AUTH = {
+    'TOKEN_MODEL': None,
     'JWT_AUTH_REFRESH_COOKIE': 'refresh',
     'JWT_AUTH_COOKIE': 'jwt-auth',
     'USE_JWT': True,
@@ -21,7 +21,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': environ.get('SECRET_KEY', 'test'),
+    'SIGNING_KEY': environ.get('SECRET_KEY', 'secret'),
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,

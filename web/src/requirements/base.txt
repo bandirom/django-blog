@@ -14,7 +14,7 @@ graphene-django==3.0
 pyamqp==0.1.0.7
 
 # Filtering
-django-filter~=23.1
+django-filter~=23.2
 
 # Cors headers
 django-cors-headers~=4.0

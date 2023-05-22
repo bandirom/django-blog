@@ -9,6 +9,7 @@ from user_profile.models import Profile
 
 from main.models import UserType
 
+
 pyteststmark = [pytest.mark.django_db]
 
 User: UserType = get_user_model()
