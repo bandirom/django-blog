@@ -53,7 +53,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 GRAPHENE = {'SCHEMA': 'main.schema.schema'}
-
+TOKEN_MODEL = None
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -68,6 +68,7 @@ THIRD_PARTY_APPS = [
     'dj_rest_auth',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
+    'rest_framework.authtoken',
     'drf_spectacular',
     'corsheaders',
     'rosetta',

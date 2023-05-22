@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from graphene_django.views import GraphQLView
+from django.views.decorators.csrf import csrf_exempt
 
 admin_url = settings.ADMIN_URL
 
@@ -21,7 +22,6 @@ urlpatterns = [
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('summernote/', include('django_summernote.urls')),
     path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
-    path(f'{admin_url}/defender/', include('defender.urls')),
     path(f'{admin_url}/', admin.site.urls),
 ]
 
