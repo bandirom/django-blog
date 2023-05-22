@@ -1,6 +1,5 @@
 import logging
 
-from dj_rest_auth.serializers import PasswordChangeSerializer
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, RetrieveAPIView
@@ -22,8 +21,6 @@ class ProfileViewSet(GenericViewSet):
     def get_serializer_class(self):
         if self.action == 'profile':
             return serializers.UserSerializer
-        elif self.action == 'change_password':
-            return PasswordChangeSerializer
         elif self.action == 'update':
             return serializers.UpdateUserProfileSerializer
         return serializers.UserSerializer

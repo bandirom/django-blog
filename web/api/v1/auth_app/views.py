@@ -1,10 +1,9 @@
-from dj_rest_auth import views as auth_views
-from django.contrib.auth import logout as django_logout
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from . import serializers
 from .services import AuthAppService, LoginService, full_logout
@@ -39,13 +38,10 @@ class LoginView(GenericAPIView):
         return service.get_response(user)
 
 
-class LogoutView(auth_views.LogoutView):
+class LogoutView(APIView):
     allowed_methods = ('POST', 'OPTIONS')
 
-    def session_logout(self):
-        django_logout(self.request)
-
-    def logout(self, request):
+    def post(self, request):
         response = full_logout(request)
         return response
 

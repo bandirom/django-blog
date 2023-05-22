@@ -40,7 +40,7 @@ FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:8008')
 BACKEND_URL = os.environ.get('BACKEND_URL', 'http://localhost:8008')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
-SITE_ID = 1
+
 CHAT_API_URL = os.environ.get('CHAT_API_URL')
 CHAT_API_KEY = os.environ.get('CHAT_API_KEY')
 CHAT_PROXY = os.environ.get('CHAT_PROXY')
@@ -61,14 +61,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
 ]
 
 THIRD_PARTY_APPS = [
-    'dj_rest_auth',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
-    'rest_framework.authtoken',
     'drf_spectacular',
     'corsheaders',
     'rosetta',
