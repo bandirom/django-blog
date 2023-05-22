@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from os import environ
 
@@ -12,6 +13,10 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE': 'jwt-auth',
     'USE_JWT': True,
     'SESSION_LOGIN': False,
+    'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_SAMESITE': 'Lax',
+    'JWT_AUTH_SECURE': os.getenv('JWT_AUTH_SECURE', False),
+    'JWT_COOKIE_DOMAIN': os.getenv('JWT_COOKIE_DOMAIN', None)
 }
 
 SIMPLE_JWT = {

@@ -199,41 +199,31 @@ class LoginService:
         self._set_jwt_refresh_cookie(response, refresh_token)
 
     def _set_jwt_access_cookie(self, response, access_token):
-        cookie_name = getattr(settings, 'JWT_AUTH_COOKIE', None)
+        rest_settings: dict = settings.REST_AUTH
         access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
-        cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
-        cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
-        cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
 
-        if cookie_name:
-            response.set_cookie(
-                cookie_name,
-                access_token,
-                expires=access_token_expiration,
-                secure=cookie_secure,
-                httponly=cookie_httponly,
-                samesite=cookie_samesite,
-                domain=getattr(settings, 'JWT_COOKIE_DOMAIN', None),
-            )
+        response.set_cookie(
+            key=rest_settings['JWT_AUTH_COOKIE'],
+            value=access_token,
+            expires=access_token_expiration,
+            secure=rest_settings['JWT_AUTH_SECURE'],
+            httponly=rest_settings['JWT_AUTH_HTTPONLY'],
+            samesite=rest_settings['JWT_AUTH_SAMESITE'],
+            domain=rest_settings['JWT_COOKIE_DOMAIN'],
+        )
 
     def _set_jwt_refresh_cookie(self, response, refresh_token):
+        rest_settings: dict = settings.REST_AUTH
         refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
-        refresh_cookie_name = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE', None)
-        refresh_cookie_path = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE_PATH', '/')
-        cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
-        cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
-        cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
-
-        if refresh_cookie_name:
-            response.set_cookie(
-                refresh_cookie_name,
-                refresh_token,
-                expires=refresh_token_expiration,
-                secure=cookie_secure,
-                httponly=cookie_httponly,
-                samesite=cookie_samesite,
-                path=refresh_cookie_path,
-            )
+        response.set_cookie(
+            key=rest_settings['JWT_AUTH_REFRESH_COOKIE'],
+            value=refresh_token,
+            expires=refresh_token_expiration,
+            secure=rest_settings['JWT_AUTH_SECURE'],
+            httponly=rest_settings['JWT_AUTH_HTTPONLY'],
+            samesite=rest_settings['JWT_AUTH_SAMESITE'],
+            domain=rest_settings['JWT_COOKIE_DOMAIN'],
+        )
 
 
 class AuthAppService:
