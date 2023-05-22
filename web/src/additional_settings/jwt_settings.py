@@ -1,13 +1,18 @@
 from datetime import timedelta
 from os import environ
 
-JWT_AUTH_REFRESH_COOKIE = 'refresh'
-JWT_AUTH_COOKIE = 'jwt-auth'
+
 JWT_COOKIE_DOMAIN = environ.get('JWT_COOKIE_DOMAIN')
-REST_USE_JWT = True
-REST_SESSION_LOGIN = False
+
 CORS_ALLOW_CREDENTIALS = True
 REST_AUTH_TOKEN_MODEL = None
+
+REST_AUTH = {
+    'JWT_AUTH_REFRESH_COOKIE': 'refresh',
+    'JWT_AUTH_COOKIE': 'jwt-auth',
+    'USE_JWT': True,
+    'SESSION_LOGIN': False,
+}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
@@ -16,7 +21,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': environ.get('SECRET_KEY'),
+    'SIGNING_KEY': environ.get('SECRET_KEY', 'test'),
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
