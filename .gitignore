@@ -24,3 +24,5 @@ build
 *.mo
 coverage.xml
 modules.txt
+
+db.sqlite3
