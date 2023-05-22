@@ -53,7 +53,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 GRAPHENE = {'SCHEMA': 'main.schema.schema'}
-TOKEN_MODEL = None
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -105,7 +105,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'main.auth_backend.JWTCookieAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
