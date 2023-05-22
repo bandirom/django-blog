@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 from .additional_settings.celery_settings import *
-from .additional_settings.smtp_settings import *
 from .additional_settings.jwt_settings import *
+from .additional_settings.smtp_settings import *
 from .additional_settings.summernote_settings import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +43,6 @@ HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-REST_AUTH_TOKEN_MODEL = None
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,7 +54,6 @@ INSTALLED_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'dj_rest_auth',
     'rest_framework_simplejwt.token_blacklist',
     'defender',
     'rest_framework',

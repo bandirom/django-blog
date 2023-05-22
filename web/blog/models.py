@@ -61,9 +61,7 @@ class Article(models.Model):
 
 class Comment(models.Model):
     author = models.EmailField()
-    user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name='comment_set', blank=True
-    )
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='comment_set', blank=True)
     content = models.TextField(max_length=200)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comment_set')
     created = models.DateTimeField(auto_now_add=True)
