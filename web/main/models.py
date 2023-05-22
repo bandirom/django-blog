@@ -18,7 +18,6 @@ UserType = TypeVar('UserType', bound='User')
 
 
 class User(AbstractUser):
-
     username = None  # type: ignore
     email = models.EmailField(_('Email address'), unique=True)
     phone_number = PhoneNumberField(null=True, blank=True)

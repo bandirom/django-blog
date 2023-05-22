@@ -2,10 +2,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from django.views.decorators.csrf import csrf_exempt
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from graphene_django.views import GraphQLView
-
-from .yasg import urlpatterns as swagger_url
 
 admin_url = settings.ADMIN_URL
 
@@ -17,14 +15,16 @@ urlpatterns = [
     path('', include('blog.urls')),
     path('', include('contact_us.urls')),
     path('actions/', include('actions.urls')),
-    path(f'{admin_url}/', admin.site.urls),
     path('api/', include('rest_framework.urls')),
     path('rosetta/', include('rosetta.urls')),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('summernote/', include('django_summernote.urls')),
     path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path(f'{admin_url}/defender/', include('defender.urls')),
+    path(f'{admin_url}/', admin.site.urls),
 ]
 
-urlpatterns += swagger_url
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

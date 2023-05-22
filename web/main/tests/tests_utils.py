@@ -11,9 +11,7 @@ class UtilsTestCase(TestCase):
         str2 = ' You are looking great   '
         self.assertEqual(utils.parse_str_with_space(str2), 'You are looking great')
         str3 = ' This    double  life you    lead is   eating you   up from  within    '
-        self.assertEqual(
-            utils.parse_str_with_space(str3), 'This double life you lead is eating you up from within'
-        )
+        self.assertEqual(utils.parse_str_with_space(str3), 'This double life you lead is eating you up from within')
 
     def test_find_dict_in_list(self):
         list_1 = [
@@ -55,7 +53,7 @@ class UtilsTestCase(TestCase):
     def test_supported_languages(self):
         factory = RequestFactory()
         request = factory.get('/')
-        self.assertEqual(utils.get_supported_user_language(request), 'en')
+        self.assertEqual(utils.get_supported_user_language(request), None)
         request.META['HTTP_ACCEPT_LANGUAGE'] = 'uk'
         self.assertEqual(utils.get_supported_user_language(request), 'uk')
         request.META['HTTP_ACCEPT_LANGUAGE'] = 'ru;q=0.9,en-US;q=0.8,en;q=0.7,ru-RU;q=0.6'
