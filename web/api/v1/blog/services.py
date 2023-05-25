@@ -14,9 +14,7 @@ class BlogService:
         return Category.objects.all()
 
     def get_active_articles(self) -> QuerySet[Article]:
-        comment_prefetch = Prefetch(
-            'comment_set', queryset=BlogService.get_comments_queryset(), to_attr='comments'
-        )
+        comment_prefetch = Prefetch('comment_set', queryset=BlogService.get_comments_queryset(), to_attr='comments')
         return (
             Article.objects.select_related('category', 'author')
             .prefetch_related(comment_prefetch)

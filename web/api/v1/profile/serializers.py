@@ -50,9 +50,7 @@ class UserImageSerializer(serializers.ModelSerializer):
 
     def validate_avatar(self, avatar):
         if avatar.size > settings.USER_AVATAR_MAX_SIZE * 1024 * 1024:
-            raise serializers.ValidationError(
-                _("Max size is {size} MB".format(size=settings.USER_AVATAR_MAX_SIZE))
-            )
+            raise serializers.ValidationError(_("Max size is {size} MB".format(size=settings.USER_AVATAR_MAX_SIZE)))
         return avatar
 
     def save(self):

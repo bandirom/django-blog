@@ -70,9 +70,7 @@ class CommentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'author': _('Please enter your email or log in')})
         parent_id = data.get('parent_id')
         if parent_id and not BlogService.is_valid_comment_parent(parent_id, data.get('article')):
-            raise serializers.ValidationError(
-                {'parent_id': _('Choice comment is not valid for this article')}
-            )
+            raise serializers.ValidationError({'parent_id': _('Choice comment is not valid for this article')})
         return data
 
     def create(self, validated_data: dict):

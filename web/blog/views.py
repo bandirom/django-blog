@@ -29,9 +29,7 @@ class CategoryViewSet(ViewSet):
         return BlogService.category_queryset()
 
 
-class CommentViewSet(
-    mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet
-):
+class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet):
     permission_classes = (AllowAny,)
     http_method_names = ('get', 'post', 'put', 'delete')
     pagination_class = BasePageNumberPagination
@@ -79,7 +77,6 @@ class CommentViewSet(
 
 
 class CreateArticleTemplateView(TemplateAPIView):
-
     template_name = 'blog/post_create.html'
 
     def get_queryset(self):

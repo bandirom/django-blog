@@ -2,7 +2,6 @@ import os
 from datetime import timedelta
 from os import environ
 
-
 JWT_COOKIE_DOMAIN = environ.get('JWT_COOKIE_DOMAIN')
 
 CORS_ALLOW_CREDENTIALS = True
@@ -16,7 +15,7 @@ REST_AUTH = {
     'JWT_AUTH_HTTPONLY': True,
     'JWT_AUTH_SAMESITE': 'Lax',
     'JWT_AUTH_SECURE': os.getenv('JWT_AUTH_SECURE', False),
-    'JWT_COOKIE_DOMAIN': os.getenv('JWT_COOKIE_DOMAIN', None)
+    'JWT_COOKIE_DOMAIN': os.getenv('JWT_COOKIE_DOMAIN', None),
 }
 
 SIMPLE_JWT = {

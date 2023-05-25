@@ -17,9 +17,7 @@ class LikeDislike(models.Model):
     vote = models.SmallIntegerField(choices=LikeStatus.choices)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
 
-    content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE, limit_choices_to=like_content_limit
-    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=like_content_limit)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
     date = models.DateTimeField(auto_now=True)
@@ -27,9 +25,7 @@ class LikeDislike(models.Model):
     objects = LikeDislikeManager()
 
     def __str__(self):
-        return "{user}: {vote} - {content}".format(
-            user=self.user, vote=self.vote, content=self.content_object
-        )
+        return "{user}: {vote} - {content}".format(user=self.user, vote=self.vote, content=self.content_object)
 
 
 class Follower(models.Model):
@@ -58,9 +54,7 @@ def action_content_limit():
 class Action(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='actions')
     action = models.CharField(max_length=500)
-    content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE, limit_choices_to=action_content_limit
-    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=action_content_limit)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()
     date = models.DateTimeField(auto_now_add=True, db_index=True)

@@ -5,4 +5,4 @@ class ActionsConfig(AppConfig):
     name = 'actions'
 
     def ready(self):
-        import actions.signals
+        import actions.signals  # noqa: F401

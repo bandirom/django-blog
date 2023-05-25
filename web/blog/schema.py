@@ -30,7 +30,6 @@ class CategoryNode(DjangoObjectType):
 
 
 class CategoryQuery(graphene.ObjectType):
-
     category = relay.Node.Field(CategoryNode)
     all_categories = DjangoFilterConnectionField(CategoryNode)
 

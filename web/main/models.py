@@ -24,9 +24,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD: str = 'email'
     REQUIRED_FIELDS: list[str] = []
-    following = models.ManyToManyField(
-        'self', through='actions.Follower', symmetrical=False, related_name='followers'
-    )
+    following = models.ManyToManyField('self', through='actions.Follower', symmetrical=False, related_name='followers')
 
     objects = UserManager()  # type: ignore
 
