@@ -7,7 +7,6 @@ from main.views import TemplateAPIView
 app_name = 'blog'
 
 router = DefaultRouter()
-router.register('categories', views.CategoryViewSet, basename='categories')
 router.register('comment', views.CommentViewSet, basename='comment')
 
 urlpatterns = [

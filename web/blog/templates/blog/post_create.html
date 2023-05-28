@@ -11,7 +11,7 @@
 {% block container %}
 
 <h1>Create a new post</h1>
-<form action="{% url 'blog:post-list' %}" id="createArticleForm" method="post" enctype="multipart/form-data"
+<form action="{% url 'blog:new_post' %}" id="createArticleForm" method="post" enctype="multipart/form-data"
       name="fileinfo">
   <div id="categoryGroup">
     <label>Category: </label>

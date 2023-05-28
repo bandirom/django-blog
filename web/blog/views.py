@@ -22,12 +22,6 @@ class ViewSet(ModelViewSet):
     pagination_class = BasePageNumberPagination
 
 
-class CategoryViewSet(ViewSet):
-    serializer_class = serializers.CategorySerializer
-
-    def get_queryset(self):
-        return BlogService.category_queryset()
-
 
 class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet):
     permission_classes = (AllowAny,)
