@@ -2,10 +2,10 @@
 
 django~=4.2
 psycopg[binary]~=3.1
-redis~=4.5
+redis~=4.6
 djangorestframework~=3.14
 drf-spectacular~=0.26
-celery~=5.2
+celery~=5.3
 
 ### Optional dependencies ###
 
@@ -16,7 +16,7 @@ pyamqp==0.1.0.7
 django-filter~=23.2
 
 # Cors headers
-django-cors-headers~=4.0
+django-cors-headers~=4.1
 
 # Ddos defender: required redis
 django-defender~=0.9
