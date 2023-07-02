@@ -17,13 +17,13 @@ class ArticleSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField()
     like_status = serializers.SerializerMethodField(method_name='get_like_status')
 
-    def get_like_status(self, obj) -> str:
+    def get_like_status(self, obj: Article) -> LikeIconStatus:
         user = self.context['request'].user
         if not user.is_authenticated:
-            return LikeIconStatus.UNDONE
+            return LikeIconStatus.EMPTY
         if like_obj := obj.votes.filter(user=user).first():
             return LikeIconStatus.LIKED if like_obj.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
-        return LikeIconStatus.UNDONE
+        return LikeIconStatus.EMPTY
 
     class Meta:
         model = Article
@@ -46,7 +46,6 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class FullArticleSerializer(ArticleSerializer):
-    # comments = serializers.SerializerMethodField('get_parent_comment')
     votes = LikeDislikeRelationSerializer(many=True)
 
     def get_parent_comment(self, obj):

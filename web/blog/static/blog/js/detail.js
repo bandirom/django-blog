@@ -6,7 +6,7 @@ $(function () {
 
 function getDetailData() {
   const slug = window.location.pathname.split('/')[2]
-  const url = `/api/v1/article/detail/${slug}/`
+  const url = `/api/v1/blog/articles/${slug}/`
   $.ajax({
       type: "GET",
       url: url,
