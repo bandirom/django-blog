@@ -24,7 +24,6 @@ function getArticleComments(){
    url: url,
    type: 'get',
    success: function (data) {
-     console.log('success', data)
      if (data.results) {
         addLinks(pagination, data.next)
         if (renderComments(pagination, data)) {

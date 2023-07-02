@@ -1,8 +1,9 @@
 $(function () {
   getDetailData()
-  $('#formReview').submit(leftComment);
+  //$('#formReview').submit(leftComment);
 });
 
+const detailPageDiv = $("#detailPage")
 
 function getDetailData() {
   const slug = window.location.pathname.split('/')[2]
@@ -10,12 +11,32 @@ function getDetailData() {
   $.ajax({
       type: "GET",
       url: url,
-      success: handleRenderPage,
+      success: handleDetailPage,
   })
 }
 
-const handleRenderPage = (data) => {
+
+const handleDetailPage = (data) => {
+  const render = renderDetailPage(data);
+  detailPageDiv.append(render)
+
+}
+
+const renderDetailPage = (data) => {
   console.log('success', data)
+
+  return `
+  <div class="col-lg-8">
+    <h1><a href="${data.url}">${data.title}</a></h1>
+    <p class="lead">
+      <i class="fa fa-user"></i> by
+      <a href="${data.author.url}">${data.author.full_name}</a>
+    </p><hr>
+    <p><i class="fa fa-calendar"></i> Posted on ${data.created}</p>
+
+  </div>
+  `
+
 }
 
 
