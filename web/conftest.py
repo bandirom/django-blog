@@ -25,7 +25,7 @@ raw_image: str = (
 def image_content_file() -> ContentFile:
     _format, _raw_image = raw_image.split(';base64,')
     ext = _format.split('/')[-1]
-    return ContentFile(b64decode(_raw_image), name='image.' + ext)
+    return ContentFile(b64decode(_raw_image), name=f'image.{ext}')
 
 
 class UserToken(NamedTuple):

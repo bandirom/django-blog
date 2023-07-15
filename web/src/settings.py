@@ -17,8 +17,6 @@ ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
 if DEBUG:
     ALLOWED_HOSTS: list = ['*']
 
-USER_AVATAR_MAX_SIZE = 4.0
-
 AUTH_USER_MODEL = 'main.User'
 
 PROJECT_TITLE = os.environ.get('PROJECT_TITLE', 'Template')
@@ -52,6 +50,9 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # b = 10 MB
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+
+API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
+API_KEY = os.environ.get('API_KEY')
 
 GRAPHENE = {'SCHEMA': 'main.schema.schema'}
 
