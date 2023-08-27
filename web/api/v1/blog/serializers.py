@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from actions.choices import LikeIconStatus, LikeStatus
@@ -63,6 +64,7 @@ class CreateArticleSerializer(TaggitSerializer, serializers.ModelSerializer):
         model = Article
         fields = ('title', 'category', 'image', 'content', 'tags')
 
+    @transaction.atomic()
     def create(self, validated_data):
         validated_data['author'] = self.context.get('request').user
         return super().create(validated_data)

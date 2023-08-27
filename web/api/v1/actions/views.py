@@ -1,4 +1,3 @@
-# from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
@@ -6,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from . import serializers
-from .services import FollowersService, FollowService, LikeService
+from .services import FollowersQueryService, FollowService, LikeService
 from main.pagination import BasePageNumberPagination
 
 swagger_tags = ['Like']
@@ -46,7 +45,7 @@ class UserFollowersView(ListModelMixin, GenericViewSet):
     pagination_class = BasePageNumberPagination
 
     def get_queryset(self):
-        service = FollowersService()
+        service = FollowersQueryService()
         if self.action == 'user_followers':
             return service.get_user_followers(self.request.user)
         elif self.action == 'user_following':

@@ -10,7 +10,7 @@ function postCreate(event) {
   let form = $(this)
   let data = new FormData(form[0]);
   $.ajax({
-    url: form.attr('action'),
+    url: '/api/v1/blog/articles/new/',
     type: form.attr('method'),
     data: data,
     contentType: false,

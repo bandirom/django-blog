@@ -2,12 +2,13 @@ from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import QuerySet
+from rest_framework.exceptions import NotFound
 
 from actions.choices import FollowIconStatus, LikeIconStatus, LikeObjChoice, LikeStatus
 from actions.models import Follower, LikeDislike
 from blog.models import Article, Comment
-
-from main.decorators import except_shell
+from django.utils.translation import gettext_lazy as _
 from main.models import UserType
 
 User: UserType = get_user_model()
@@ -47,7 +48,7 @@ class LikeService:
         return self.instance.votes.create(user=self.user, vote=self.vote)
 
     def update_like_object(self, obj: LikeDislike) -> LikeDislike:
-        obj.vote = self.voteActionsService
+        obj.vote = self.vote
         obj.save(update_fields=['vote'])
         return obj
 
@@ -97,13 +98,15 @@ class FollowService:
         }
 
 
-class FollowersService:
-    @except_shell(User.DoesNotExist)
-    def get_user_by_id(self, user_id: int):
-        return User.objects.get(id=user_id)
+class FollowersQueryService:
+    def get_user_by_id(self, user_id: int) -> User:
+        try:
+            return User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise NotFound(_('Requested user does not exist'))
 
-    def get_user_followers(self, user: User):
+    def get_user_followers(self, user: User) -> QuerySet[User]:
         return user.followers.select_related('profile').all()
 
-    def get_user_following(self, user: User):
+    def get_user_following(self, user: User) -> QuerySet[User]:
         return user.following.select_related('profile').all()

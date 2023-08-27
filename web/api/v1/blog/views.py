@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.response import Response
 
@@ -25,3 +26,14 @@ class ArticleDetailView(GenericAPIView):
     def get(self, request, slug: str):
         serializer = self.get_serializer(self.get_object())
         return Response(serializer.data)
+
+
+class CreateArticleView(GenericAPIView):
+    serializer_class = serializers.CreateArticleSerializer
+
+    def post(self, request):
+        print(f'{request.data=}')
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
