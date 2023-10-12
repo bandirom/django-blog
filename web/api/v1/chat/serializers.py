@@ -12,7 +12,6 @@ class UserListByIdSerializer(serializers.Serializer):
 
 class UserShortInfoSerializer(serializers.ModelSerializer):
     avatar = serializers.URLField(source='avatar_url')
-    # url = serializers.URLField(source='get_absolute_url')
 
     class Meta:
         model = User
