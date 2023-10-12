@@ -19,7 +19,7 @@ class JWTCookieAuthentication(_JWTCookieAuthentication):
             raise InvalidToken(_('Token contained no recognizable user identification'))
 
         try:
-            user = User.objects.select_related('profile').get(**{api_settings.USER_ID_FIELD: user_id})
+            user = User.objects.get(**{api_settings.USER_ID_FIELD: user_id})
         except User.DoesNotExist:
             raise AuthenticationFailed(_('User not found'), code='user_not_found')
 

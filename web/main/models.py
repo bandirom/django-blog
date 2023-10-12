@@ -8,7 +8,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
-from rest_framework.reverse import reverse_lazy
+from rest_framework.reverse import reverse
 
 from blog.choices import ArticleStatus
 
@@ -78,8 +78,8 @@ class User(AbstractUser):
     def following_count(self) -> int:
         return self.following.count()
 
-    def get_absolute_url(self):
-        return reverse_lazy('user_profile:user_by_id', args=(self.id,))
+    def get_absolute_url(self) -> str:
+        return reverse('user_profile:user_by_id', args=(self.id,))
 
     @cached_property
     def avatar_url(self) -> str:
@@ -87,7 +87,7 @@ class User(AbstractUser):
 
     @cached_property
     def full_profile_url(self) -> str:
-        return urljoin(settings.BACKEND_URL, str(self.get_absolute_url()))
+        return urljoin(settings.BACKEND_URL, self.get_absolute_url())
 
     def set_image_to_default(self):
         self.avatar.delete(save=False)  # delete old image file

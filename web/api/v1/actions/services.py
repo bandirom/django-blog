@@ -106,7 +106,7 @@ class FollowersQueryService:
             raise NotFound(_('Requested user does not exist'))
 
     def get_user_followers(self, user: User) -> QuerySet[User]:
-        return user.followers.select_related('profile').all()
+        return user.followers.all()
 
     def get_user_following(self, user: User) -> QuerySet[User]:
-        return user.following.select_related('profile').all()
+        return user.following.all()

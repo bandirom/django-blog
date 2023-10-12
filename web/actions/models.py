@@ -44,11 +44,7 @@ class Follower(models.Model):
 
 
 def action_content_limit():
-    return (
-        models.Q(app_label='actions', model='follower')
-        | models.Q(app_label='actions', model='likedislike')
-        | models.Q(app_label='user_profile', model='profile')
-    )
+    return models.Q(app_label='actions', model='follower') | models.Q(app_label='actions', model='likedislike')
 
 
 class Action(models.Model):

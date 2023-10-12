@@ -1,4 +1,3 @@
-
 from typing import TYPE_CHECKING
 from django.contrib.auth import get_user_model
 from .serializers import UserShortInfoSerializer
@@ -12,9 +11,8 @@ if TYPE_CHECKING:
 
 
 class UserDataHandler:
-
     def user_queryset(self, user_ids: list[int]) -> "QuerySet[User]":
-        return User.objects.select_related('profile').filter(id__in=user_ids)
+        return User.objects.filter(id__in=user_ids)
 
     def get_user_data(self, user_ids: list[int]) -> dict:
         users = self.user_queryset(user_ids)

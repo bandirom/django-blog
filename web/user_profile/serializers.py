@@ -33,6 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
             'user_posts',
             'followers_count',
             'following_count',
+            'avatar',
         )
         read_only_fields = ('full_name', 'user_likes', 'user_posts')
 
@@ -47,7 +48,6 @@ class UpdateUserProfileSerializer(serializers.ModelSerializer):
 
 
 class UserListSerializer(serializers.ModelSerializer):
-    avatar = serializers.ImageField(source='profile.avatar')
     follow = serializers.SerializerMethodField('get_follow_status')
 
     def get_follow_status(self, obj) -> str:
