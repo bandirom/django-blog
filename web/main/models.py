@@ -17,10 +17,23 @@ from .managers import UserManager
 UserType = TypeVar('UserType', bound='User')
 
 
+def avatar_upload_path(obj: 'User', filename: str) -> str:
+    return f"avatars/{obj.id}/{filename}"
+
+
+class GenderChoice(models.IntegerChoices):
+    MALE = 0, _('Male')
+    Female = 1, _('Female')
+
+
 class User(AbstractUser):
     username = None  # type: ignore
     email = models.EmailField(_('Email address'), unique=True)
     phone_number = PhoneNumberField(null=True, blank=True)
+    avatar = models.ImageField(default='no-avatar.png', blank=True, upload_to=avatar_upload_path)
+    birthday = models.DateField(null=True, blank=True)
+    gender = models.IntegerField(choices=GenderChoice.choices, null=True, blank=True)
+    website = models.URLField(blank=True, default='')
 
     USERNAME_FIELD: str = 'email'
     REQUIRED_FIELDS: list[str] = []
@@ -37,7 +50,7 @@ class User(AbstractUser):
 
     @property
     def full_name(self) -> str:
-        return super().get_full_name()
+        return self.get_full_name()
 
     @property
     def confirmation_key(self) -> str:
@@ -75,3 +88,9 @@ class User(AbstractUser):
     @cached_property
     def full_profile_url(self) -> str:
         return urljoin(settings.BACKEND_URL, str(self.get_absolute_url()))
+
+    def set_image_to_default(self):
+        self.avatar.delete(save=False)  # delete old image file
+
+    def is_default_image(self):
+        return True if self.avatar.url.find("no-avatar.png") != -1 else False

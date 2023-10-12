@@ -5,7 +5,6 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 
-from user_profile.admin import ProfileInline
 
 User = get_user_model()
 
@@ -19,7 +18,6 @@ class CustomUserAdmin(UserAdmin):
         'phone_number',
         'is_active',
     )
-    inlines = (ProfileInline,)
     list_select_related = ('profile',)
     readonly_fields = ('id',)
     search_fields = ('first_name', 'last_name', 'email')

@@ -2,7 +2,6 @@ import re
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
 from django.core import mail
 from django.http import SimpleCookie
 from django.test import override_settings
@@ -25,11 +24,11 @@ locmem_email_backend = override_settings(
 class AuthApiTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        data = {'email': 'bandirom@ukr.net', 'password': make_password('tester26')}
-        cls.user = User.objects.create(**data, is_active=False)
+        data = {'email': 'admin@ukr.net', 'password': 'tester26'}
+        cls.user = User.objects.create_user(**data, is_active=False)
 
     def test_login(self):
-        login_url = reverse_lazy('auth_app:api_login')
+        login_url = reverse_lazy('api:v1:auth_app:sign-in')
         user_url = reverse_lazy('user_profile:profile')
 
         data = {
@@ -57,7 +56,7 @@ class AuthApiTestCase(APITestCase):
 
     @locmem_email_backend
     def test_sign_up(self):
-        url = reverse_lazy('auth_app:api_sign_up')
+        url = reverse_lazy('api:v1:auth_app:sign-up')
         data = {
             'email': 'new_user@test.com',
             'first_name': 'Nazarii',
@@ -81,7 +80,7 @@ class AuthApiTestCase(APITestCase):
         result = re.findall(pattern, string)
         activate_url = result[0]
         key = activate_url.split('/')
-        url = reverse_lazy('auth_app:api_sign_up_verify')
+        url = reverse_lazy('api:v1:auth_app:sign-up-verify')
         data = {'key': key[5]}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
@@ -90,7 +89,7 @@ class AuthApiTestCase(APITestCase):
 
     @locmem_email_backend
     def test_password_reset(self):
-        url = reverse_lazy('auth_app:api_forgot_password')
+        url = reverse_lazy('api:v1:auth_app:reset-password')
         data = {'email': self.user.email}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)

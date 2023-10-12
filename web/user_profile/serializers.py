@@ -4,8 +4,7 @@ from rest_framework import serializers
 from actions.choices import FollowIconStatus
 from api.v1.actions.services import FollowService
 
-from .choices import GenderChoice
-from .models import Profile
+from main.models import GenderChoice
 
 User = get_user_model()
 
@@ -19,19 +18,7 @@ class ShortUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'full_name', 'avatar', 'url')
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = (
-            'birthday',
-            'avatar',
-            'gender',
-        )
-
-
 class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer()
-
     class Meta:
         model = User
         fields = (
@@ -40,7 +27,6 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'email',
-            'profile',
             'is_active',
             'phone_number',
             'user_likes',
@@ -49,11 +35,6 @@ class UserSerializer(serializers.ModelSerializer):
             'following_count',
         )
         read_only_fields = ('full_name', 'user_likes', 'user_posts')
-
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep.update(rep.pop('profile'))
-        return rep
 
 
 class UpdateUserProfileSerializer(serializers.ModelSerializer):

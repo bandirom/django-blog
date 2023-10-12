@@ -54,4 +54,5 @@ def user_tokens(user) -> UserToken:
 @pytest.fixture()
 def api_client(client: Client, user_tokens) -> Client:
     client.defaults['HTTP_AUTHORIZATION'] = f'Bearer {user_tokens.access_token}'
+    # client.cookies
     return client

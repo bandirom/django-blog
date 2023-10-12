@@ -3,8 +3,6 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from user_profile.models import Profile
-
 User = get_user_model()
 
 
@@ -23,7 +21,7 @@ class UserShortInfoSerializer(serializers.ModelSerializer):
 
 class UserImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profile
+        model = User
         fields = ('avatar',)
 
     def validate_avatar(self, avatar):

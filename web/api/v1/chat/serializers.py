@@ -7,7 +7,6 @@ User = get_user_model()
 
 
 class UserListByIdSerializer(serializers.Serializer):
-
     user_ids = serializers.ListField(child=serializers.IntegerField(min_value=1))
 
 
@@ -28,6 +27,7 @@ class JwtUserDataSerializer(serializers.Serializer):
     jwt = serializers.CharField()
 
     def validate_jwt(self, jwt: str):
+        print(f"{jwt=}")
         try:
             access_token = AccessToken(jwt)
             self.user = User.objects.select_related('profile').get(pk=access_token['user_id'])
@@ -38,4 +38,3 @@ class JwtUserDataSerializer(serializers.Serializer):
     @property
     def data(self) -> dict:
         return UserShortInfoSerializer(self.user, context=self.context).data
-
