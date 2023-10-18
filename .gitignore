@@ -23,6 +23,7 @@ backup
 build
 *.mo
 coverage.xml
+.runner_system_id
 modules.txt
 !web/media/no-avatar.png
 !web/media/no-image-available.jpg
