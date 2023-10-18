@@ -2,7 +2,7 @@
 
 django~=4.2
 psycopg[binary]~=3.1
-redis~=4.6
+redis~=5.0
 djangorestframework~=3.14
 drf-spectacular~=0.26
 celery~=5.3
@@ -13,29 +13,29 @@ celery~=5.3
 pyamqp==0.1.0.7
 
 # Filtering
-django-filter~=23.2
+django-filter~=23.3
 
 # Cors headers
-django-cors-headers~=4.1
+django-cors-headers~=4.3
 
 # Ddos defender: required redis
 django-defender~=0.9
 
 # for auth system
-dj-rest-auth~=4.0
-djangorestframework-simplejwt~=5.2
+dj-rest-auth~=5.0
+djangorestframework-simplejwt~=5.3
 
 # ImageField
-pillow~=9.5
+pillow~=10.1
 
 # Translation
 django-rosetta~=0.9
 
-# Monitoring System
-sentry-sdk~=1.23
-
 # MicroService Requests
 django-microservice-request~=0.5
+
+# Monitoring System
+sentry-sdk~=1.32
 
 # TextEditor
 django-summernote==0.8.20.0
