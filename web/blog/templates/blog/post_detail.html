@@ -8,46 +8,9 @@
 {% endblock head %}
 
 {% block container %}
-  <div class="row" id="detailPage">
-    <div class="col-lg-8">
-      <h1><a href="">{{ title }}</a></h1>
-      <p class="lead"><i class="fa fa-user"></i> by <a href="">{{ author.full_name }}</a></p>
-      <hr>
-      <p><i class="fa fa-calendar"></i> Posted on {{ created }}</p>
-      <p><i class="fa fa-tags"></i> Tags:
-        {% for tag in tag_list %}
-          <a href="#"><span class="badge badge-info">{{ tag }}</span></a>
-        {% endfor %}
-      </p>
-      <ul>
-        <li id="likeArticle" data-href="{% url 'api:v1:actions:like' %}" data-id="{{ id }}" data-type="article"
-            data-vote=1 title="{% trans 'Like' %}">
-          <i id="articleLikeIcon"
-                  {% if like_status == 'liked' %} class="fas fa-thumbs-up"
-                  {% else %} class="far fa-thumbs-up"
-                  {% endif %}>
-          </i><span id="articleLikeCount"> {{ likes }}</span>
-        </li>
-        <li id="dislikeArticle" data-href="{% url 'api:v1:actions:like' %}" data-id="{{ id }}" data-type="article"
-            data-vote=-1 title="{% trans 'Dislike' %}">
-          <i id="articleDislikeIcon"
-                  {% if like_status == 'disliked' %} class="fas fa-thumbs-down"
-                  {% else %} class="far fa-thumbs-down"
-                  {% endif %}>
-          </i><span id="articleDislikeCount"> {{ dislikes }}</span>
-        </li>
-      </ul>
-      <hr>
-      <img src="{{ image }}" class="img-responsive" width="700" height="300">
-      <hr>
-      <p class="lead">
-        {{ content | safe }}
-      </p>
-      <br/>
-      <hr>
-      <!-- the comment box -->
-      {% include 'blog/includes/comments.html' %}
-    </div>
+  <div class="row">
+    <div id="detailPage" class="col-lg-8"></div>
+    {% include 'blog/includes/comments.html' %}
 
     {% include 'blog/includes/right_sidebar.html' %}
   </div>

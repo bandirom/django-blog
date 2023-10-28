@@ -1,6 +1,4 @@
 $(function () {
-  $('#likeArticle').click(articleLikeRequest);
-  $('#dislikeArticle').click(articleLikeRequest);
   $('.commentLike').click(commentLike);
 });
 
@@ -12,17 +10,17 @@ function articleLikeRequest(e) {
     'vote': like.data('vote'),
   }
   $.ajax({
-    url: like.data('href'),
+    url: '/api/v1/actions/like',
     type: 'post',
     data: data,
     success: function (data) {
       $('#articleLikeCount').text(' ' + data.like_count)
       $('#articleDislikeCount').text(' ' + data.dislike_count)
       switch (data.status) {
-        case 'liked':
+        case 1:
           liked_style();
           break
-        case 'disliked':
+        case -1:
           dislike_status()
           break
         default:

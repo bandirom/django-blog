@@ -1,12 +1,13 @@
 $(function () {
-  getDetailData()
-  //$('#formReview').submit(leftComment);
+  const slug = window.location.pathname.split('/')[2]
+
+  getArticleDetail(slug);
+  getCommentList(slug)
 });
 
 const detailPageDiv = $("#detailPage")
 
-function getDetailData() {
-  const slug = window.location.pathname.split('/')[2]
+function getArticleDetail(slug) {
   const url = `/api/v1/blog/articles/${slug}/`
   $.ajax({
       type: "GET",
@@ -16,25 +17,51 @@ function getDetailData() {
 }
 
 
-const handleDetailPage = (data) => {
-  const render = renderDetailPage(data);
+const handleDetailPage = (article) => {
+  const render = renderDetailPage(article);
   detailPageDiv.append(render)
+  $('#likeArticle').click(articleLikeRequest);
+  $('#dislikeArticle').click(articleLikeRequest);
 
 }
+const tagTemplate = (tag) => {
+  return `<a href="#"><span class="badge badge-info">${tag}</span></a>`
+}
 
-const renderDetailPage = (data) => {
-  console.log('success', data)
-
+const likeTemplate = (articleId, likes, dislikes, likeStatus) => {
+  const likeStatusClass = likeStatus === 1 ? "fas fa-thumbs-up" : "far fa-thumbs-up"
+  const dislikeStatusClass = likeStatus === -1 ? "fas fa-thumbs-down" : "far fa-thumbs-down"
   return `
-  <div class="col-lg-8">
-    <h1><a href="${data.url}">${data.title}</a></h1>
-    <p class="lead">
-      <i class="fa fa-user"></i> by
-      <a href="${data.author.url}">${data.author.full_name}</a>
-    </p><hr>
-    <p><i class="fa fa-calendar"></i> Posted on ${data.created}</p>
+    <ul>
+      <li id="likeArticle" data-id="${articleId}" data-type="article" data-vote=1 title="Likes">
+        <i id="articleLikeIcon" class="${likeStatusClass}"></i>
+        <span id="articleLikeCount"> ${likes}</span>
+      </li>
+      <li id="dislikeArticle" data-id="${articleId}" data-type="article" data-vote=-1 title="Dislikes">
+        <i id="articleDislikeIcon" class="${dislikeStatusClass}"></i>
+        <span id="articleDislikeCount"> ${dislikes}</span>
+      </li>
+    </ul>
+  `
+}
 
-  </div>
+const renderDetailPage = (article) => {
+  const tags = article.tag_list.map((tag) => tagTemplate(tag)).join('')
+  const likes = likeTemplate(article.id, article.likes, article.dislikes, article.like_status)
+  return `
+    <h1><a href="${article.url}">${article.title}</a></h1>
+    <p class="lead">
+      <i class="fa fa-user"></i> by <a href="${article.author.url}">${article.author.full_name}</a>
+    </p><hr>
+    <p><i class="fa fa-calendar"></i> Posted on ${article.created}</p>
+    <p><i class="fa fa-tags"></i> Tags: ${tags}</p>
+    <div>${likes}</div>
+    <hr>
+    <img src="${article.image}" class="img-responsive" width="700" height="300">
+    <hr>
+    <p class="lead">${article.content}</p>
+    <br/>
+    <hr>
   `
 
 }
@@ -77,4 +104,9 @@ function leftComment(e) {
 function help_block(group, variable) {
   $(group).addClass(error_class_name);
   $(group).append('<div class="help-block">' + variable + "</div>");
+}
+
+
+function getCommentList(slug) {
+  console.log('comments')
 }

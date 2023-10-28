@@ -18,7 +18,6 @@ class CustomUserAdmin(UserAdmin):
         'phone_number',
         'is_active',
     )
-    list_select_related = ('profile',)
     readonly_fields = ('id',)
     search_fields = ('first_name', 'last_name', 'email')
 

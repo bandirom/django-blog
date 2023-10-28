@@ -83,7 +83,7 @@ class User(AbstractUser):
 
     @cached_property
     def avatar_url(self) -> str:
-        return urljoin(settings.BACKEND_URL, self.profile.avatar.url)
+        return urljoin(settings.BACKEND_URL, self.avatar.url)
 
     @cached_property
     def full_profile_url(self) -> str:

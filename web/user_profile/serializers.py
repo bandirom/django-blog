@@ -10,7 +10,6 @@ User = get_user_model()
 
 
 class ShortUserSerializer(serializers.ModelSerializer):
-    avatar = serializers.CharField(source='profile.avatar')
     url = serializers.URLField(source='full_profile_url')
 
     class Meta:
@@ -39,8 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UpdateUserProfileSerializer(serializers.ModelSerializer):
-    birthday = serializers.DateField(source='profile.birthday')
-    gender = serializers.ChoiceField(source='profile.gender', choices=GenderChoice.choices)
+    gender = serializers.ChoiceField(choices=GenderChoice.choices)
 
     class Meta:
         model = User
