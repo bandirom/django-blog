@@ -1,9 +1,10 @@
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from api.v1.auth_app.services import AuthAppService
+
 from main.models import GenderChoice
 
 User = get_user_model()

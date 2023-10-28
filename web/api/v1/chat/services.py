@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
-from django.contrib.auth import get_user_model
-from .serializers import UserShortInfoSerializer
 
+from django.contrib.auth import get_user_model
+
+from .serializers import UserShortInfoSerializer
 
 User = get_user_model()
 

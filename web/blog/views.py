@@ -5,10 +5,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from api.v1.blog.serializers import CategorySerializer
 from api.v1.blog.services import BlogService
 
 from . import serializers
-from .serializers import CategorySerializer
 from main.pagination import BasePageNumberPagination
 from main.views import TemplateAPIView
 
@@ -20,7 +20,6 @@ class ViewSet(ModelViewSet):
     lookup_field = 'slug'
     permission_classes = (AllowAny,)
     pagination_class = BasePageNumberPagination
-
 
 
 class CommentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, GenericViewSet):

@@ -8,6 +8,24 @@ from blog.models import Article, ArticleTag, Category, Comment
 from main.decorators import except_shell
 
 
+class BlogQueryService:
+    @staticmethod
+    def get_queryset() -> QuerySet[Article]:
+        return Article.objects.all()
+
+    def get_active_articles(self) -> QuerySet[Article]:
+        return self.get_queryset().filter(status=ArticleStatus.ACTIVE)
+
+
+class CommentQueryService:
+    @staticmethod
+    def get_queryset() -> QuerySet[Comment]:
+        return Comment.objects.all()
+
+    def comments_by_article_slug(self, article_slug: str) -> QuerySet[Comment]:
+        return self.get_queryset().filter(article__slug=article_slug)
+
+
 class BlogService:
     @staticmethod
     def category_queryset() -> QuerySet[Category]:

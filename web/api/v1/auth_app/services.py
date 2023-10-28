@@ -21,9 +21,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.email_services import BaseEmailHandler
 from api.v1.auth_app.utils import LoginResponseSerializer, get_client_ip
-from main.models import GenderChoice
 
 from main.decorators import except_shell
+from main.models import GenderChoice
 from main.tasks import send_information_email
 
 if TYPE_CHECKING:

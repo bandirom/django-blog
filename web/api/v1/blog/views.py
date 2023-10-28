@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from . import serializers
 from .filters import ArticleFilter
-from .services import BlogService
+from .services import BlogService, CommentQueryService
 
 
 class ArticleListView(ListAPIView):
@@ -32,8 +32,15 @@ class CreateArticleView(GenericAPIView):
     serializer_class = serializers.CreateArticleSerializer
 
     def post(self, request):
-        print(f'{request.data=}')
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CommentListView(ListAPIView):
+    serializer_class = serializers.CommentSerializer
+
+    def get_queryset(self):
+        slug = self.kwargs['article_slug']
+        return CommentQueryService().comments_by_article_slug(slug)

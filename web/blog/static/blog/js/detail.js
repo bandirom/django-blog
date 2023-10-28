@@ -108,5 +108,14 @@ function help_block(group, variable) {
 
 
 function getCommentList(slug) {
-  console.log('comments')
+  const url = `/api/v1/blog/comments/${slug}/`
+  $.ajax({
+      type: "GET",
+      url: url,
+      success: handleComments,
+  })
+}
+
+function handleComments(data) {
+  console.log('data', data);
 }

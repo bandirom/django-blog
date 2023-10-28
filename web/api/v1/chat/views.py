@@ -1,6 +1,7 @@
+from microservice_request.permissions import HasApiKeyOrIsAuthenticated
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from microservice_request.permissions import HasApiKeyOrIsAuthenticated
+
 from . import serializers
 from .services import UserDataHandler
 

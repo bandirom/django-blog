@@ -9,8 +9,18 @@
 
 {% block container %}
   <div class="row">
-    <div id="detailPage" class="col-lg-8"></div>
-    {% include 'blog/includes/comments.html' %}
+    <div class="col-lg-8">
+      <div id="detailPage"></div>
+      <div id="comments">
+        <div id="commentCreateForm">
+          {% include 'blog/includes/comments.html' %}
+        </div>
+        <div id="commentList">
+          {% include 'blog/includes/comment_list.html' %}
+        </div>
+      </div>
+
+    </div>
 
     {% include 'blog/includes/right_sidebar.html' %}
   </div>

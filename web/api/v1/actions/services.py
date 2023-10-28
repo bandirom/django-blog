@@ -3,12 +3,13 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import QuerySet
+from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import NotFound
 
 from actions.choices import FollowIconStatus, LikeIconStatus, LikeObjChoice, LikeStatus
 from actions.models import Follower, LikeDislike
 from blog.models import Article, Comment
-from django.utils.translation import gettext_lazy as _
+
 from main.models import UserType
 
 User: UserType = get_user_model()

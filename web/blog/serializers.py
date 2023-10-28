@@ -3,11 +3,11 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from actions.choices import LikeIconStatus, LikeStatus
-from actions.serializers import LikeDislikeRelationSerializer
+from api.v1.blog.serializers import CategorySerializer
 from api.v1.blog.services import BlogService
 from user_profile.serializers import ShortUserSerializer
 
-from .models import Article, Category, Comment
+from .models import Article, Comment
 from main.taggit_serializers import TaggitSerializer, TagListSerializerField
 
 User = get_user_model()
@@ -102,14 +102,6 @@ class UpdateDestroyCommentSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    slug = serializers.SlugField(read_only=True, allow_unicode=True)
-
-    class Meta:
-        model = Category
-        fields = ('id', 'name', 'slug')
-
-
 class ArticleSerializer(serializers.ModelSerializer):
     url = serializers.CharField(source='get_absolute_url')
     author = ShortUserSerializer()
@@ -117,13 +109,13 @@ class ArticleSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField()
     like_status = serializers.SerializerMethodField(method_name='get_like_status')
 
-    def get_like_status(self, obj: Article) -> str:
+    def get_like_status(self, obj: Article) -> LikeIconStatus:
         user = self.context['request'].user
         if not user.is_authenticated:
-            return LikeIconStatus.UNDONE
+            return LikeIconStatus.EMPTY
         if like_obj := obj.votes.filter(user=user).first():
             return LikeIconStatus.LIKED if like_obj.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
-        return LikeIconStatus.UNDONE
+        return LikeIconStatus.EMPTY
 
     class Meta:
         model = Article
@@ -146,15 +138,8 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class FullArticleSerializer(ArticleSerializer):
-    # comments = serializers.SerializerMethodField('get_parent_comment')
-    votes = LikeDislikeRelationSerializer(many=True)
-
-    def get_parent_comment(self, obj):
-        queryset = obj.comment_set.filter(parent_id__isnull=True)
-        return CommentSerializer(queryset, source='comment_set', many=True).data
-
     class Meta(ArticleSerializer.Meta):
-        fields = ArticleSerializer.Meta.fields + ('votes',)
+        fields = ArticleSerializer.Meta.fields
 
 
 class CreateArticleSerializer(TaggitSerializer, serializers.ModelSerializer):
