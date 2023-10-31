@@ -10,5 +10,6 @@
 {% endblock container %}
 
 {% block jquery %}
+{{ block.super }}
 $.getScript('{% static 'blog/js/list.js' %}');
 {% endblock %}

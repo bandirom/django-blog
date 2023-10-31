@@ -1,12 +1,10 @@
 {% load blog %}
-{% popular_tags as popular_tags %}
-
 
 <div class="well">
   <h4><i class="fa fa-tags"></i> Popular Tags:</h4>
   <div class="row">
     <div class="col-lg-6">
-      <ul class="list-unstyled">
+      <ul class="list-unstyled" id="tagList">
         {% for tag in popular_tags %}
           <li><a href=""><span class="badge badge-info">{{ tag.name }}</span></a></li>
         {% endfor %}

@@ -22,11 +22,14 @@ const handleDetailPage = (article) => {
   detailPageDiv.append(render)
   $('#likeArticle').click(articleLikeRequest);
   $('#dislikeArticle').click(articleLikeRequest);
+  $('.tag-list').click(tagClickHandler)
+}
 
-}
+
 const tagTemplate = (tag) => {
-  return `<a href="#"><span class="badge badge-info">${tag}</span></a>`
+  return `<a  class="tag-list" data-slug="${tag.slug}"><span class="badge badge-info">${tag.name}</span></a>`
 }
+
 
 const likeTemplate = (articleId, likes, dislikes, likeStatus) => {
   const likeStatusClass = likeStatus === 1 ? "fas fa-thumbs-up" : "far fa-thumbs-up"
@@ -46,7 +49,7 @@ const likeTemplate = (articleId, likes, dislikes, likeStatus) => {
 }
 
 const renderDetailPage = (article) => {
-  const tags = article.tag_list.map((tag) => tagTemplate(tag)).join('')
+  const tags = article.tags.map((tag) => tagTemplate(tag)).join('')
   const likes = likeTemplate(article.id, article.likes, article.dislikes, article.like_status)
   return `
     <h1><a href="${article.url}">${article.title}</a></h1>
@@ -63,7 +66,6 @@ const renderDetailPage = (article) => {
     <br/>
     <hr>
   `
-
 }
 
 

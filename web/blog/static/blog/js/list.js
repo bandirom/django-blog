@@ -40,11 +40,11 @@ function appendUrls(pagination, next, previous) {
 }
 
 const tagTemplate = (tag) => {
-  return `<a style="padding: 3px;" href="#"><span class="label label-info">${tag}</span></a> `
+  return `<a class="tag-list" style="padding: 3px;" data-slug="${tag.slug}"><span class="label label-info">${tag.name}</span></a> `
 }
 
 const articleTemplate = (article) => {
-  let tags = article.tag_list.map((tag)=> tagTemplate(tag)).join('')
+  let tags = article.tags.map((tag)=> tagTemplate(tag)).join('')
   return `
     <div class="row">
       <div class="col-md-12 post">
@@ -81,6 +81,8 @@ function newArticlesRender(data, pagination) {
   for (let article of data.results) {
     const template = articleTemplate(article)
     pagination.append(template);
+    $('.tag-list').click(tagClickHandler)
+
   }
   return true;
 }

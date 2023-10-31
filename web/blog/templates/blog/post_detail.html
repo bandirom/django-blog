@@ -29,6 +29,7 @@
 
 
 {% block jquery %}
+  {{ block.super }}
   $.getScript('{% static 'blog/js/detail.js' %}');
   $.getScript('{% static 'blog/js/comments.js' %}');
   $.getScript('{% static 'actions/js/likes.js' %}');

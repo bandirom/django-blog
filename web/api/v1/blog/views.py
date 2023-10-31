@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from . import serializers
 from .filters import ArticleFilter
-from .services import BlogService, CommentQueryService
+from .services import BlogQueryService, CommentQueryService, TagQueryService
 
 
 class ArticleListView(ListAPIView):
@@ -13,7 +13,7 @@ class ArticleListView(ListAPIView):
     permission_classes = ()
 
     def get_queryset(self):
-        return BlogService().get_active_articles()
+        return BlogQueryService().get_articles()
 
 
 class ArticleDetailView(GenericAPIView):
@@ -21,7 +21,7 @@ class ArticleDetailView(GenericAPIView):
     serializer_class = serializers.FullArticleSerializer
 
     def get_object(self):
-        return BlogService().get_article_by_slug(self.kwargs['slug'])
+        return BlogQueryService().get_article_by_slug(self.kwargs['slug'])
 
     def get(self, request, slug: str):
         serializer = self.get_serializer(self.get_object())
@@ -44,3 +44,11 @@ class CommentListView(ListAPIView):
     def get_queryset(self):
         slug = self.kwargs['article_slug']
         return CommentQueryService().comments_by_article_slug(slug)
+
+
+class TagListView(ListAPIView):
+    serializer_class = serializers.TagListSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return TagQueryService().popular_tags()

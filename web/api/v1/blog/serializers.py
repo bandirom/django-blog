@@ -4,7 +4,7 @@ from rest_framework import serializers
 from actions.choices import LikeIconStatus, LikeStatus
 from actions.serializers import LikeDislikeRelationSerializer
 from api.v1.blog.services import BlogService
-from blog.models import Article, Category, Comment
+from blog.models import Article, ArticleTag, Category, Comment
 from user_profile.serializers import ShortUserSerializer
 
 from main.taggit_serializers import TaggitSerializer, TagListSerializerField
@@ -18,12 +18,19 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'slug')
 
 
+class TagListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleTag
+        fields = ('id', 'slug', 'name')
+
+
 class ArticleSerializer(serializers.ModelSerializer):
     url = serializers.CharField(source='get_absolute_url')
     author = ShortUserSerializer()
     category = CategorySerializer()
     comments_count = serializers.IntegerField()
     like_status = serializers.SerializerMethodField(method_name='get_like_status')
+    tags = TagListSerializer(many=True)
 
     def get_like_status(self, obj: Article) -> LikeIconStatus:
         user = self.context['request'].user
@@ -49,7 +56,7 @@ class ArticleSerializer(serializers.ModelSerializer):
             'image',
             'content',
             'like_status',
-            'tag_list',
+            'tags',
         )
 
 
