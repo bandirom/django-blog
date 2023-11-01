@@ -24,6 +24,10 @@ const tagCloudTemplate = (tag) => {
 
 function tagClickHandler() {
   const tag = $(this)
-  console.log('click', tag.attr('data-slug'))
-}
 
+  // const queryParams = new URLSearchParams(window.location.search);
+
+  const newURL = new URL(window.location.href);
+  newURL.searchParams.set('tags', tag.attr('data-slug'));
+  window.history.pushState({}, '', newURL);
+}
