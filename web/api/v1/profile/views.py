@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from . import serializers
@@ -9,6 +10,7 @@ from . import serializers
 class AvatarUpdateView(GenericAPIView):
     serializer_class = serializers.UserImageSerializer
     parser_classes = (MultiPartParser,)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data, instance=request.user)

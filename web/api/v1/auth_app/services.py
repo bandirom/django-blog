@@ -274,12 +274,9 @@ class AuthAppService:
             first_name=data.first_name,
             last_name=data.last_name,
             password=data.password_1,
-            is_active=False,
-        )
-        Profile.objects.create(
-            user=user,
             birthday=data.birthday,
             gender=data.gender,
+            is_active=False,
         )
         ConfirmationEmailHandler(user).send_email()
 

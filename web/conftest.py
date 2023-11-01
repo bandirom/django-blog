@@ -2,12 +2,12 @@ from base64 import b64decode
 from typing import NamedTuple
 
 import pytest
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+from django.http import SimpleCookie
 from django.test import Client
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from user_profile.models import Profile
 
 from main.models import UserType
 
@@ -41,7 +41,6 @@ def user() -> User:
         first_name='Margot',
         last_name='Robbie',
     )
-    Profile.objects.create(user=user)
     return user
 
 
@@ -52,7 +51,17 @@ def user_tokens(user) -> UserToken:
 
 
 @pytest.fixture()
-def api_client(client: Client, user_tokens) -> Client:
-    client.defaults['HTTP_AUTHORIZATION'] = f'Bearer {user_tokens.access_token}'
-    # client.cookies
+def jwt_cookies(user_tokens: UserToken) -> SimpleCookie:
+    return SimpleCookie(
+        {
+            settings.REST_AUTH['JWT_AUTH_COOKIE']: user_tokens.access_token,
+            settings.REST_AUTH['JWT_AUTH_REFRESH_COOKIE']: user_tokens.refresh_token,
+        }
+    )
+
+
+@pytest.fixture()
+def api_client(client: Client, jwt_cookies) -> Client:
+    # client.defaults['HTTP_AUTHORIZATION'] = f'Bearer {user_tokens.access_token}'
+    client.cookies = jwt_cookies
     return client

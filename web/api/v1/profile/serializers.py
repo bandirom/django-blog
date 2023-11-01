@@ -31,8 +31,6 @@ class UserImageSerializer(serializers.ModelSerializer):
 
     def save(self):
         if self.instance.avatar and not self.instance.is_default_image():
-            print('here')
             self.instance.set_image_to_default()
         self.instance.avatar = self.validated_data['avatar']
-        print(f'{self.instance.avatar=}', self.validated_data['avatar'])
         return self.instance.save(update_fields=['avatar'])
