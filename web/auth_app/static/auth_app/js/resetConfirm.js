@@ -5,32 +5,33 @@ $(function () {
 function confirmReset(e) {
   let form = $(this);
   e.preventDefault();
-  var urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(window.location.search);
   const data = {
     uid: urlParams.get('uid'),
     token: urlParams.get('token'),
+//    password_1: this.password_1.value,
     password_1: $("input[name=password_1]").val(),
     password_2: $("input[name=password_2]").val(),
   }
 
   $.ajax({
-    url: form.attr("action"),
+    url: "/api/v1/auth/password/reset/confirm/",
     type: "POST",
     data: data,
-    success: function (data) {
-      let msg = data.detail + '\n You will be redirect to Sign In page'
-      $('#successReset').append('<div class="help-block">' + msg + "</div>");
-      window.setTimeout(function () {
-        location.href = form.data('href_success');
-      }, 3000);
-    },
-    error: function (data) {
-      error_process(data)
-    }
+    success: successPasswordResetHandler,
+    error: error_process,
   })
 }
 
 let error_class_name = "has-error"
+
+function successPasswordResetHandler(data) {
+  let msg = data.detail + '\n You will be redirect to Sign In page'
+  $('#successReset').append('<div class="help-block">' + msg + "</div>");
+  window.setTimeout(function () {
+    location.href = '/login';
+  }, 3000);
+}
 
 function error_process(data) {
   $(".help-block").remove()
@@ -47,7 +48,6 @@ function error_process(data) {
   if (data.responseJSON.new_password2) {
     help_block("#password2Group", data.responseJSON.new_password2)
   }
-
 }
 
 function help_block(group, variable) {
