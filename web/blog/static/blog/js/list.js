@@ -1,5 +1,5 @@
 $(function () {
-  apiRequest()
+  articleListRequest()
 
 })
 let requestedNewPage = false
@@ -11,17 +11,24 @@ $(window).scroll(function () {
     if (nextUrl && nextUrl != 'None'){
        requestedNewPage = true
        console.log(nextUrl)
-       apiRequest()
+       articleListRequest()
     }
   }
 });
 
 
-function apiRequest() {
+function articleListRequest() {
   let pagination = $('#pagination')
+  const urlParams = new URLSearchParams(window.location.search);
+  const endpoint = pagination.attr('data-href-next')
+
+  const url = new URL(endpoint, window.location.origin);
+
+  urlParams.forEach((value, key) => url.searchParams.set(key, value))
+
   $.ajax({
       type: "GET",
-      url: pagination.attr('data-href-next'),
+      url: url,
       success: function (data) {
         if (data.results) {
           appendUrls(pagination,data.next, data.previous)
@@ -78,11 +85,10 @@ const articleTemplate = (article) => {
 
 
 function newArticlesRender(data, pagination) {
-  for (let article of data.results) {
-    const template = articleTemplate(article)
-    pagination.append(template);
-    $('.tag-list').click(tagClickHandler)
-
-  }
+  const template = data.results.map((article) => articleTemplate(article)).join('');
+  pagination.empty();
+  pagination.append(template);
+  $('.tag-list').unbind();
+  $('.tag-list').click(tagClickHandler);
   return true;
 }

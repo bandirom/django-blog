@@ -4,7 +4,7 @@
 
 {% block container %}
 <div class="row">
-  <div id="pagination" data-href-next="{% url 'api:v1:blog:post-list' %}" class="col-lg-8"></div>
+  <div id="pagination" data-href-next="/api/v1/blog/articles/?page_size=5" class="col-lg-8"></div>
   {% include 'blog/includes/right_sidebar.html' %}
 </div>
 {% endblock container %}
