@@ -1,6 +1,4 @@
-from typing import List
-
-from django.db.models import Count, Prefetch, Q, QuerySet
+from django.db.models import Count, Q, QuerySet
 
 from blog.choices import ArticleStatus
 from blog.models import Article, ArticleTag, Category, Comment

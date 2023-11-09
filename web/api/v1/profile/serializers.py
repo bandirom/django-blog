@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -34,3 +35,23 @@ class UserImageSerializer(serializers.ModelSerializer):
             self.instance.set_image_to_default()
         self.instance.avatar = self.validated_data['avatar']
         return self.instance.save(update_fields=['avatar'])
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password1 = serializers.CharField(min_length=8)
+    new_password2 = serializers.CharField(min_length=8)
+
+    def validate_new_password_1(self, password: str) -> str:
+        validate_password(password)
+        return password
+
+    def validate(self, data: dict) -> dict:
+        if data['new_password1'] != data['new_password2']:
+            raise serializers.ValidationError(_('The two password fields did not match.'))
+        return data
+
+    def update(self, instance: User, validated_data: dict):
+        instance.set_password(validated_data['new_password1'])
+        instance.save(update_fields=['password'])
+        return instance

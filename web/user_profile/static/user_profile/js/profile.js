@@ -52,8 +52,8 @@ function changePassword(e) {
   let form = $(this)
 
   $.ajax({
-    type: form.attr("method"),
-    url: form.attr("action"),
+    type: "post",
+    url: "/api/v1/user/password/update/",
     data: form.serialize(),
     success: function (data) {
       console.log('success', data)

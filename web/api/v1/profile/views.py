@@ -17,3 +17,13 @@ class AvatarUpdateView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ChangePasswordView(GenericAPIView):
+    serializer_class = serializers.ChangePasswordSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data, instance=request.user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'detail': True})

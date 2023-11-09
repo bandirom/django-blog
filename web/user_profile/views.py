@@ -39,12 +39,6 @@ class ProfileViewSet(GenericViewSet):
         response = Response(serializer.data, status=status.HTTP_200_OK)
         return response
 
-    def change_password(self, request):
-        serializer = self.get_serializer(data=request.data, instance=request.user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"detail": _("New password has been saved.")})
-
     def update(self, request):
         serializer = self.get_serializer(data=request.data, instance=request.user)
         serializer.is_valid(raise_exception=True)
