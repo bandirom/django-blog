@@ -10,8 +10,8 @@ from .models import Article, ArticleTag, Category, Comment
 class CommentsInline(admin.TabularInline):
     model = Comment
     extra = 0
-    readonly_fields = ('author', 'user', 'content')
-    fields = ('author', 'user', 'content')
+    readonly_fields = ('user', 'content')
+    fields = ('user', 'content')
 
 
 @admin.register(ArticleTag)

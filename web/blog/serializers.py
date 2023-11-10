@@ -27,7 +27,7 @@ class ParentCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'author', 'content', 'updated', 'article', 'user', 'like_status')
+        fields = ('id', 'content', 'updated', 'article', 'user', 'like_status')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -37,7 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.EmailField(required=False)
     child = ParentCommentSerializer(many=True, read_only=True, source='parent_set')
     parent_id = serializers.IntegerField(min_value=1, default=None)
     user = ShortUserSerializer(read_only=True)
@@ -56,7 +55,6 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'user',
-            'author',
             'content',
             'child',
             'updated',
@@ -76,7 +74,6 @@ class CommentSerializer(serializers.ModelSerializer):
     def create(self, validated_data: dict):
         user = self.context.get('request').user
         if user.is_authenticated:
-            validated_data['author'] = user.email
             validated_data['user'] = user
         return Comment.objects.create(**validated_data)
 

@@ -1,19 +1,19 @@
 <div class="tab-pane" id="settings">
 
   <hr>
-  <form class="form" action="{% url 'user_profile:api_change_pass' %}" method="post" id="changePasswordForm">
+  <form class="form" id="changePasswordForm">
     <div class="col-xs-6">
       <div id="oldPasswordForm" class="form-group">
         <label><h4>Current Password</h4></label>
-        <input type="text" class="form-control" name="old_password" placeholder="Current Password">
+        <input required type="text" class="form-control" name="old_password" placeholder="Current Password">
       </div>
       <div id="newPassword1Form" class="form-group">
         <label><h4>New Password</h4></label>
-        <input type="text" class="form-control" name="new_password1" placeholder="Password">
+        <input required type="text" class="form-control" name="new_password1" placeholder="Password">
       </div>
       <div id="newPassword2Form" class="form-group">
         <label><h4>Confirm Password</h4></label>
-        <input type="text" class="form-control" name="new_password2" placeholder="Confirm Password">
+        <input required type="text" class="form-control" name="new_password2" placeholder="Confirm Password">
       </div>
       <div class="form-group">
         <br>

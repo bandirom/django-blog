@@ -103,11 +103,10 @@ class ParentCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'author', 'content', 'updated', 'article', 'user', 'like_status')
+        fields = ('id', 'content', 'updated', 'article', 'user', 'like_status')
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.EmailField(required=False)
     child = ParentCommentSerializer(many=True, read_only=True, source='parent_set')
     parent_id = serializers.IntegerField(min_value=1, default=None)
     user = ShortUserSerializer(read_only=True)
@@ -126,7 +125,6 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'user',
-            'author',
             'content',
             'child',
             'updated',

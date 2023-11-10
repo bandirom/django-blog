@@ -254,6 +254,7 @@ SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': '/api/v[0-9]',
     'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAdminUser'],
     'SERVE_AUTHENTICATION': ['rest_framework.authentication.SessionAuthentication'],
+    'COMPONENT_SPLIT_REQUEST': True,
     'SWAGGER_UI_SETTINGS': {
         'tryItOutEnabled': True,
         'displayRequestDuration': True,
