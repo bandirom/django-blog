@@ -35,6 +35,10 @@ class CommentQueryService:
     def comments_by_article_slug(self, article_slug: str) -> QuerySet[Comment]:
         return self.get_queryset().filter(article__slug=article_slug)
 
+    @staticmethod
+    def is_valid_comment_parent(parent_id: int, article: Article) -> bool:
+        return Comment.objects.filter(id=parent_id, article=article, parent__isnull=True).exists()
+
 
 class TagQueryService:
     @staticmethod
@@ -72,10 +76,6 @@ class BlogService:
             .filter(article__status=ArticleStatus.ACTIVE)
             .order_by('id')
         )
-
-    @staticmethod
-    def is_valid_comment_parent(parent_id: int, article: Article) -> bool:
-        return Comment.objects.filter(id=parent_id, article=article, parent__isnull=True).exists()
 
     @staticmethod
     def get_article_comments(article_id: int):

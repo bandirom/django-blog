@@ -1,5 +1,6 @@
 from rest_framework import status
-from rest_framework.generics import GenericAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from . import serializers
@@ -44,6 +45,11 @@ class CommentListView(ListAPIView):
     def get_queryset(self):
         slug = self.kwargs['article_slug']
         return CommentQueryService().comments_by_article_slug(slug)
+
+
+class CreateCommentView(CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = serializers.CreateCommentSerializer
 
 
 class TagListView(ListAPIView):

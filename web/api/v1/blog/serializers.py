@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from actions.choices import LikeIconStatus, LikeStatus
 from actions.serializers import LikeDislikeRelationSerializer
-from api.v1.blog.services import BlogService
+from api.v1.blog.services import BlogService, CommentQueryService
 from blog.models import Article, ArticleTag, Category, Comment
 from user_profile.serializers import ShortUserSerializer
 
@@ -132,3 +132,26 @@ class CommentSerializer(serializers.ModelSerializer):
             'parent_id',
             'like_status',
         )
+
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+    parent_id = serializers.IntegerField(min_value=1, required=False)
+
+    class Meta:
+        model = Comment
+        fields = (
+            'id',
+            'parent_id',
+            'article',
+            'content',
+        )
+
+    def validate(self, data: dict):
+        parent_id = data.get('parent_id')
+        if parent_id and not CommentQueryService.is_valid_comment_parent(parent_id, data['article']):
+            raise serializers.ValidationError({'parent_id': 'Selected comment is not valid for this article'})
+        return data
+
+    def create(self, validated_data: dict):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)

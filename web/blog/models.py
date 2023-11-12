@@ -113,7 +113,7 @@ class Comment(models.Model):
         ordering = ('-id',)
 
     def __str__(self):
-        return '{author}: {article}'.format(author=self.author, article=self.article.title)
+        return '{user}: {article}'.format(user=self.user, article=self.article.title)
 
     def likes(self) -> int:
         return self.votes.likes().count()
