@@ -3,6 +3,7 @@ $(function () {
 
   getArticleDetail(slug);
   getCommentList(slug)
+  $('#createCommentForm').submit(createComment);
 });
 
 const detailPageDiv = $("#detailPage")
@@ -18,6 +19,7 @@ function getArticleDetail(slug) {
 
 
 const handleDetailPage = (article) => {
+  detailPageDiv.attr('data-article-id', article.id)
   const render = renderDetailPage(article);
   detailPageDiv.append(render)
   $('#likeArticle').click(articleLikeRequest);
@@ -52,19 +54,19 @@ const renderDetailPage = (article) => {
   const tags = article.tags.map((tag) => tagTemplate(tag)).join('')
   const likes = likeTemplate(article.id, article.likes, article.dislikes, article.like_status)
   return `
-    <h1><a href="${article.url}">${article.title}</a></h1>
-    <p class="lead">
-      <i class="fa fa-user"></i> by <a href="${article.author.url}">${article.author.full_name}</a>
-    </p><hr>
-    <p><i class="fa fa-calendar"></i> Posted on ${article.created}</p>
-    <p><i class="fa fa-tags"></i> Tags: ${tags}</p>
-    <div>${likes}</div>
-    <hr>
-    <img src="${article.image}" class="img-responsive" width="700" height="300">
-    <hr>
-    <p class="lead">${article.content}</p>
-    <br/>
-    <hr>
+      <h1><a href="${article.url}">${article.title}</a></h1>
+      <p class="lead">
+        <i class="fa fa-user"></i> by <a href="${article.author.url}">${article.author.full_name}</a>
+      </p><hr>
+      <p><i class="fa fa-calendar"></i> Posted on ${article.created}</p>
+      <p><i class="fa fa-tags"></i> Tags: ${tags}</p>
+      <div>${likes}</div>
+      <hr>
+      <img src="${article.image}" class="img-responsive" width="700" height="300">
+      <hr>
+      <p class="lead">${article.content}</p>
+      <br/>
+      <hr>
   `
 }
 
@@ -76,15 +78,21 @@ function addParentToComment(commentAuthor, parent_id) {
 
 const error_class_name = "has-error"
 
-function leftComment(e) {
+function createComment(e) {
   e.preventDefault()
   let form = $(this);
+  const data = {
+    article: detailPageDiv.attr('data-article-id'),
+    content: this.textComment.value,
+    parent_id: this.parent_id.value,
+  }
+  console.log('data', data);
   $.ajax({
-    url: form.attr("action"),
-    type: form.attr("method"),
-    data: form.serialize(),
+    url: '/api/v1/blog/comments/',
+    type: 'post',
+    data: data,
     success: function (data) {
-      location.reload();
+//      location.reload();
     },
     error: function (data) {
       $(".help-block").remove()

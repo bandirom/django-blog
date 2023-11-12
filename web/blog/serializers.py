@@ -63,20 +63,6 @@ class CommentSerializer(serializers.ModelSerializer):
             'like_status',
         )
 
-    def validate(self, data):
-        if not self.context.get('request').user.is_authenticated and not data.get('author'):
-            raise serializers.ValidationError({'author': _('Please enter your email or log in')})
-        parent_id = data.get('parent_id')
-        if parent_id and not BlogService.is_valid_comment_parent(parent_id, data.get('article')):
-            raise serializers.ValidationError({'parent_id': _('Choice comment is not valid for this article')})
-        return data
-
-    def create(self, validated_data: dict):
-        user = self.context.get('request').user
-        if user.is_authenticated:
-            validated_data['user'] = user
-        return Comment.objects.create(**validated_data)
-
 
 class UpdateDestroyCommentSerializer(serializers.ModelSerializer):
     content = serializers.CharField()

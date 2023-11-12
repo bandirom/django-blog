@@ -1,16 +1,9 @@
 <!-- the comment box -->
 <div class="well">
   <h4><i class="fa fa-paper-plane-o"></i> Leave a Comment:</h4>
-  <form id="formReview" action="{% url 'blog:comment-list' %}" method="post">
+  <form id="createCommentForm">
     {% csrf_token %}
     <input type="hidden" name="parent_id" id="commentParent" value="">
-    <input type="hidden" name="article" value="{{ id }}">
-    {% if not user.is_authenticated %}
-    <div id="emailGroup" class="col-sm-6 form-group">
-      <label for="author"> Email: </label>
-      <input type="email" class="form-control" name="author" id="author" value="" required>
-    </div>
-    {% endif %}
     <div id="textAreaGroup" class="form-group">
       <textarea id="textComment" name="content" class="form-control" rows="3"></textarea>
     </div>
