@@ -40,7 +40,7 @@ class CreateArticleView(GenericAPIView):
 
 
 class CommentListView(ListAPIView):
-    serializer_class = serializers.CommentSerializer
+    serializer_class = serializers.CommentListSerializer
 
     def get_queryset(self):
         slug = self.kwargs['article_slug']

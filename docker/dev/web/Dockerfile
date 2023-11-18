@@ -14,7 +14,7 @@ ARG GID=1000
 ARG UID=1000
 ARG USER=ubuntu
 
-RUN apk add --update --no-cache curl postgresql-dev gcc python3-dev musl-dev openssl libffi-dev openssl-dev build-base \
+RUN apk add --update --no-cache curl postgresql postgresql-dev gcc python3-dev musl-dev openssl libffi-dev openssl-dev build-base \
     # install Pillow dependencies
     jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev harfbuzz-dev fribidi-dev && \
     pip install --upgrade pip setuptools && \

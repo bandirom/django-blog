@@ -1,4 +1,4 @@
-from django.db.models import Count, Q, QuerySet
+from django.db.models import Count, Prefetch, Q, QuerySet
 
 from blog.choices import ArticleStatus
 from blog.models import Article, ArticleTag, Category, Comment
@@ -33,7 +33,14 @@ class CommentQueryService:
         return Comment.objects.all()
 
     def comments_by_article_slug(self, article_slug: str) -> QuerySet[Comment]:
-        return self.get_queryset().filter(article__slug=article_slug)
+        return (
+            self.get_queryset()
+            .filter(article__slug=article_slug, parent__isnull=True)
+            .select_related('user')
+            .prefetch_related(
+                Prefetch('parent_set', queryset=Comment.objects.all().select_related('user')),
+            )
+        )
 
     @staticmethod
     def is_valid_comment_parent(parent_id: int, article: Article) -> bool:

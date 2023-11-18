@@ -1,6 +1,5 @@
 $(function () {
   const slug = window.location.pathname.split('/')[2]
-
   getArticleDetail(slug);
   getCommentList(slug)
   $('#createCommentForm').submit(createComment);
@@ -86,13 +85,13 @@ function createComment(e) {
     content: this.textComment.value,
     parent_id: this.parent_id.value,
   }
-  console.log('data', data);
   $.ajax({
     url: '/api/v1/blog/comments/',
     type: 'post',
     data: data,
     success: function (data) {
-//      location.reload();
+      const slug = window.location.pathname.split('/')[2]
+      getCommentList(slug);
     },
     error: function (data) {
       $(".help-block").remove()
@@ -127,5 +126,59 @@ function getCommentList(slug) {
 }
 
 function handleComments(data) {
-  console.log('data', data);
+  const commentList = $('#paginationComment')
+  console.log('data', data)
+  const template = data.results.map(comment => commentTemplate(comment)).join('');
+  $('#commentCount').html(`Comments (${data.count})`)
+  commentList.empty();
+  commentList.append(template);
+}
+
+function commentChildTemplate(comment) {
+  const template = `
+    <li>
+      <div class="comment-avatar"><img src="${comment.user.avatar}" alt=""></div>
+      <div class="comment-box">
+        <div class="comment-head">
+          <h6 class="comment-name">
+            <a href="#">${comment.user.full_name}</a>
+          </h6>
+          <span>${comment.updated}</span>
+        </div>
+        <div class="comment-content">${comment.content}</div>
+      </div>
+    </li>
+  `
+  return template
+}
+
+
+function commentTemplate(comment){
+  const childrenTemplate = comment.children.map(comment => commentChildTemplate(comment)).join('');
+  const template = `
+    <li>
+      <div class="comment-main-level">
+        <div class="comment-avatar"><img src="${comment.user.avatar}" alt=""></div>
+        <div class="comment-box">
+          <div class="comment-head">
+            <h6 class="comment-name by-author"><a href="#">${comment.user.full_name}</a></h6>
+            <span>${comment.updated}</span>
+            <a href="#formReview" onclick="addParentToComment('${comment.user.full_name}', '${comment.id}')"><i class="fa fa-reply"></i></a>
+             <i class="fa fa-heart commentLike"
+              data-id="${comment.id}"
+              data-vote=1
+              data-type="comment">
+             </i>
+          </div>
+          <div class="comment-content">
+            ${comment.content}
+          </div>
+        </div>
+      </div>
+      <ul class="comments-list reply-list">
+        ${childrenTemplate}
+      </ul>
+    </li>
+  `
+  return template;
 }
