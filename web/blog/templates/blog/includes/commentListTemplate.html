@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="comments-container">
+    <h1 id="commentCount">Comments (0)</h1>
+    <ul id="paginationComment" class="comments-list" data-id="{{ id }}" data-href-next="#">
+      {% for comment in comments %}
+      <li>
+        <div class="comment-main-level">
+          <div class="comment-avatar"><img
+            src="http://i9.photobucket.com/albums/a88/creaticode/avatar_1_zps8e1c80cd.jpg" alt=""></div>
+          <div class="comment-box">
+            <div class="comment-head">
+              <h6 class="comment-name by-author"><a href="#">{{ comment.author }}</a></h6>
+              <span>{{ comment.updated | date_time }}</span>
+              <a href="#formReview" onclick="addParentToComment('{{ comment.author }}', '{{ comment.id }}')"><i
+                class="fa fa-reply"></i></a>
+              <i class="fa fa-heart commentLike"
+                 data-id="{{ comment.id }}" data-vote=1
+                 data-href="{% url 'actions:like_dislike' %}"
+                 data-type="comment"></i>
+            </div>
+            <div class="comment-content">
+              {{ comment.content }}
+            </div>
+          </div>
+        </div>
+        <!-- Comments reply -->
+        <ul class="comments-list reply-list">
+          {% for child in comment.children %}
+          <li>
+            <div class="comment-avatar"><img
+              src="http://i9.photobucket.com/albums/a88/creaticode/avatar_2_zps7de12f8b.jpg" alt=""></div>
+
+            <div class="comment-box">
+              <div class="comment-head">
+                <h6 class="comment-name"><a href="#"> {{ child.author }}</a></h6>
+                <span>{{ child.updated | date_time }}</span>
+                <i class="fa fa-heart commentLike"
+                   data-id="{{ child.id }}" data-vote=1
+                   data-type="comment" data-href="{% url 'actions:like_dislike' %}">
+                </i>
+              </div>
+              <div class="comment-content">
+                {{ child.content }}
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
