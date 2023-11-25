@@ -1,8 +1,7 @@
 from typing import Optional
 
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import QuerySet
+from django.db.models import Count, Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import NotFound
 
@@ -10,6 +9,7 @@ from actions.choices import FollowIconStatus, LikeIconStatus, LikeObjChoice, Lik
 from actions.models import Follower, LikeDislike
 from blog.models import Article, Comment
 
+from main.decorators import except_shell
 from main.models import UserType
 
 User: UserType = get_user_model()
@@ -23,27 +23,23 @@ class LikeService:
         self.object_id = object_id
         self.instance = self.model_instance()
 
-    def get_content_type_for_model(self) -> ContentType:
-        return ContentType.objects.get_for_model(self.model_instance())
-
+    @except_shell((Article.DoesNotExist,), raise_404=True)
     def get_article(self) -> Article:
         return Article.objects.get(id=self.object_id)
 
+    @except_shell((Comment.DoesNotExist,), raise_404=True)
     def get_comment(self) -> Comment:
         return Comment.objects.get(id=self.object_id)
 
     def model_instance(self) -> Article | Comment:
-        obj = None
         match self.model:
             case LikeObjChoice.ARTICLE:
-                obj = self.get_article()
+                return self.get_article()
             case LikeObjChoice.COMMENT:
-                obj = self.get_comment()
-        return obj
+                return self.get_comment()
 
     def get_like_object(self) -> Optional[LikeDislike]:
-        content_type = self.get_content_type_for_model()
-        return LikeDislike.objects.filter(content_type=content_type, object_id=self.object_id, user=self.user).first()
+        return self.instance.votes.filter(user=self.user).first()
 
     def create_like_object(self) -> LikeDislike:
         return self.instance.votes.create(user=self.user, vote=self.vote)
@@ -52,6 +48,12 @@ class LikeService:
         obj.vote = self.vote
         obj.save(update_fields=['vote'])
         return obj
+
+    def _get_vote_count(self) -> dict:
+        return self.instance.votes.aggregate(
+            like_count=Count('vote', filter=Q(vote=LikeStatus.LIKE)),
+            dislike_count=Count('vote', filter=Q(vote=LikeStatus.DISLIKE)),
+        )
 
     def make_like(self) -> dict:
         _status = LikeIconStatus.LIKED if self.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
@@ -65,12 +67,9 @@ class LikeService:
         else:
             self.create_like_object()
 
-        data = {
-            'status': _status,
-            'like_count': self.instance.likes(),
-            'dislike_count': self.instance.dislikes(),
-        }
-        return data
+        aggregated_result = self._get_vote_count()
+        aggregated_result['status'] = _status
+        return aggregated_result
 
 
 class FollowService:
