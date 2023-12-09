@@ -156,7 +156,7 @@ function commentChildTemplate(comment) {
 
 function commentTemplate(comment){
   const childrenTemplate = comment.children.map(comment => commentChildTemplate(comment)).join('');
-  const like_status = ""
+  const like_status = commentLikeColor(comment.like_status)
   const template = `
     <li>
       <div class="comment-main-level">
@@ -166,7 +166,7 @@ function commentTemplate(comment){
             <h6 class="comment-name by-author"><a href="#">${comment.user.full_name}</a></h6>
             <span>${comment.updated}</span>
             <a href="#formReview" onclick="addParentToComment('${comment.user.full_name}', '${comment.id}')"><i class="fa fa-reply"></i></a>
-             <i class="fa fa-heart commentLike"
+             <i style="color: ${like_status}" class="fa fa-heart commentLike"
               data-id="${comment.id}"
               data-vote=1
               data-type="comment">

@@ -1,8 +1,9 @@
 from django.db.models import Count, Prefetch, Q, QuerySet
 
+from api.v1.actions.services import LikeQueryService
 from blog.choices import ArticleStatus
 from blog.models import Article, ArticleTag, Category, Comment
-
+from main.models import UserType
 from main.decorators import except_shell
 
 
@@ -14,17 +15,20 @@ class BlogQueryService:
     def get_active_articles(self) -> QuerySet[Article]:
         return self.get_queryset().filter(status=ArticleStatus.ACTIVE)
 
-    def get_articles(self) -> QuerySet[Article]:
+    def get_articles(self, user: UserType) -> QuerySet[Article]:
         return (
             self.get_active_articles()
             .select_related('category', 'author')
             .prefetch_related('tags')
-            .annotate(comments_count=Count('comment_set'))
+            .annotate(
+                comments_count=Count('comment_set'),
+                like_status=LikeQueryService.like_annotate(user)
+            )
         )
 
     @except_shell((Article.DoesNotExist,), raise_404=True)
-    def get_article_by_slug(self, slug: str) -> Article:
-        return self.get_articles().get(slug=slug)
+    def get_article_by_slug(self, slug: str, user) -> Article:
+        return self.get_articles(user).get(slug=slug)
 
 
 class CommentQueryService:
@@ -32,13 +36,16 @@ class CommentQueryService:
     def get_queryset() -> QuerySet[Comment]:
         return Comment.objects.all()
 
-    def comments_by_article_slug(self, article_slug: str) -> QuerySet[Comment]:
+    def comments_by_article_slug(self, article_slug: str, user: UserType) -> QuerySet[Comment]:
         return (
             self.get_queryset()
             .filter(article__slug=article_slug, parent__isnull=True)
             .select_related('user')
             .prefetch_related(
                 Prefetch('parent_set', queryset=Comment.objects.all().select_related('user')),
+            )
+            .annotate(
+                like_status=LikeQueryService.like_annotate(user)
             )
         )
 

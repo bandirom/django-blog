@@ -1,7 +1,7 @@
 from typing import Optional
 
 from django.contrib.auth import get_user_model
-from django.db.models import Count, Q, QuerySet
+from django.db.models import Count, Q, QuerySet, Case, When, Value, IntegerField
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import NotFound
 
@@ -13,6 +13,20 @@ from main.decorators import except_shell
 from main.models import UserType
 
 User: UserType = get_user_model()
+
+
+class LikeQueryService:
+
+    @staticmethod
+    def like_annotate(user):
+        if not user.is_authenticated:
+            return Value(LikeIconStatus.EMPTY, output_field=IntegerField())
+        return Case(
+        When(votes__user=user, votes__vote=LikeStatus.LIKE, then=Value(LikeIconStatus.LIKED)),
+            When(votes__user=user, votes__vote=LikeStatus.DISLIKE, then=Value(LikeIconStatus.DISLIKED)),
+            default=Value(LikeIconStatus.EMPTY),
+            output_field=IntegerField(),
+        )
 
 
 class LikeService:

@@ -14,7 +14,7 @@ class ArticleListView(ListAPIView):
     permission_classes = ()
 
     def get_queryset(self):
-        return BlogQueryService().get_articles()
+        return BlogQueryService().get_articles(self.request.user)
 
 
 class ArticleDetailView(GenericAPIView):
@@ -22,7 +22,7 @@ class ArticleDetailView(GenericAPIView):
     serializer_class = serializers.FullArticleSerializer
 
     def get_object(self):
-        return BlogQueryService().get_article_by_slug(self.kwargs['slug'])
+        return BlogQueryService().get_article_by_slug(self.kwargs['slug'], self.request.user)
 
     def get(self, request, slug: str):
         serializer = self.get_serializer(self.get_object())
@@ -44,7 +44,7 @@ class CommentListView(ListAPIView):
 
     def get_queryset(self):
         slug = self.kwargs['article_slug']
-        return CommentQueryService().comments_by_article_slug(slug)
+        return CommentQueryService().comments_by_article_slug(slug, self.request.user)
 
 
 class CreateCommentView(CreateAPIView):

@@ -29,16 +29,8 @@ class ArticleSerializer(serializers.ModelSerializer):
     author = ShortUserSerializer()
     category = CategorySerializer()
     comments_count = serializers.IntegerField()
-    like_status = serializers.SerializerMethodField(method_name='get_like_status')
+    like_status = serializers.IntegerField()
     tags = TagListSerializer(many=True)
-
-    def get_like_status(self, obj: Article) -> LikeIconStatus:
-        user = self.context['request'].user
-        if not user.is_authenticated:
-            return LikeIconStatus.EMPTY
-        if like_obj := obj.votes.filter(user=user).first():
-            return LikeIconStatus.LIKED if like_obj.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
-        return LikeIconStatus.EMPTY
 
     class Meta:
         model = Article
@@ -87,15 +79,6 @@ class CreateArticleSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 class ParentCommentSerializer(serializers.ModelSerializer):
     user = ShortUserSerializer(read_only=True)
-    # like_status = serializers.SerializerMethodField(method_name='get_like_status')
-
-    # def get_like_status(self, obj) -> LikeIconStatus:
-    #     user = self.context['request'].user
-    #     if not user.is_authenticated:
-    #         return LikeIconStatus.EMPTY
-    #     if like_obj := obj.votes.filter(user=user).first():
-    #         return LikeIconStatus.LIKED if like_obj.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
-    #     return LikeIconStatus.EMPTY
 
     class Meta:
         model = Comment
@@ -103,7 +86,6 @@ class ParentCommentSerializer(serializers.ModelSerializer):
             'id',
             'content',
             'updated',
-            'article',
             'user',
         )
 
@@ -111,15 +93,7 @@ class ParentCommentSerializer(serializers.ModelSerializer):
 class CommentListSerializer(serializers.ModelSerializer):
     children = ParentCommentSerializer(many=True, read_only=True, source='parent_set')
     user = ShortUserSerializer(read_only=True)
-    # like_status = serializers.SerializerMethodField(method_name='get_like_status')
-    #
-    # def get_like_status(self, obj) -> LikeIconStatus:
-    #     user = self.context['request'].user
-    #     if not user.is_authenticated:
-    #         return LikeIconStatus.EMPTY
-    #     if like_obj := obj.votes.filter(user=user).first():
-    #         return LikeIconStatus.LIKED if like_obj.vote == LikeStatus.LIKE else LikeIconStatus.DISLIKED
-    #     return LikeIconStatus.EMPTY
+    like_status = serializers.IntegerField()
 
     class Meta:
         model = Comment
@@ -129,8 +103,7 @@ class CommentListSerializer(serializers.ModelSerializer):
             'content',
             'children',
             'updated',
-            'article',
-            # 'like_status',
+            'like_status',
         )
 
 

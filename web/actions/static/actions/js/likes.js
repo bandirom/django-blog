@@ -73,7 +73,8 @@ function commentLike(e) {
     type: 'post',
     data: data,
     success: function (data) {
-      commentLikeHandler(data, like)
+      const color = commentLikeColor(data.status)
+      like.css({color: color})
     },
     error: function (data) {
       console.log(data, "Error")
@@ -81,10 +82,10 @@ function commentLike(e) {
   })
 }
 
-function commentLikeHandler(data, button) {
+function commentLikeColor(status) {
   let color = "#A6A6A6"
-  if (data.status === 1) {
+  if (status === 1) {
     color = "red"
   }
-  button.css({color: color})
+  return color
 }
