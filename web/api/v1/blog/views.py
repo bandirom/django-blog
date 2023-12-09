@@ -41,6 +41,7 @@ class CreateArticleView(GenericAPIView):
 
 class CommentListView(ListAPIView):
     serializer_class = serializers.CommentListSerializer
+    permission_classes = ()
 
     def get_queryset(self):
         slug = self.kwargs['article_slug']
@@ -48,13 +49,13 @@ class CommentListView(ListAPIView):
 
 
 class CreateCommentView(CreateAPIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = serializers.CreateCommentSerializer
 
 
 class TagListView(ListAPIView):
     serializer_class = serializers.TagListSerializer
     pagination_class = None
+    permission_classes = ()
 
     def get_queryset(self):
         return TagQueryService().popular_tags()
