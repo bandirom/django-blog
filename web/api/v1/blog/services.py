@@ -3,8 +3,9 @@ from django.db.models import Count, Prefetch, Q, QuerySet
 from api.v1.actions.services import LikeQueryService
 from blog.choices import ArticleStatus
 from blog.models import Article, ArticleTag, Category, Comment
-from main.models import UserType
+
 from main.decorators import except_shell
+from main.models import UserType
 
 
 class BlogQueryService:
@@ -20,10 +21,7 @@ class BlogQueryService:
             self.get_active_articles()
             .select_related('category', 'author')
             .prefetch_related('tags')
-            .annotate(
-                comments_count=Count('comment_set'),
-                like_status=LikeQueryService.like_annotate(user)
-            )
+            .annotate(comments_count=Count('comment_set'), like_status=LikeQueryService.like_annotate(user))
         )
 
     @except_shell((Article.DoesNotExist,), raise_404=True)
@@ -44,9 +42,7 @@ class CommentQueryService:
             .prefetch_related(
                 Prefetch('parent_set', queryset=Comment.objects.all().select_related('user')),
             )
-            .annotate(
-                like_status=LikeQueryService.like_annotate(user)
-            )
+            .annotate(like_status=LikeQueryService.like_annotate(user))
         )
 
     @staticmethod
