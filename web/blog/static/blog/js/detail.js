@@ -132,6 +132,7 @@ function handleComments(data) {
   $('#commentCount').html(`Comments (${data.count})`)
   commentList.empty();
   commentList.append(template);
+  $('.commentLike').click(commentLike)
 }
 
 function commentChildTemplate(comment) {
@@ -155,6 +156,7 @@ function commentChildTemplate(comment) {
 
 function commentTemplate(comment){
   const childrenTemplate = comment.children.map(comment => commentChildTemplate(comment)).join('');
+  const like_status = ""
   const template = `
     <li>
       <div class="comment-main-level">

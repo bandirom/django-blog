@@ -62,24 +62,29 @@ function default_status() {
 
 function commentLike(e) {
   e.preventDefault()
-  console.log('like')
   let like = $(this);
   let data = {
     'object_id': like.data('id'),
     'model': like.data('type'),
     'vote': like.data('vote'),
   }
-  console.log(data)
   $.ajax({
-    url: like.data('href'),
+    url: '/api/v1/actions/like',
     type: 'post',
     data: data,
     success: function (data) {
-      console.log(data, "success")
-
+      commentLikeHandler(data, like)
     },
     error: function (data) {
       console.log(data, "Error")
     }
   })
+}
+
+function commentLikeHandler(data, button) {
+  let color = "#A6A6A6"
+  if (data.status === 1) {
+    color = "red"
+  }
+  button.css({color: color})
 }
