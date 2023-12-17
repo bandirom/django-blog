@@ -36,8 +36,8 @@ class FollowView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         service = FollowService(user=request.user, user_id=serializer.data['user_id'])
-        response_data = service.subscribe()
-        return Response(response_data, status.HTTP_200_OK)
+        follow_status = service.subscribe()
+        return Response({'status': follow_status}, status.HTTP_200_OK)
 
 
 class UserFollowersView(ListModelMixin, GenericViewSet):

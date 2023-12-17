@@ -12,7 +12,7 @@ profile = views.ProfileViewSet.as_view({'get': 'profile', 'put': 'update'})
 
 urlpatterns = [
     path('profile/', profile, name='profile'),
-    path('user/list/', views.UserListView.as_view(), name='user_list'),
+    path('user/list/', TemplateAPIView.as_view(template_name='user_profile/user_list.html'), name='user_list'),
     path('user/<user_id>/', views.UserProfileByIdView.as_view(), name='user_by_id'),
 ]
 

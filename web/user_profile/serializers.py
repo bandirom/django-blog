@@ -1,9 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from actions.choices import FollowIconStatus
-from api.v1.actions.services import FollowService
-
 from main.models import GenderChoice
 
 User = get_user_model()
@@ -43,16 +40,3 @@ class UpdateUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'birthday', 'gender')
-
-
-class UserListSerializer(serializers.ModelSerializer):
-    follow = serializers.SerializerMethodField('get_follow_status')
-
-    def get_follow_status(self, obj) -> str:
-        user = self.context['request'].user
-        is_follow = FollowService(user, obj.id).is_user_subscribed()
-        return FollowIconStatus.UNFOLLOW if is_follow else FollowIconStatus.FOLLOW
-
-    class Meta:
-        model = User
-        fields = ('id', 'full_name', 'avatar', 'follow')

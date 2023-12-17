@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from actions.choices import FollowIconStatus, LikeObjChoice, LikeStatus
+from actions.choices import FollowStatus, LikeObjChoice, LikeStatus
 from api.v1.actions.services import FollowService
 
 if TYPE_CHECKING:
@@ -30,12 +30,12 @@ class UserFollowSerializer(serializers.ModelSerializer):
 
     follow = serializers.SerializerMethodField('get_follow_status')
 
-    def get_follow_status(self, obj) -> Optional[FollowIconStatus]:
+    def get_follow_status(self, obj) -> Optional[FollowStatus]:
         user = self.context['request'].user
         if user == obj:
             return None
         is_follow = FollowService(user=user, user_id=obj.id).is_user_subscribed()
-        return FollowIconStatus.UNFOLLOW if is_follow else FollowIconStatus.FOLLOW
+        return FollowStatus.UNFOLLOW if is_follow else FollowStatus.FOLLOW
 
     class Meta:
         model = User

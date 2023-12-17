@@ -1,3 +1,5 @@
+from enum import Enum
+
 from django.db.models import IntegerChoices, TextChoices
 from django.utils.translation import gettext_lazy as _
 
@@ -18,9 +20,9 @@ class LikeIconStatus(IntegerChoices):
     EMPTY = 0
 
 
-class FollowIconStatus(TextChoices):
-    FOLLOW = ('Follow', _('Follow'))
-    UNFOLLOW = ('Unfollow', _('Unfollow'))
+class FollowStatus(Enum):
+    FOLLOW = True
+    UNFOLLOW = False
 
 
 class UserActionsChoice(IntegerChoices):

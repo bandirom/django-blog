@@ -4,24 +4,7 @@
 {% block container %}
   <div class="row">
     <div class="span12">
-      <ul class="thumbnails">
-        {% for user in user_list %}
-          <li class="span5 clearfix">
-            <div class="thumbnail clearfix">
-              <img src="{{ user.avatar }}" alt="Avatar" class="pull-left span2 clearfix avatar img-circle img-thumbnail" width="120px"
-                   style='margin-right:10px'>
-              <div class="caption" class="pull-left">
-                <a href="#" data-href="{% url 'api:v1:actions:follow' %}" data-id="{{ user.id }}"
-                   class="btn btn-primary icon  pull-right followMe">{{ user.follow }}</a>
-                <h4>
-                  <a href="{% url 'user_profile:user_by_id' user.id %}">{{ user.full_name }}</a>
-                </h4>
-{#                <small><b>RG: </b>99384877</small>#}
-              </div>
-            </div>
-          </li>
-        {% endfor %}
-
+      <ul id="userList" class="thumbnails">
       </ul>
     </div>
   </div>
@@ -29,4 +12,5 @@
 
 {% block jquery %}
 $.getScript('{% static 'actions/js/follow.js' %}');
+$.getScript('{% static 'user_profile/js/user_list.js' %}');
 {% endblock %}

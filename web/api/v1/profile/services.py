@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING, Optional
 
 from django.contrib.auth import get_user_model
-from django.db.models import Count, Q
+from django.db.models import Count, Exists, OuterRef, Q
 
+from actions.models import Follower
 from blog.choices import ArticleStatus
 
 from main.decorators import except_shell
@@ -32,6 +33,11 @@ class UserQueryService:
         user_articles = Count('article_set', filter=Q(article_set__status=ArticleStatus.ACTIVE))
         user_likes = Count('likes')
         return self.get_queryset(is_active=True).annotate(user_posts=user_articles, user_likes=user_likes)
+
+    def user_list_queryset(self, current_user: User) -> 'QuerySet[User]':
+        return self.user_profile_queryset().annotate(
+            follow=Exists(Follower.objects.filter(subscriber=current_user, to_user_id=OuterRef('pk')))
+        )
 
     @except_shell((User.DoesNotExist,), raise_404=True)
     def get_user_profile(self, user_id: int) -> User:

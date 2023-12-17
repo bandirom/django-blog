@@ -63,4 +63,4 @@ class UserListView(ListAPIView):
     serializer_class = serializers.UserListSerializer
 
     def get_queryset(self):
-        return UserQueryService.get_queryset(is_active=True)
+        return UserQueryService().user_list_queryset(current_user=self.request.user)

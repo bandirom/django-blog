@@ -4,8 +4,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from actions.choices import FollowIconStatus
-from api.v1.actions.services import FollowService
 
 User = get_user_model()
 
@@ -88,12 +86,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class UserListSerializer(serializers.ModelSerializer):
-    follow = serializers.SerializerMethodField('get_follow_status')
-
-    def get_follow_status(self, obj) -> str:
-        user = self.context['request'].user
-        is_follow = FollowService(user, obj.id).is_user_subscribed()
-        return FollowIconStatus.UNFOLLOW if is_follow else FollowIconStatus.FOLLOW
+    follow = serializers.BooleanField()
 
     class Meta:
         model = User

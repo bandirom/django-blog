@@ -59,22 +59,27 @@ class FullArticleSerializer(ArticleSerializer):
         fields = ArticleSerializer.Meta.fields + ('votes',)
 
 
-class CreateArticleSerializer(TaggitSerializer, serializers.ModelSerializer):
-    tags = TagListSerializerField()
+class CreateArticleSerializer(serializers.ModelSerializer):  # TaggitSerializer,
+    # tags = TagListSerializerField()
 
     class Meta:
         model = Article
-        fields = ('title', 'category', 'image', 'content', 'tags')
-
-    @transaction.atomic()
-    def create(self, validated_data):
-        validated_data['author'] = self.context.get('request').user
-        return super().create(validated_data)
+        fields = (
+            'title',
+            'category',
+            'image',
+            'content',
+        )  # 'tags'
 
     def validate_title(self, title: str):
         if BlogService.is_article_slug_exist(title):
-            raise serializers.ValidationError("This title already exists")
+            raise serializers.ValidationError('This title already exists')
         return title
+
+    @transaction.atomic()
+    def create(self, validated_data: dict):
+        validated_data['author'] = self.context['request'].user
+        return super().create(validated_data)
 
 
 class ParentCommentSerializer(serializers.ModelSerializer):

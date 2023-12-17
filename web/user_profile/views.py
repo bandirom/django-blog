@@ -46,20 +46,6 @@ class ProfileViewSet(GenericViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UserListView(GenericAPIView):
-    serializer_class = serializers.UserListSerializer
-    template_name = 'user_profile/user_list.html'
-    renderer_classes = (JSONRenderer, TemplateHTMLRenderer)
-
-    def get_queryset(self):
-        return UserProfileService.user_queryset().exclude(id=self.request.user.id)
-
-    def get(self, request):
-        serializer = self.get_serializer(self.get_queryset(), many=True)
-        data = {'user_list': serializer.data}
-        return Response(data, status=status.HTTP_200_OK, template_name=self.template_name)
-
-
 class UserProfileByIdView(GenericAPIView):
     serializer_class = serializers.UserSerializer
     template_name = 'user_profile/profile_read_only.html'

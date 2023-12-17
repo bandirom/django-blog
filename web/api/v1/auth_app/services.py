@@ -116,11 +116,11 @@ class PasswordResetConfirmHandler:
         return self._user
 
     def validate(self):
-        self._user = self._get_user_by_uid_or_exception(self._uid)
+        self._user = self._get_user_by_uid(self._uid)
         self._validate_token()
 
     @staticmethod
-    def _get_user_by_uid_or_exception(uid: str) -> User:
+    def _get_user_by_uid(uid: str) -> User:
         try:
             uid = force_str(urlsafe_base64_decode(uid))
             return User.objects.get(id=uid)

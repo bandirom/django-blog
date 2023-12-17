@@ -5,7 +5,7 @@ from django.db.models import Case, Count, IntegerField, Q, QuerySet, Value, When
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import NotFound
 
-from actions.choices import FollowIconStatus, LikeIconStatus, LikeObjChoice, LikeStatus
+from actions.choices import FollowStatus, LikeIconStatus, LikeObjChoice, LikeStatus
 from actions.models import Follower, LikeDislike
 from blog.models import Article, Comment
 
@@ -99,16 +99,14 @@ class FollowService:
     def unfollow_user(self):
         return Follower.objects.filter(subscriber=self.user, to_user_id=self.to_user_id).delete()
 
-    def subscribe(self) -> dict:
+    def subscribe(self) -> bool:
         if not self.is_user_subscribed():
             self.subscribe_to_user()
-            follow_status = FollowIconStatus.UNFOLLOW
+            follow_status = FollowStatus.FOLLOW
         else:
             self.unfollow_user()
-            follow_status = FollowIconStatus.FOLLOW
-        return {
-            'status': follow_status,
-        }
+            follow_status = FollowStatus.UNFOLLOW
+        return follow_status.value
 
 
 class FollowersQueryService:
