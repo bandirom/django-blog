@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from .choices import LikeStatus
+from .choices import ActionFeed, LikeStatus
 from .managers import FollowerManager, LikeDislikeManager
 
 User = get_user_model()
@@ -49,7 +49,7 @@ def action_content_limit():
 
 class Action(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='actions')
-    action = models.CharField(max_length=500)
+    action = models.CharField(max_length=50, choices=ActionFeed.choices)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=action_content_limit)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey()

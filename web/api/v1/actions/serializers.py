@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from actions.choices import FollowStatus, LikeObjChoice, LikeStatus
+from actions.models import Action
 from api.v1.actions.services import FollowService
 
 if TYPE_CHECKING:
@@ -35,8 +36,28 @@ class UserFollowSerializer(serializers.ModelSerializer):
         if user == obj:
             return None
         is_follow = FollowService(user=user, user_id=obj.id).is_user_subscribed()
-        return FollowStatus.UNFOLLOW if is_follow else FollowStatus.FOLLOW
+        return FollowStatus.UNFOLLOW.value if is_follow else FollowStatus.FOLLOW.value
 
     class Meta:
         model = User
         fields = ('id', 'full_name', 'avatar', 'profile_url', 'follow')
+
+
+class UserFeedSerializer(serializers.ModelSerializer):
+    avatar = serializers.URLField(source='avatar_url')
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'full_name',
+            'avatar',
+        )
+
+
+class FeedListSerializer(serializers.ModelSerializer):
+    user = UserFeedSerializer()
+
+    class Meta:
+        model = Action
+        fields = ('id', 'user', 'action', 'date')

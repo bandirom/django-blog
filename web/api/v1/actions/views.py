@@ -1,8 +1,10 @@
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+
+from actions.models import Action
 
 from . import serializers
 from .services import FollowersQueryService, FollowService, LikeService
@@ -68,3 +70,10 @@ class UserFollowersView(ListModelMixin, GenericViewSet):
 
     def user_following_by_id(self, request, user_id: int):
         return self.list(request)
+
+
+class FeedView(ListAPIView):
+    serializer_class = serializers.FeedListSerializer
+
+    def get_queryset(self):
+        return Action.objects.filter(user=self.request.user)

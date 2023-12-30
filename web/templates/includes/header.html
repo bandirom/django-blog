@@ -30,6 +30,9 @@
       <li {% if selected == 'profile' %}class="active"{% endif %}>
       <a href="{% url 'user_profile:profile' %}"></i> Profile</a>
       </li>
+      <li {% if selected == 'feed' %}class="active"{% endif %}>
+        <a href="{% url 'actions:feed' %}"></i> Feed</a>
+      </li>
       {% endif %}
     </ul>
     {% include 'includes/header_sign_status.html' %}

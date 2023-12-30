@@ -1,0 +1,12 @@
+{% extends "actions/base.html" %}
+{% load static main %}
+
+{% block container %}
+<div class="row form-group">
+  <div class="col-xs-12 col-md-offset-2 col-lg-offset-2 col-md-8 col-lg-8" id="feedList"></div>
+</div>
+{% endblock container %}
+
+{% block jquery %}
+$.getScript('{% static 'actions/js/actionFeed.js' %}');
+{% endblock %}

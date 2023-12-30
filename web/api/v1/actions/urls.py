@@ -19,4 +19,5 @@ urlpatterns = [
         views.UserFollowersView.as_view({'get': 'user_following_by_id'}),
         name='following_by_user_id',
     ),
+    path('feed', views.FeedView.as_view(), name='feed'),
 ]

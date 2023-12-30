@@ -5,8 +5,8 @@ from django.db.models import Case, Count, IntegerField, Q, QuerySet, Value, When
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import NotFound
 
-from actions.choices import FollowStatus, LikeIconStatus, LikeObjChoice, LikeStatus
-from actions.models import Follower, LikeDislike
+from actions.choices import ActionFeed, FollowStatus, LikeIconStatus, LikeObjChoice, LikeStatus
+from actions.models import Action, Follower, LikeDislike
 from blog.models import Article, Comment
 
 from main.decorators import except_shell
@@ -121,3 +121,13 @@ class FollowersQueryService:
 
     def get_user_following(self, user: User) -> QuerySet[User]:
         return user.following.all()
+
+
+class ActivityService:
+    def __init__(self, action: ActionFeed, user: User, content_object):
+        self.action = action
+        self.user = user
+        self.content_object = content_object
+
+    def create_activity(self) -> Action:
+        return Action.objects.create(user=self.user, action=self.action, content_object=self.content_object)

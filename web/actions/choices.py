@@ -31,3 +31,8 @@ class UserActionsChoice(IntegerChoices):
     LIKED_ARTICLE = (3, _('User {user} liked article {article}'))
     DISLIKED_ARTICLE = (4, _('User {user} disliked article {article}'))
     LIKED_COMMENT = (5, _('User {user} liked comment {comment} from user {comment_owner}'))
+
+
+class ActionFeed(TextChoices):
+    UPDATE_AVATAR = 'update_avatar'
+    CREATE_ARTICLE = 'create_article'
