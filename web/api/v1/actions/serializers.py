@@ -29,14 +29,7 @@ class UserFollowSerializer(serializers.ModelSerializer):
 
     profile_url = serializers.URLField(source='get_absolute_url')
 
-    follow = serializers.SerializerMethodField('get_follow_status')
-
-    def get_follow_status(self, obj) -> Optional[FollowStatus]:
-        user = self.context['request'].user
-        if user == obj:
-            return None
-        is_follow = FollowService(user=user, user_id=obj.id).is_user_subscribed()
-        return FollowStatus.UNFOLLOW.value if is_follow else FollowStatus.FOLLOW.value
+    follow = serializers.BooleanField()
 
     class Meta:
         model = User

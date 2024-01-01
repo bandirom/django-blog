@@ -91,28 +91,23 @@ function renderModal(data, button) {
 }
 
 function followBodyRender(data, button) {
-  user_list = data.results
-  let body = $('#followModalBody')
-  let followUrl = button.data('follow-actions')
-
+  const body = $('#followModalBody')
+  const followUrl = button.data('follow-actions')
   body.empty()
-  $.each(user_list, function(i){
-   let isShowFollowButton = !!user_list[i].follow
-   console.log(isShowFollowButton)
-   var templateString = `
-      <div class="user">
-        <p>
-          <img src="${user_list[i].avatar}" class="avatar img-circle img-thumbnail" width=50px>
-          <a href='${user_list[i].profile_url}'> ${user_list[i].full_name} </a>
-          ${isShowFollowButton ? `
-            <button class="btn btn-primary followMe" data-id="${user_list[i].id}" data-href='${followUrl}'> ${user_list[i].follow} </button>
-          ` : ''}
+  const template = data.results.map((user) => userModalTemplate(user)).join('');
+  body.append(template);
+  $(".followMe").click(followMe);
+}
 
-        </p>
-      </div>
-   `
-   body.append(templateString);
-  })
-   $(".followMe").click(followMe);
 
+function userModalTemplate(user) {
+  return `
+    <div class="user">
+      <p>
+        <img src="${user.avatar}" class="avatar img-circle img-thumbnail" width=50px>
+        <a href='${user.profile_url}'> ${user.full_name} </a>
+        <button class="btn btn-primary followMe" data-id="${user.id}"> ${getButtonText(user.follow)} </button>
+      </p>
+    </div>
+    `
 }

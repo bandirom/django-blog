@@ -34,11 +34,23 @@ class UserQueryService:
         user_likes = Count('likes')
         return self.get_queryset(is_active=True).annotate(user_posts=user_articles, user_likes=user_likes)
 
+    @staticmethod
+    def exist_annotation(user) -> Exists:
+        return Exists(Follower.objects.filter(subscriber=user, to_user_id=OuterRef('pk')))
+
     def user_list_queryset(self, current_user: User) -> 'QuerySet[User]':
-        return self.user_profile_queryset().annotate(
-            follow=Exists(Follower.objects.filter(subscriber=current_user, to_user_id=OuterRef('pk')))
-        )
+        return self.user_profile_queryset().annotate(follow=self.exist_annotation(current_user))
 
     @except_shell((User.DoesNotExist,), raise_404=True)
     def get_user_profile(self, user_id: int) -> User:
         return self.user_profile_queryset().get(id=user_id)
+
+    @except_shell((User.DoesNotExist,), raise_404=True)
+    def get_simple_user(self, user_id: int) -> User:
+        return self.get_queryset().get(id=user_id)
+
+    def get_user_followers(self, user: User) -> 'QuerySet[User]':
+        return user.followers.all().annotate(follow=self.exist_annotation(user))
+
+    def get_user_following(self, user: User) -> 'QuerySet[User]':
+        return user.following.all().annotate(follow=self.exist_annotation(user))

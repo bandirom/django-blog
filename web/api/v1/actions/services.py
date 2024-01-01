@@ -109,20 +109,6 @@ class FollowService:
         return follow_status.value
 
 
-class FollowersQueryService:
-    def get_user_by_id(self, user_id: int) -> User:
-        try:
-            return User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            raise NotFound(_('Requested user does not exist'))
-
-    def get_user_followers(self, user: User) -> QuerySet[User]:
-        return user.followers.all()
-
-    def get_user_following(self, user: User) -> QuerySet[User]:
-        return user.following.all()
-
-
 class ActivityService:
     def __init__(self, action: ActionFeed, user: User, content_object):
         self.action = action
