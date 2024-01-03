@@ -25,7 +25,7 @@ class ProfileViewSet(GenericViewSet):
         return serializers.UserSerializer
 
     def get_object(self):
-        obj = UserQueryService.get_user_by_id(self.request.user.id)
+        obj = UserQueryService().get_user_by_id(self.request.user.id)
         self.check_object_permissions(self.request, obj)
         return obj
 
