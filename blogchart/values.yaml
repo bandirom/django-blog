@@ -69,17 +69,25 @@ persistentVolumeClaim:
 postgresql:
   enabled: true
   auth:
+    username: "blog-user"
+    password: "blog-password"
     database: "blog-db"
+    enablePostgresUser: true
+    postgresPassword: "postgres-password"
   secret: false
   host: false
 
 
 redis:
   enabled: true
-  host: "redis://redis-master:6379"
+  architecture: standalone
+  # host: "redis://redis-master:6379"
   port: "6379"
   auth:
     enabled: false
+  master:
+    persistence:
+      enabled: false
 
 project:
   secretKey: "abcEFG"
