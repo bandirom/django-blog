@@ -30,7 +30,9 @@ modules.txt
 !web/media/no-avatar.png
 !web/media/no-image-available.jpg
 
+# Helm deps
 postgresql-*.tgz
+redis-*.tgz
 
 db.sqlite3
 *.spec

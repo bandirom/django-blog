@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/blog:${DOCKER_TAG:-latest}
+    image: bandirom/blog:${APP_VERSION:-latest}
     volumes:
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
@@ -35,7 +35,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/blog:${DOCKER_TAG:-latest}
+    image: bandirom/blog:${APP_VERSION:-latest}
     entrypoint: ""
     command: celery -A src worker --beat -l info
     env_file:

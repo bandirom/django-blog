@@ -34,15 +34,10 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "blogchart.fullname" . }}
           env:
-            - name: SECRET_KEY
-              value: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}
-            - name: HEALTH_CHECK_URL
-              value: {{ .Values.project.healthCheckUrl }}
-            - name: PROJECT_TITLE
-              value: {{ .Values.project.microserviceName }}
-            - name: REDIS_URL
-              value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
             - name: CELERY_BROKER_URL
               value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
             - name: CELERY_RESULT_BACKEND
@@ -84,39 +79,6 @@ spec:
           volumeMounts:
             - name: {{ (printf "%s-media-storage" .Release.Name) }}
               mountPath: "/web/media"
-        - name: {{ .Chart.Name }}-celery
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-          {{- range .Values.celery.args }}
-            - {{ . | toYaml | indent 4 | trim }}
-          {{- end }}
-          command:
-            - ""
-          env:
-            - name: SECRET_KEY
-              value: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}
-            - name: REDIS_URL
-              value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
-            - name: CELERY_BROKER_URL
-              value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
-            - name: CELERY_RESULT_BACKEND
-              value: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
-            - name: POSTGRES_HOST
-              value: {{ default (printf "%s-postgresql" .Release.Name) .Values.postgresql.host | quote }}
-            - name: POSTGRES_DB
-              value: {{ .Values.postgresql.auth.database | quote }}
-            - name: POSTGRES_USER
-              value: {{ .Values.project.postgresUser | quote }}
-            - name: POSTGRES_PORT
-              value: "5432"
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-postgresql
-                  key: postgres-password
       volumes:
         - name: {{ (printf "%s-media-storage" .Release.Name) }}
           persistentVolumeClaim:

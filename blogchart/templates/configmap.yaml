@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "blogchart.fullname" . }}
+data:
+  REDIS_URL: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}
+  SECRET_KEY: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}
+  HEALTH_CHECK_URL: {{ .Values.project.healthCheckUrl }}
+  PROJECT_TITLE: {{ .Values.project.microserviceName }}
+
