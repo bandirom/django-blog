@@ -54,10 +54,10 @@ class UserFollowersView(ListModelMixin, GenericViewSet):
         elif self.action == 'user_following':
             return service.get_user_following(self.request.user)
         elif self.action == 'user_followers_by_id':
-            user = service.get_simple_user(self.kwargs['user_id'])
+            user = service.get_user_by_id(self.kwargs['user_id'])
             return service.get_user_followers(user)
         elif self.action == 'user_following_by_id':
-            user = service.get_simple_user(self.kwargs['user_id'])
+            user = service.get_user_by_id(self.kwargs['user_id'])
             return service.get_user_following(user)
 
     def user_followers(self, request):

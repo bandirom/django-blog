@@ -46,7 +46,7 @@ class CurrentUserView(GenericAPIView):
 
     def get_object(self):
         service = self.service()
-        return service.get_user_profile(user_id=self.request.user.id)
+        return service.get_user_by_id(user_id=self.request.user.id, extend=True)
 
     def get(self, request):
         serializer = self.get_serializer(request.user)

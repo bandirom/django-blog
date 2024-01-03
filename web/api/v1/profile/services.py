@@ -42,11 +42,9 @@ class UserQueryService:
         return self.user_profile_queryset().annotate(follow=self.exist_annotation(current_user))
 
     @except_shell((User.DoesNotExist,), raise_404=True)
-    def get_user_profile(self, user_id: int) -> User:
-        return self.user_profile_queryset().get(id=user_id)
-
-    @except_shell((User.DoesNotExist,), raise_404=True)
-    def get_simple_user(self, user_id: int) -> User:
+    def get_user_by_id(self, user_id: int, extend: bool = False) -> User:
+        if extend:
+            return self.user_profile_queryset().get(id=user_id)
         return self.get_queryset().get(id=user_id)
 
     def get_user_followers(self, user: User) -> 'QuerySet[User]':
