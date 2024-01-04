@@ -1,13 +1,12 @@
 x-variables: &variables
   ENV_STAGE: dev
-  USE_HTTPS: 0
 
 services:
   web:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/django-template:${DOCKER_TAG:-latest}
+    image: bandirom/blog:${APP_VERSION:-latest}
     volumes:
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
@@ -37,7 +36,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/django-template:${DOCKER_TAG:-latest}
+    image: bandirom/blog:${APP_VERSION:-latest}
     entrypoint: ""
     command: celery -A src worker --beat -l info
     env_file:
@@ -57,9 +56,7 @@ services:
       - "gateway-host:172.17.0.1"
   db:
     image: postgres:15.1-alpine
-    command: ["-c", "config_file=/etc/postgresql/postgresql.conf"]
     volumes:
-      - ./docker/prod/db/pg.conf:/etc/postgresql/postgresql.conf
       - postgres_data:/var/lib/postgresql/data/
       - postgres_socket:/var/run/postgresql/
     env_file:
