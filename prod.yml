@@ -1,19 +1,20 @@
 x-variables: &variables
   ENV_STAGE: dev
-  USE_HTTPS: 0
 
 services:
   blog:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/blog:${DOCKER_TAG:-latest}
+    image: bandirom/blog:${APP_VERSION:-latest}
     volumes:
       - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
       - media_files:/web/media/
     environment:
-      - USE_HTTPS=0
+      <<: *variables
+    ports:
+      - "8000:8000"
     env_file:
       - docker/prod/env/.env
       - docker/prod/env/.db.env
@@ -35,13 +36,15 @@ services:
     build:
       context: .
       dockerfile: docker/prod/web/Dockerfile
-    image: bandirom/blog:${DOCKER_TAG:-latest}
+    image: bandirom/blog:${APP_VERSION:-latest}
     entrypoint: ""
     command: celery -A src worker --beat -l info
     env_file:
       - docker/prod/env/.env
       - docker/prod/env/.db.env
       - docker/prod/env/.data.env
+    environment:
+      <<: *variables
     depends_on: [redis]
     restart: always
     volumes:
@@ -52,12 +55,10 @@ services:
     extra_hosts:
       - "gateway-host:172.17.0.1"
   db:
-    image: postgres:12.6-alpine
-#    command: ["-c", "config_file=/etc/postgresql/postgresql.conf"]
+    image: postgres:15.1-alpine
     volumes:
-#      - ./docker/prod/db/pg.conf:/etc/postgresql/postgresql.conf
       - postgres_data:/var/lib/postgresql/data/
-#      - postgres_socket:/var/run/postgresql/
+      - postgres_socket:/var/run/postgresql/
     env_file:
       - docker/prod/env/.db.env
     restart: always

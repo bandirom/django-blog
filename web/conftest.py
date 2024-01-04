@@ -2,6 +2,7 @@ from base64 import b64decode
 from typing import NamedTuple
 
 import pytest
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
@@ -11,9 +12,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from main.models import UserType
 
-pyteststmark = [pytest.mark.django_db]
+pytestmark = [pytest.mark.django_db]
 
 User: UserType = get_user_model()
+
+
+class UserToken(NamedTuple):
+    access_token: str
+    refresh_token: str
+
 
 raw_image: str = (
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAA'
@@ -26,11 +33,6 @@ def image_content_file() -> ContentFile:
     _format, _raw_image = raw_image.split(';base64,')
     ext = _format.split('/')[-1]
     return ContentFile(b64decode(_raw_image), name=f'image.{ext}')
-
-
-class UserToken(NamedTuple):
-    access_token: str
-    refresh_token: str
 
 
 @pytest.fixture()
