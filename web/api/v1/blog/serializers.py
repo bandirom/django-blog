@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from actions.choices import LikeIconStatus, LikeStatus
 from actions.serializers import LikeDislikeRelationSerializer
-from api.v1.blog.services import BlogService, CommentQueryService
+from api.v1.blog.services import CommentQueryService
 from blog.models import Article, ArticleTag, Category, Comment
 from user_profile.serializers import ShortUserSerializer
 
@@ -60,7 +60,7 @@ class FullArticleSerializer(ArticleSerializer):
 
 
 class CreateArticleSerializer(serializers.ModelSerializer):  # TaggitSerializer,
-    # tags = TagListSerializerField()
+    tags = TagListSerializerField()
 
     class Meta:
         model = Article
@@ -69,17 +69,8 @@ class CreateArticleSerializer(serializers.ModelSerializer):  # TaggitSerializer,
             'category',
             'image',
             'content',
-        )  # 'tags'
-
-    def validate_title(self, title: str):
-        if BlogService.is_article_slug_exist(title):
-            raise serializers.ValidationError('This title already exists')
-        return title
-
-    @transaction.atomic()
-    def create(self, validated_data: dict):
-        validated_data['author'] = self.context['request'].user
-        return super().create(validated_data)
+            'tags',
+        )
 
 
 class ParentCommentSerializer(serializers.ModelSerializer):

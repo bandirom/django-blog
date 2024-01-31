@@ -1,6 +1,9 @@
 from django.db.models import Count, Prefetch, Q, QuerySet
+from rest_framework.exceptions import ValidationError
+from slugify import slugify
 
 from api.v1.actions.services import LikeQueryService
+from api.v1.blog.types import CreateArticleT
 from blog.choices import ArticleStatus
 from blog.models import Article, ArticleTag, Category, Comment
 
@@ -66,18 +69,10 @@ class TagQueryService:
         return tags
 
 
-class BlogService:
+class CategoryQueryService:
     @staticmethod
     def category_queryset() -> QuerySet[Category]:
         return Category.objects.all()
-
-    def get_active_articles(self) -> QuerySet[Article]:
-        return (
-            Article.objects.select_related('category', 'author')
-            .prefetch_related('tags')
-            .filter(status=ArticleStatus.ACTIVE)
-            .annotate(comments_count=Count('comment_set'))
-        )
 
     @staticmethod
     def get_comments_queryset() -> QuerySet[Comment]:
@@ -100,6 +95,19 @@ class BlogService:
     def get_comment(comment_id: int):
         return Comment.objects.get(id=comment_id)
 
+
+class CreateArticleService:
+
     @staticmethod
-    def is_article_slug_exist(title: str) -> bool:
-        return Article.objects.filter(slug=Article.get_slug(title)).exists()
+    def _get_slug(value: str) -> str:
+        return slugify(value)
+
+    @staticmethod
+    def is_article_slug_exist(slug: str) -> bool:
+        return Article.objects.filter(slug=slug).exists()
+
+    def create_article(self, author: 'UserType', article_data: CreateArticleT) -> Article:
+        slug = self._get_slug(article_data['title'])
+        if self.is_article_slug_exist(slug):
+            raise ValidationError('Article with this title already exists')
+        return Article.objects.create(author=author, slug=slug, **article_data)

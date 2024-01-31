@@ -1,15 +1,14 @@
 $(function () {
+  verifyToken();
   $('#resetConfirmForm').submit(confirmReset);
 });
 
 function confirmReset(e) {
-  let form = $(this);
   e.preventDefault();
   const urlParams = new URLSearchParams(window.location.search);
   const data = {
     uid: urlParams.get('uid'),
     token: urlParams.get('token'),
-//    password_1: this.password_1.value,
     password_1: $("input[name=password_1]").val(),
     password_2: $("input[name=password_2]").val(),
   }
@@ -53,4 +52,26 @@ function error_process(data) {
 function help_block(group, variable) {
   $(group).addClass(error_class_name);
   $(group).append('<div class="help-block">' + variable + "</div>");
+}
+
+
+function verifyToken() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const data = {
+    uid: urlParams.get('uid'),
+    token: urlParams.get('token'),
+  }
+
+  $.ajax({
+    url: "/api/v1/auth/password/reset/verify/",
+    type: "POST",
+    data: data,
+    success: function (data) {
+
+    },
+    error: function (data) {
+      $('#resetConfirm').empty()
+      $('#resetConfirm').append('<h1>Link invalid or expired</h1>')
+    },
+  })
 }

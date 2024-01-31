@@ -12,7 +12,6 @@ function login(e) {
     dataType: 'json',
     data: form.serialize(),
     success: function (data) {
-      localStorage.setItem('jwt', data.access_token)
       location.reload();
     },
     error: function (data) {

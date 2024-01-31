@@ -1,9 +1,23 @@
 $(function () {
+  $('.category-select').select2();
   $('#createArticleForm').submit(postCreate);
-
+  getCategories();
 });
 
 const error_class_name = "has-error"
+
+function getCategories() {
+  $.ajax({
+    url: '/api/v1/blog/categories/',
+    type: 'GET',
+    success: getCategoriesHandler,
+  })
+}
+
+function getCategoriesHandler (data) {
+  const selector = $('.category-select')
+  data.forEach((category) => selector.append(new Option(category.name, category.id)))
+}
 
 function postCreate(event) {
   event.preventDefault()

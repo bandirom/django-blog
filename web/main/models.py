@@ -1,4 +1,4 @@
-from typing import Optional, Self, TypeVar
+from typing import Optional, TypeVar
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -51,20 +51,6 @@ class User(AbstractUser):
     @property
     def full_name(self) -> str:
         return self.get_full_name()
-
-    @property
-    def confirmation_key(self) -> str:
-        return signing.dumps(obj=self.pk)
-
-    @classmethod
-    def from_key(cls, key: str) -> Optional[Self]:
-        max_age = 60 * 60 * 24 * settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
-        try:
-            pk = signing.loads(key, max_age=max_age)
-            user = cls.objects.get(id=pk)
-        except (signing.SignatureExpired, signing.BadSignature, cls.DoesNotExist):
-            user = None
-        return user
 
     def user_likes(self) -> int:
         return self.likes.all().count()

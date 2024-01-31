@@ -4,11 +4,14 @@ from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from auth_app.models import SocialAccount
+
 User = get_user_model()
 
 
 class UserShortInfoSerializer(serializers.ModelSerializer):
     avatar = serializers.URLField(source='avatar_url')
+
     # url = serializers.URLField(source='get_absolute_url')
 
     class Meta:
@@ -26,7 +29,15 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = ('id', 'first_name', 'last_name', 'birthday', 'gender')
 
 
+class SocialAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialAccount
+        fields = ('id', 'provider', 'connected')
+
+
 class UserSerializer(serializers.ModelSerializer):
+    social_accounts = SocialAccountSerializer(many=True)
+
     class Meta:
         model = User
         fields = (
@@ -42,8 +53,9 @@ class UserSerializer(serializers.ModelSerializer):
             'followers_count',
             'following_count',
             'avatar',
+            'social_accounts',
         )
-        read_only_fields = ('full_name', 'user_likes', 'user_posts')
+        read_only_fields = ('full_name', 'user_likes', 'user_posts', 'social_accounts')
 
 
 class AvatarUpdateSerializer(serializers.ModelSerializer):

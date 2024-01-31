@@ -51,7 +51,7 @@ class UserProfileByIdView(GenericAPIView):
     renderer_classes = (JSONRenderer, TemplateHTMLRenderer)
 
     def get_object(self):
-        obj = UserQueryService.get_user_by_id(self.kwargs.get('user_id'))
+        obj = UserQueryService().get_user_by_id(self.kwargs.get('user_id'))
         self.check_object_permissions(self.request, obj)
         return obj
 

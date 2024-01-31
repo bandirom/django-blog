@@ -7,6 +7,7 @@ djangorestframework~=3.14
 drf-spectacular~=0.27
 celery~=5.3
 graphene-django==3.0
+python-slugify~=8.0
 
 ### Optional dependencies ###
 

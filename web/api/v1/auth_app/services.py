@@ -1,15 +1,13 @@
-from datetime import date
-from typing import TYPE_CHECKING, NamedTuple
-from urllib.parse import urlencode, urljoin
+from typing import TYPE_CHECKING
+from urllib.parse import quote, urlencode, urljoin
 
 import requests
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.tokens import default_token_generator
+from django.core.files.base import ContentFile
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -19,122 +17,73 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.email_services import BaseEmailHandler
+from api.email_service.password_reset import PasswordResetService
+from api.email_service.sign_up import SignUpEmailService
+from api.v1.auth_app.oauth.base.provider import OAuth2Provider
+from api.v1.auth_app.oauth.google.provider import GoogleTokenData, GoogleUserInfo
 from api.v1.auth_app.utils import LoginResponseSerializer, get_client_ip
+from auth_app.models import SocialAccount
 
+from .managers import ConfirmationKeyManager, PasswordResetManager
+from .oauth.base.exceptions import OAuth2Error
+from .types import CreateUserData, PasswordResetConfirmData
 from main.decorators import except_shell
-from main.models import GenderChoice
-from main.tasks import send_information_email
 
 if TYPE_CHECKING:
+    from django.http import HttpResponse
+
     from main.models import UserType
 
 User: 'UserType' = get_user_model()
 
 
-class PasswordResetConfirmData(NamedTuple):
-    uid: str
-    token: str
-    password_1: str
-    password_2: str
+class PasswordResetHandler:
+    def __init__(self, email: dict):
+        self.email = email
+        self.frontend_url = settings.FRONTEND_URL
+        self.frontend_path = '/reset/confirm'
+
+    def reset_password(self):
+        user = User.objects.get(email=self.email)
+        reset_url = self._get_reset_url(user)
+        PasswordResetService(user).send_email(reset_url=reset_url)
+
+    def _get_reset_url(self, user) -> str:
+        values = PasswordResetManager().generate(user)
+        url = urljoin(self.frontend_url, self.frontend_path)
+        reset_url = f'{url}?uid={values.uid}&token={values.token}'
+        return quote(reset_url, safe=':/?&=')
 
 
-class CreateUserData(NamedTuple):
-    first_name: str
-    last_name: str
-    email: str
-    password_1: str
-    password_2: str
-    birthday: date = None
-    gender: GenderChoice = None
+class SignUpHandler:
+    def __init__(self, validated_data: dict):
+        self.data = CreateUserData(**validated_data)
+        self.frontend_url = settings.FRONTEND_URL
+        self.frontend_path = '/confirm'
 
+    @transaction.atomic()
+    def create_user(self):
+        user = User.objects.create_user(
+            email=self.data.email,
+            first_name=self.data.first_name,
+            last_name=self.data.last_name,
+            password=self.data.password_1,
+            birthday=self.data.birthday,
+            gender=self.data.gender,
+            is_active=False,
+        )
+        activate_url = self._get_activate_url(user)
+        SignUpEmailService(user).send_email(activate_url=activate_url)
 
-class ConfirmationEmailHandler(BaseEmailHandler):
-    FRONTEND_URL = settings.FRONTEND_URL
-    FRONTEND_PATH = '/confirm'
-    TEMPLATE_NAME = 'emails/verify_email.html'
-
-    def _get_activate_url(self) -> str:
-        url = urljoin(self.FRONTEND_URL, self.FRONTEND_PATH)
+    def _get_activate_url(self, user) -> str:
+        url = urljoin(self.frontend_url, self.frontend_path)
         query_params: str = urlencode(
             {
-                'key': self.user.confirmation_key,
+                'key': ConfirmationKeyManager.generate_key(user),
             },
             safe=':+',
         )
         return f'{url}?{query_params}'
-
-    def email_kwargs(self, **kwargs) -> dict:
-        return {
-            'subject': _('Register confirmation email'),
-            'to_email': self.user.email,
-            'context': {
-                'user': self.user.full_name,
-                'activate_url': self._get_activate_url(),
-            },
-        }
-
-
-class PasswordReset(BaseEmailHandler):
-    FRONTEND_URL = settings.FRONTEND_URL
-    TEMPLATE_NAME = 'emails/password_reset.html'
-    FRONTEND_PATH = '/reset/confirm'
-
-    def _get_reset_url(self, uid: str, token: str) -> str:
-        url = urljoin(self.FRONTEND_URL, self.FRONTEND_PATH)
-        query_params: str = urlencode(
-            {
-                'uid': uid,
-                'token': token,
-            },
-            safe=':+',
-        )
-        return f'{url}?{query_params}'
-
-    def email_kwargs(self, **kwargs) -> dict:
-        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
-        token = default_token_generator.make_token(self.user)
-        reset_url = self._get_reset_url(uid=uid, token=token)
-        return {
-            'subject': _('Password Reset'),
-            'to_email': self.user.email,
-            'context': {
-                'user': self.user.full_name,
-                'reset_url': reset_url,
-            },
-        }
-
-
-class PasswordResetConfirmHandler:
-    def __init__(self, *, uid: str, token: str):
-        self._token = token
-        self._uid = uid
-        self._user = None
-
-    @property
-    def user(self) -> User:
-        return self._user
-
-    def validate(self):
-        self._user = self._get_user_by_uid(self._uid)
-        self._validate_token()
-
-    @staticmethod
-    def _get_user_by_uid(uid: str) -> User:
-        try:
-            uid = force_str(urlsafe_base64_decode(uid))
-            return User.objects.get(id=uid)
-        except (
-            User.DoesNotExist,
-            OverflowError,
-            TypeError,
-            ValueError,
-        ):
-            raise ValidationError({'uid': ['Invalid value']})
-
-    def _validate_token(self):
-        if not default_token_generator.check_token(self.user, self._token):
-            raise ValidationError({'token': ['Invalid value']})
 
 
 class LoginService:
@@ -209,11 +158,11 @@ class LoginService:
             domain=self.rest_settings['JWT_COOKIE_DOMAIN'],
         )
 
-    def _set_jwt_access_cookie(self, response, access_token):
+    def _set_jwt_access_cookie(self, response: "HttpResponse", access_token: str):
         access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
         self.__set_jwt_cookie(response, self.rest_settings['JWT_AUTH_COOKIE'], access_token, access_token_expiration)
 
-    def _set_jwt_refresh_cookie(self, response, refresh_token):
+    def _set_jwt_refresh_cookie(self, response: "HttpResponse", refresh_token: str):
         refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
         self.__set_jwt_cookie(
             response, self.rest_settings['JWT_AUTH_REFRESH_COOKIE'], refresh_token, refresh_token_expiration
@@ -243,42 +192,24 @@ class AuthAppService:
     def get_user(email: str) -> User:
         return User.objects.get(email=email)
 
-    def password_reset(self, email: str) -> None:
-        user = self.get_user(email)
-        if not user:
-            return
-        PasswordReset(user).send_email()
-
-    def password_reset_confirm(self, validated_data: dict) -> None:
+    @staticmethod
+    def password_reset_confirm(validated_data: dict) -> None:
         data = PasswordResetConfirmData(**validated_data)
-        handler = PasswordResetConfirmHandler(token=data.token, uid=data.uid)
-        handler.validate()
-        user = handler.user
+        manager = PasswordResetManager()
+        user = manager.validate(token=data.token, uid=data.uid)
         user.set_password(data.password_1)
         user.save(update_fields=['password'])
 
-    def verify_email_confirm(self, key: str):
-        user = User.from_key(key)
+    @staticmethod
+    def verify_email_confirm(key: str) -> User:
+        user = ConfirmationKeyManager().get_user_from_key(key)
         if not user:
             raise ValidationError({'key': _('Invalid or expired confirmation key')})
         if user.is_active:
             raise ValidationError({'key': _('User already verified')})
         user.is_active = True
         user.save(update_fields=['is_active'])
-
-    @transaction.atomic()
-    def create_user(self, validated_data: dict):
-        data = CreateUserData(**validated_data)
-        user = User.objects.create_user(
-            email=data.email,
-            first_name=data.first_name,
-            last_name=data.last_name,
-            password=data.password_1,
-            birthday=data.birthday,
-            gender=data.gender,
-            is_active=False,
-        )
-        ConfirmationEmailHandler(user).send_email()
+        return user
 
 
 def full_logout(request):
@@ -317,3 +248,52 @@ def full_logout(request):
         response.data = {"detail": message}
         response.status_code = status.HTTP_200_OK
     return response
+
+
+class OAuthLoginService:
+    def __init__(self, request, provider: OAuth2Provider):
+        self.request = request
+        self.provider = provider
+
+    def create_social_account(self, user: User, uid: str):
+        return SocialAccount.objects.create(
+            user=user,
+            provider=self.provider.name,
+            uid=uid,
+        )
+
+    @staticmethod
+    def get_user_avatar(url: str) -> ContentFile:
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+        return ContentFile(response.content, name='google_image.png')
+
+    @transaction.atomic()
+    def get_or_create_user(self, user_data: GoogleUserInfo) -> User:
+        if user := User.objects.filter(Q(social_accounts__uid=user_data.id) & Q(email=user_data.email)).first():
+            return user
+        if user := User.objects.filter(email=user_data.email).first():
+            self.create_social_account(user, user_data.id)
+            return user
+        user = User.objects.create_user(
+            email=user_data.email,
+            password=None,
+            first_name=user_data.given_name,
+            last_name=user_data.family_name,
+            avatar=self.get_user_avatar(user_data.picture),
+            is_active=user_data.verified_email,
+        )
+        self.create_social_account(user, user_data.id)
+        return user
+
+    def login(self, code: str, state: str):
+        if not self.provider.validate_state(self.request, state):
+            raise OAuth2Error('Invalid state')
+
+        response_data: GoogleTokenData = self.provider.get_access_token(code)
+
+        user_data: GoogleUserInfo = self.provider.get_user_info(response_data.access_token)
+
+        user = self.get_or_create_user(user_data)
+        login_service = LoginService(self.request)
+        return login_service.get_response(user)

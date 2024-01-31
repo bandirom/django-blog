@@ -67,14 +67,6 @@ class Article(models.Model):
     def __str__(self) -> str:
         return '{title} - {author}'.format(title=self.short_title, author=self.author)
 
-    @staticmethod
-    def get_slug(title: str) -> str:
-        return slugify(title, allow_unicode=True)
-
-    def save(self, **kwargs):
-        self.slug = self.get_slug(self.title)
-        return super().save(**kwargs)
-
     def get_absolute_url(self) -> str:
         return reverse_lazy('blog:blog-detail', kwargs={'slug': self.slug})
 
