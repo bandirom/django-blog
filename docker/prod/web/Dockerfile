@@ -1,4 +1,4 @@
-FROM python:3.12-alpine as builder
+FROM python:3.11.7-alpine as builder
 ARG WHEELS_PATH=/etc/wheels
 
 RUN apk add --update --no-cache --virtual .build-deps \
@@ -12,7 +12,7 @@ COPY ./web/src/requirements  ./src/requirements
 RUN pip wheel --wheel-dir=$WHEELS_PATH .[production]
 
 
-FROM python:3.12-alpine
+FROM python:3.11.7-alpine
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
