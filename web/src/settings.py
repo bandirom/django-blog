@@ -1,10 +1,7 @@
 import os
 from pathlib import Path
 
-from .additional_settings.celery_settings import *
-from .additional_settings.jwt_settings import *
-from .additional_settings.smtp_settings import *
-from .additional_settings.summernote_settings import *
+from .additional_settings import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -91,7 +88,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',

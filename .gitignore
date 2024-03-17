@@ -27,3 +27,4 @@ coverage.xml
 modules.txt
 
 db.sqlite3
+.secrets.env
