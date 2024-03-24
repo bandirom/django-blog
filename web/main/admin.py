@@ -11,16 +11,22 @@ User = get_user_model()
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     ordering = ('-id',)
-    list_display = ('email', 'full_name', 'is_active')
+    list_display = (
+        'email',
+        'full_name',
+        'phone_number',
+        'is_active',
+    )
+    readonly_fields = ('id',)
     search_fields = ('first_name', 'last_name', 'email')
 
     fieldsets = (
-        (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email')}),
+        (_('Personal info'), {'fields': ('id', 'first_name', 'last_name', 'email', 'phone_number')}),
         (_('Secrets'), {'fields': ('password',)}),
         (
             _('Permissions'),
             {
-                'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+                'fields': ('is_active', 'is_staff', 'is_superuser'),
             },
         ),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
@@ -34,7 +40,6 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-    readonly_fields = ('id',)
 
 
 title = settings.PROJECT_TITLE

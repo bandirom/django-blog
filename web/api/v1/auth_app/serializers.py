@@ -1,9 +1,11 @@
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from api.v1.auth_app.services import AuthAppService
+
+from main.models import GenderChoice
 
 User = get_user_model()
 
@@ -22,6 +24,8 @@ class UserSignUpSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password_1 = serializers.CharField(write_only=True, min_length=8)
     password_2 = serializers.CharField(write_only=True, min_length=8)
+    birthday = serializers.DateField(required=False)
+    gender = serializers.ChoiceField(choices=GenderChoice.choices, required=False)
 
     def validate_password1(self, password: str):
         validate_password(password)
@@ -42,36 +46,28 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
-    def authenticate(self, **kwargs):
-        return authenticate(self.context['request'], **kwargs)
-
-    def validate(self, data: dict):
-        email = data.get('email')
-        password = data.get('password')
-        user = self.authenticate(email=email, password=password)
-        if not user:
-            user = AuthAppService.get_user(email)
-            if not user:
-                msg = {'email': error_messages['wrong_credentials']}
-                raise serializers.ValidationError(msg)
-            if not user.is_active:
-                msg = {'email': error_messages['not_active']}
-                raise serializers.ValidationError(msg)
-            msg = {'email': error_messages['wrong_credentials']}
-            raise serializers.ValidationError(msg)
-        data['user'] = user
-        return data
-
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
 
-class PasswordResetConfirmSerializer(serializers.Serializer):
-    password_1 = serializers.CharField(min_length=8, max_length=64)
-    password_2 = serializers.CharField(min_length=8, max_length=64)
+class PasswordResetVerifySerializer(serializers.Serializer):
     uid = serializers.CharField()
     token = serializers.CharField()
+
+
+class PasswordResetConfirmSerializer(PasswordResetVerifySerializer):
+    password_1 = serializers.CharField(min_length=8, max_length=64)
+    password_2 = serializers.CharField(min_length=8, max_length=64)
+
+    def validate_password_1(self, password: str) -> str:
+        validate_password(password)
+        return password
+
+    def validate(self, data: dict) -> dict:
+        if data['password_1'] != data['password_2']:
+            raise serializers.ValidationError(_('The two password fields did not match.'))
+        return data
 
 
 class VerifyEmailSerializer(serializers.Serializer):

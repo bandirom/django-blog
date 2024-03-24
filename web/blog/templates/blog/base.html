@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block active_post %}class="active"{% endblock active_post %}
+{% load static %}
 {% block header %}
 {% include 'includes/header.html'  with selected='blog' %}
 {% endblock header %}
@@ -7,3 +7,7 @@
 {% block container %}
 
 {% endblock container %}
+
+{% block jquery %}
+  $.getScript('{% static 'blog/js/popular_tags.js' %}');
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'auth_app/base.html'%}
+{% load static i18n %}
+
+{% block container %}
+<div id="ifErrors"></div>
+<div id="verifyConfirm" data-href="{% url 'api:v1:auth_app:sign-up-verify' %}"></div>
+<div id="singIn" data-href="{% url 'auth_app:login' %}"></div>
+{% endblock container %}
+
+{% block jquery %}
+$.getScript('{% static 'auth_app/js/verifyConfirm.js' %}');
+{% endblock %}

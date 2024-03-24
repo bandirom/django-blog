@@ -1,0 +1,7 @@
+{% extends 'auth_app/base.html'%}
+{% load static %}
+
+
+{% block jquery %}
+$.getScript('{% static 'auth_app/js/googleOauth.js' %}');
+{% endblock %}

@@ -6,6 +6,8 @@ redis~=5.0
 djangorestframework~=3.14
 drf-spectacular~=0.27
 celery~=5.3
+graphene-django==3.0
+python-slugify~=8.0
 
 ### Optional dependencies ###
 
@@ -31,5 +33,18 @@ django-rosetta~=0.9
 # Monitoring System
 sentry-sdk~=1.40
 
+# MicroService Requests
+django-microservice-request~=0.5
+
 # TextEditor
 django-summernote==0.8.20.0
+
+# Tags
+django-taggit~=4.0
+
+# Countries
+django-countries~=7.5
+
+# PhoneNumberField
+django-phonenumber-field~=7.1
+phonenumberslite~=8.13

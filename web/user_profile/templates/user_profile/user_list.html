@@ -1,0 +1,16 @@
+{% extends "user_profile/base.html" %}
+{% load i18n static %}
+
+{% block container %}
+  <div class="row">
+    <div class="span12">
+      <ul id="userList" class="thumbnails">
+      </ul>
+    </div>
+  </div>
+{% endblock container %}
+
+{% block jquery %}
+$.getScript('{% static 'actions/js/follow.js' %}');
+$.getScript('{% static 'user_profile/js/user_list.js' %}');
+{% endblock %}

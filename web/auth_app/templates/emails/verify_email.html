@@ -1,0 +1,13 @@
+{% extends 'emails/main_template.html' %}
+
+
+{% block content %}
+<p>Hello from {{ site_name }}!</p>
+
+<p>You're receiving this e-mail because user {{ user }} has given yours as an e-mail address to connect their account.</p>
+<br>
+<p>To confirm registration please click the link below</p>
+<a href="{{ activate_url }}">{{ activate_url }}</a>
+<br>
+<p>Thank you from {{ site_name }}!</p>
+{% endblock content %}

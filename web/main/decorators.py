@@ -7,6 +7,7 @@ from celery.exceptions import TimeoutError
 from django.core.cache import cache
 from kombu.exceptions import OperationalError
 from requests.exceptions import RequestException
+from rest_framework.exceptions import NotFound
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +57,7 @@ def execution_time(stdout: Literal['console', 'tuple'] = 'console') -> Callable[
 
 
 def except_shell(
-    errors: Iterable = (Exception,), default_value: Any = None
+    errors: Iterable = (Exception,), default_value: Any = None, raise_404: bool = False
 ) -> Callable[[Callable[..., RT]], Callable[..., RT]]:
     def decorator(func: Callable[..., RT]) -> Callable[..., RT]:
         @wraps(func)
@@ -64,7 +65,9 @@ def except_shell(
             try:
                 return func(*args, **kwargs)
             except errors as e:
-                logging.error(e)
+                logging.exception(e)
+                if raise_404:
+                    raise NotFound('Not found')
                 return default_value
 
         return wrapper

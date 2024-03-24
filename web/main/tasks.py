@@ -37,7 +37,6 @@ def send_information_email(
     activate(letter_language)
     _to_email: list[str] = [to_email] if isinstance(to_email, str) else to_email
     html_email: str = loader.render_to_string(template_name, context)
-
     email_message = EmailMultiAlternatives(
         subject=subject,
         body=strip_tags(html_email),

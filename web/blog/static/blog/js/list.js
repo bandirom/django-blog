@@ -1,6 +1,94 @@
 $(function () {
+  articleListRequest()
 
+})
+let requestedNewPage = false
 
+$(window).scroll(function () {
+  const pagination = $('#pagination')
+  if (pagination.height() - $(this).height() <= $(this).scrollTop() && !requestedNewPage) {
+    nextUrl = pagination.attr('data-href-next')
+    if (nextUrl && nextUrl != 'None'){
+       requestedNewPage = true
+       console.log(nextUrl)
+       articleListRequest()
+    }
+  }
 });
 
-console.log('blog-list')
+
+function articleListRequest() {
+  let pagination = $('#pagination')
+  const urlParams = new URLSearchParams(window.location.search);
+  const endpoint = pagination.attr('data-href-next')
+
+  const url = new URL(endpoint, window.location.origin);
+
+  urlParams.forEach((value, key) => url.searchParams.set(key, value))
+
+  $.ajax({
+      type: "GET",
+      url: url,
+      success: function (data) {
+        if (data.results) {
+          appendUrls(pagination,data.next, data.previous)
+          if (newArticlesRender(data, pagination)) {
+             requestedNewPage = false;
+          }
+        }
+      }
+  })
+}
+
+function appendUrls(pagination, next, previous) {
+  pagination.attr('data-href-next', next)
+  pagination.attr('data-href-previous', previous)
+
+}
+
+const tagTemplate = (tag) => {
+  return `<a class="tag-list" style="padding: 3px;" data-slug="${tag.slug}"><span class="label label-info">${tag.name}</span></a> `
+}
+
+const articleTemplate = (article) => {
+  let tags = article.tags.map((tag)=> tagTemplate(tag)).join('')
+  return `
+    <div class="row">
+      <div class="col-md-12 post">
+        <div class="row">
+          <div class="col-md-12">
+            <h4><strong><a href="${article.url}" class="post-title">${article.title}</a></strong></h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 post-header-line">
+            <span class="glyphicon glyphicon-user"></span>by <a href="${article.author.url}">${article.author.full_name}</a> |
+            <span class="glyphicon glyphicon-calendar"></span>${article.updated} |
+            <span class="glyphicon glyphicon-comment"></span><a href="#"> ${article.comments_count} Comments</a> |
+            <i class="icon-share"></i><a href="#">39 Shares</a> |
+            <span class="glyphicon glyphicon-tags"></span> Tags: ${tags}
+          </div>
+        </div>
+        <div class="row post-content">
+          <div class="col-md-3">
+            <a href="#"><img src="${article.image}" alt="" class="img-responsive" width="200" height="100"></a>
+          </div>
+          <div class="col-md-9">
+            <p>${article.content}</p>
+            <p><a class="btn btn-read-more" href="${article.url}">Read more</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+
+function newArticlesRender(data, pagination) {
+  const template = data.results.map((article) => articleTemplate(article)).join('');
+  pagination.empty();
+  pagination.append(template);
+  $('.tag-list').unbind();
+  $('.tag-list').click(tagClickHandler);
+  return true;
+}

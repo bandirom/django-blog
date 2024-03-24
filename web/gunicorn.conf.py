@@ -9,7 +9,7 @@ threads: int = int(environ.get('GUNICORN_THREADS', 1))
 
 worker_class: str = 'uvicorn.workers.UvicornWorker'
 
-loglevel: str = 'info'
+loglevel: str = 'debug'
 
 reload: bool = bool(environ.get('GUNICORN_RELOAD', 0))
 

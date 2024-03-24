@@ -14,8 +14,6 @@ ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
 if DEBUG:
     ALLOWED_HOSTS: list = ['*']
 
-USER_AVATAR_MAX_SIZE = 4.0
-
 AUTH_USER_MODEL = 'main.User'
 
 PROJECT_TITLE = os.environ.get('PROJECT_TITLE', 'Template')
@@ -34,12 +32,50 @@ INTERNAL_IPS: list[str] = []
 ADMIN_URL = os.environ.get('ADMIN_URL', 'admin')
 
 SWAGGER_URL = os.environ.get('SWAGGER_URL')
-FRONTEND_URL = os.environ.get('FRONTEND_URL')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:8008')
+BACKEND_URL = os.environ.get('BACKEND_URL', 'http://localhost:8008')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
-EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+
+CHAT_API_URL = os.environ.get('CHAT_API_URL')
+CHAT_API_KEY = os.environ.get('CHAT_API_KEY')
+CHAT_PROXY = os.environ.get('CHAT_PROXY')
+
+USER_AVATAR_MAX_SIZE = 4.0
+USER_FILE_MAX_SIZE = 10.0  # Mb
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # b = 10 MB
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+
+API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
+API_KEY = os.environ.get('API_KEY')
+
+GRAPHENE = {'SCHEMA': 'main.schema.schema'}
+
+
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = os.environ.get('GOOGLE_REDIRECT_URI', 'http://localhost:8000/auth/google')
+
+SOCIAL_ACCOUNTS_PROVIDERS = {
+    'google': {
+        'enabled': True,
+        'client_id': GOOGLE_CLIENT_ID,
+        'client_secret': GOOGLE_CLIENT_SECRET,
+        'SCOPE': [
+            'email',
+            'profile',
+            'openid',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+        'OAUTH_PKCE_METHOD': 'S256',
+    }
+}
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -52,13 +88,13 @@ INSTALLED_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework_simplejwt.token_blacklist',
-    'defender',
     'rest_framework',
     'drf_spectacular',
     'corsheaders',
     'rosetta',
     'django_summernote',
     'django_filters',
+    'graphene_django',
 ]
 
 LOCAL_APPS = [
@@ -66,6 +102,8 @@ LOCAL_APPS = [
     'auth_app.apps.AuthAppConfig',
     'blog.apps.BlogConfig',
     'contact_us.apps.ContactUsConfig',
+    'user_profile.apps.UserProfileConfig',
+    'actions.apps.ActionsConfig',
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
@@ -80,17 +118,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'defender.middleware.FailedLoginMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('main.auth_backend.JWTCookieAuthentication',),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'main.pagination.BasePageNumberPagination',
 }
 
 
@@ -172,13 +208,11 @@ LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
 LANGUAGES = (('en', 'English'),)
 
-SESSION_COOKIE_NAME = 'sessionid'
-CSRF_COOKIE_NAME = 'csrftoken'
+SESSION_COOKIE_NAME = 'sessionid_blog'
+CSRF_COOKIE_NAME = 'csrftoken_blog'
 
 ROSETTA_SHOW_AT_ADMIN_PANEL = DEBUG
-
-DEFENDER_REDIS_URL = REDIS_URL + '/1'
-DEFENDER_USE_CELERY = False
+REST_AUTH_TOKEN_MODEL = None
 
 LOGGING = {
     'version': 1,
@@ -241,6 +275,7 @@ SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': '/api/v[0-9]',
     'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAdminUser'],
     'SERVE_AUTHENTICATION': ['rest_framework.authentication.SessionAuthentication'],
+    'COMPONENT_SPLIT_REQUEST': True,
     'SWAGGER_UI_SETTINGS': {
         'tryItOutEnabled': True,
         'displayRequestDuration': True,
