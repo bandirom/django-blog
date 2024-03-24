@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Count, Prefetch, Q, QuerySet
 from rest_framework.exceptions import ValidationError
 from slugify import slugify
@@ -106,8 +107,20 @@ class CreateArticleService:
     def is_article_slug_exist(slug: str) -> bool:
         return Article.objects.filter(slug=slug).exists()
 
+    def _save_tags(self, tags: list[str], article: Article) -> None:
+        article_tags: list[ArticleTag] = []
+        for name in tags:
+            article_tag = ArticleTag.objects.get_or_create(slug=self._get_slug(name), defaults={'name': name})
+            article_tags.append(article_tag[0])
+        article.tags.set(article_tags)
+
+    @transaction.atomic
     def create_article(self, author: 'UserType', article_data: CreateArticleT) -> Article:
+        print(f'{article_data=}')
         slug = self._get_slug(article_data['title'])
         if self.is_article_slug_exist(slug):
             raise ValidationError('Article with this title already exists')
-        return Article.objects.create(author=author, slug=slug, **article_data)
+        tags = article_data.pop('tags', [])
+        article = Article.objects.create(author=author, slug=slug, **article_data)
+        self._save_tags(tags, article)
+        return article

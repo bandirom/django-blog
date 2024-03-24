@@ -60,7 +60,10 @@ class FullArticleSerializer(ArticleSerializer):
 
 
 class CreateArticleSerializer(serializers.ModelSerializer):  # TaggitSerializer,
-    tags = TagListSerializerField()
+    tags = serializers.CharField()
+
+    def validate_tags(self, tags: str) -> list[str]:
+        return tags.split(',')
 
     class Meta:
         model = Article

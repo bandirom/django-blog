@@ -22,11 +22,11 @@ function getCategoriesHandler (data) {
 function postCreate(event) {
   event.preventDefault()
   let form = $(this)
-  let data = new FormData(form[0]);
+  const formData = new FormData(form[0]);
   $.ajax({
     url: '/api/v1/blog/articles/new/',
     type: form.attr('method'),
-    data: data,
+    data: formData,
     contentType: false,
     processData: false,
     success: function (data) {
