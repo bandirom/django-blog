@@ -1,6 +1,3 @@
 $(function () {
-
-
+  console.log('blog-detail')
 });
-
-console.log('blog-detail')

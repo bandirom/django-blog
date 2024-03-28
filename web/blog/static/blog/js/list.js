@@ -1,6 +1,4 @@
 $(function () {
-
-
+  console.log('blog-list')
 });
 
-console.log('blog-list')
