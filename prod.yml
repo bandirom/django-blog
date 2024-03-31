@@ -3,9 +3,6 @@ x-variables: &variables
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: docker/prod/web/Dockerfile
     image: bandirom/blog:${APP_VERSION:-latest}
     volumes:
       - redis_socket:/redis_socket
@@ -33,9 +30,6 @@ services:
     extra_hosts:
       - "gateway-host:172.17.0.1"
   celery:
-    build:
-      context: .
-      dockerfile: docker/prod/web/Dockerfile
     image: bandirom/blog:${APP_VERSION:-latest}
     entrypoint: ""
     command: celery -A src worker --beat -l info
