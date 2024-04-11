@@ -96,7 +96,7 @@ class LoginService:
 
     def __init__(self, request):
         self.request = request
-        self.rest_settings: dict = settings.REST_AUTH
+        self.settings: dict = settings.REST_AUTH
 
     def _authenticate(self, **kwargs: str):
         return authenticate(self.request, **kwargs)
@@ -152,20 +152,20 @@ class LoginService:
             key=key,
             value=token_value,
             expires=token_expiration,
-            secure=self.rest_settings['JWT_AUTH_SECURE'],
-            httponly=self.rest_settings['JWT_AUTH_HTTPONLY'],
-            samesite=self.rest_settings['JWT_AUTH_SAMESITE'],
-            domain=self.rest_settings['JWT_COOKIE_DOMAIN'],
+            secure=self.settings['JWT_AUTH_SECURE'],
+            httponly=self.settings['JWT_AUTH_HTTPONLY'],
+            samesite=self.settings['JWT_AUTH_SAMESITE'],
+            domain=self.settings['JWT_COOKIE_DOMAIN'],
         )
 
     def _set_jwt_access_cookie(self, response: "HttpResponse", access_token: str):
         access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
-        self.__set_jwt_cookie(response, self.rest_settings['JWT_AUTH_COOKIE'], access_token, access_token_expiration)
+        self.__set_jwt_cookie(response, self.settings['JWT_AUTH_COOKIE'], access_token, access_token_expiration)
 
     def _set_jwt_refresh_cookie(self, response: "HttpResponse", refresh_token: str):
         refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
         self.__set_jwt_cookie(
-            response, self.rest_settings['JWT_AUTH_REFRESH_COOKIE'], refresh_token, refresh_token_expiration
+            response, self.settings['JWT_AUTH_REFRESH_COOKIE'], refresh_token, refresh_token_expiration
         )
 
 
