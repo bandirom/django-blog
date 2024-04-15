@@ -22,4 +22,5 @@ urlpatterns = [
         TemplateAPIView.as_view(template_name='auth_app/verification_sent.html'),
         name='verify_email_sent',
     ),
+    path('auth/google', TemplateAPIView.as_view(template_name='auth_app/googleRedirect.html'), name='google_auth'),
 ]

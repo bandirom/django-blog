@@ -32,7 +32,11 @@ class UserQueryService:
     def user_profile_queryset(self) -> 'QuerySet[User]':
         user_articles = Count('article_set', filter=Q(article_set__status=ArticleStatus.ACTIVE))
         user_likes = Count('likes')
-        return self.get_queryset(is_active=True).annotate(user_posts=user_articles, user_likes=user_likes)
+        return (
+            self.get_queryset(is_active=True)
+            .annotate(user_posts=user_articles, user_likes=user_likes)
+            .prefetch_related('social_accounts')
+        )
 
     @staticmethod
     def exist_annotation(user) -> Exists:

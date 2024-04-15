@@ -2,7 +2,6 @@ from base64 import b64decode
 from typing import NamedTuple
 
 import pytest
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile

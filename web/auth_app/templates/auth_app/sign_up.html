@@ -10,15 +10,16 @@
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <form id="signUpForm" action="{% url 'api:v1:auth_app:sign-up' %}" method="post" accept-charset="utf-8" class="form"
-          role="form" data-href="{% url 'auth_app:verify_email_sent' %}">
+    <form id="signUpForm" action="{% url 'api:v1:auth_app:sign-up' %}" method="post" accept-charset="utf-8" class="form"  data-href="{% url 'auth_app:verify_email_sent' %}">
       <legend>Sign Up</legend>
       <h4>It's free and always will be.</h4>
       <div class="row">
         <div id="firstNameGroup" class="col-xs-6 col-md-6">
-          <input type="text" name="first_name" value="" class="form-control input-lg" placeholder="First Name" required /></div>
+          <input type="text" name="first_name" value="" class="form-control input-lg" placeholder="First Name" required />
+        </div>
         <div id="lastNameGroup" class="col-xs-6 col-md-6">
-          <input type="text" name="last_name" value="" class="form-control input-lg" placeholder="Last Name" required /></div>
+          <input type="text" name="last_name" value="" class="form-control input-lg" placeholder="Last Name" required />
+        </div>
       </div>
       <div id="emailGroup">
         <input type="text" name="email" value="" class="form-control input-lg" placeholder="Your Email" required />

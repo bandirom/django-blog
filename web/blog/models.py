@@ -14,17 +14,13 @@ from .choices import ArticleStatus
 User = get_user_model()
 
 
-class ArticleTag(TagBase):
-    objects = models.Manager()
+class ArticleTag(models.Model):
+    name = models.CharField(unique=True, max_length=100)
+    slug = models.SlugField(unique=True, max_length=100, allow_unicode=True)
 
     class Meta:
         verbose_name = _('Tag')
         verbose_name_plural = _('Tags')
-
-
-class TaggedArticle(TaggedItemBase):
-    content_object = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='tagged_article')
-    tag = models.ForeignKey(ArticleTag, related_name='tagged_article', on_delete=models.CASCADE)
 
 
 class Category(models.Model):
@@ -56,7 +52,7 @@ class Article(models.Model):
     status = models.PositiveSmallIntegerField(choices=ArticleStatus.choices, default=ArticleStatus.INACTIVE)
     image = models.ImageField(upload_to='articles/', blank=True, default='no-image-available.jpg')
     votes = GenericRelation(LikeDislike, related_query_name='articles')
-    tags = TaggableManager(through=TaggedArticle, related_name='article_tags', blank=True)
+    tags = models.ManyToManyField(ArticleTag, related_name='articles', blank=True)
 
     objects = models.Manager()
 
@@ -66,14 +62,6 @@ class Article(models.Model):
 
     def __str__(self) -> str:
         return '{title} - {author}'.format(title=self.short_title, author=self.author)
-
-    @staticmethod
-    def get_slug(title: str) -> str:
-        return slugify(title, allow_unicode=True)
-
-    def save(self, **kwargs):
-        self.slug = self.get_slug(self.title)
-        return super().save(**kwargs)
 
     def get_absolute_url(self) -> str:
         return reverse_lazy('blog:blog-detail', kwargs={'slug': self.slug})

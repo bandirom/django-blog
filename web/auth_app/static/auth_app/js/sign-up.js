@@ -17,7 +17,7 @@ function passwordVisibility() {
 }
 
 function singUp(e) {
-  let form = $(this);
+  const form = $(this);
   e.preventDefault();
   $.ajax({
     url: form.attr("action"),
@@ -25,7 +25,7 @@ function singUp(e) {
     dataType: 'json',
     data: form.serialize(),
     success: function (data) {
-//      window.location.href = form.data('href');
+      window.location.href = form.data('href');
     },
     error: function (data) {
       error_process(data);

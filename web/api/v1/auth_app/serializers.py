@@ -51,11 +51,14 @@ class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
 
-class PasswordResetConfirmSerializer(serializers.Serializer):
-    password_1 = serializers.CharField(min_length=8, max_length=64)
-    password_2 = serializers.CharField(min_length=8, max_length=64)
+class PasswordResetVerifySerializer(serializers.Serializer):
     uid = serializers.CharField()
     token = serializers.CharField()
+
+
+class PasswordResetConfirmSerializer(PasswordResetVerifySerializer):
+    password_1 = serializers.CharField(min_length=8, max_length=64)
+    password_2 = serializers.CharField(min_length=8, max_length=64)
 
     def validate_password_1(self, password: str) -> str:
         validate_password(password)

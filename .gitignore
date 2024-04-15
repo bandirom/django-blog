@@ -37,3 +37,4 @@ redis-*.tgz
 db.sqlite3
 .secrets.env
 *.spec
+.secrets.env

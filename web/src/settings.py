@@ -1,10 +1,7 @@
 import os
 from pathlib import Path
 
-from .additional_settings.celery_settings import *
-from .additional_settings.jwt_settings import *
-from .additional_settings.smtp_settings import *
-from .additional_settings.summernote_settings import *
+from .additional_settings import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -55,6 +52,30 @@ API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
 
 GRAPHENE = {'SCHEMA': 'main.schema.schema'}
+
+
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = os.environ.get('GOOGLE_REDIRECT_URI', 'http://localhost:8000/auth/google')
+
+SOCIAL_ACCOUNTS_PROVIDERS = {
+    'google': {
+        'enabled': True,
+        'client_id': GOOGLE_CLIENT_ID,
+        'client_secret': GOOGLE_CLIENT_SECRET,
+        'SCOPE': [
+            'email',
+            'profile',
+            'openid',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+        'OAUTH_PKCE_METHOD': 'S256',
+    }
+}
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',

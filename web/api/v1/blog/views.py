@@ -1,11 +1,10 @@
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from . import serializers
 from .filters import ArticleFilter
-from .services import BlogQueryService, CommentQueryService, TagQueryService
+from .services import BlogQueryService, CategoryQueryService, CommentQueryService, CreateArticleService, TagQueryService
 
 
 class ArticleListView(ListAPIView):
@@ -35,8 +34,9 @@ class CreateArticleView(GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        service = CreateArticleService()
+        article = service.create_article(request.user, serializer.validated_data)
+        return Response({'id': article.id}, status=status.HTTP_201_CREATED)
 
 
 class CommentListView(ListAPIView):
@@ -59,3 +59,11 @@ class TagListView(ListAPIView):
 
     def get_queryset(self):
         return TagQueryService().popular_tags()
+
+
+class CategoryListView(ListAPIView):
+    serializer_class = serializers.CategorySerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return CategoryQueryService.category_queryset()

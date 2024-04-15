@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block head %}
+<meta name="google-signin-client_id" content="522247087269-kj18n97p7j7o52csf5gnfs01kt5ko9nl.apps.googleusercontent.com.apps.googleusercontent.com">
 <link href="{% static 'auth_app/css/login.css' %}" rel="stylesheet">
 {% endblock head %}
 
@@ -35,6 +36,9 @@
             <a href="{% url 'auth_app:sign_up' %}" class="btn btn-lg btn-primary btn-block">Register</a>
           </div>
         </div>
+        <div style="margin-top:20px" class="row">
+          <button type="button" id="loginGoogle" class="btn btn-lg btn-primary btn-block">Login with Google</button>
+        </div>
       </fieldset>
     </form>
   </div>
@@ -45,4 +49,5 @@
 
 {% block jquery %}
 $.getScript('{% static 'auth_app/js/login.js' %}');
+$.getScript('{% static 'auth_app/js/googleOauth.js' %}');
 {% endblock %}
