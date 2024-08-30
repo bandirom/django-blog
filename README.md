@@ -44,7 +44,7 @@ docker-compose up -d --build
 docker-compose logs -f
 ```
     
-##### Server will run on 8000 port. You can get access to server by browser [http://localhost:8000](http://localhost:8000)
+##### Server will run on 8008 port. You can get access to server by browser [http://localhost:8008](http://localhost:8008)
 
 Run django commands through exec:
 ```shell
@@ -62,18 +62,19 @@ docker-compose exec web sh
 
 * Run Mailpit
 ```shell
-docker-compose -f docker/modules/mailpit.yml up -d
+docker run -p 1025:1025 -p 8025:8025 -d -it --rm axllent/mailpit
 ```
 
 <b>Don't forget to set SMTP mail backend in settings</b>
- 
+
 ```dotenv
 # docker/dev/env/.email.env
-EMAIL_HOST=mailpit_hostname
+EMAIL_HOST=<mailpit_hostname>
 ```
-Where `mailpit_hostname` is
-* `docker.host.internal` for Window and macOS
-* `gateway-host` for Linux OS
+
+**Where `<mailpit_hostname>`:**
+* `host.docker.internal` for Window and macOS
+* `172.17.0.1` for Linux OS
 
 ---
 
