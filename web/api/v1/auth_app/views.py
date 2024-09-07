@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from . import serializers
 from .managers import PasswordResetManager
-from .services import AuthAppService, LoginService, PasswordResetHandler, SignUpHandler, full_logout
+from .services import AuthAppService, LoginService, PasswordResetHandler, SignUpHandler, LogoutService
 
 
 class SignUpView(GenericAPIView):
@@ -40,11 +40,9 @@ class LoginView(GenericAPIView):
 
 
 class LogoutView(APIView):
-    allowed_methods = ('POST', 'OPTIONS')
-
     def post(self, request):
-        response = full_logout(request)
-        return response
+        service = LogoutService(request)
+        return service.logout()
 
 
 class PasswordResetView(GenericAPIView):

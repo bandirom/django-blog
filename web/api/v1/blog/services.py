@@ -116,7 +116,6 @@ class CreateArticleService:
 
     @transaction.atomic
     def create_article(self, author: 'UserType', article_data: CreateArticleT) -> Article:
-        print(f'{article_data=}')
         slug = self._get_slug(article_data['title'])
         if self.is_article_slug_exist(slug):
             raise ValidationError('Article with this title already exists')

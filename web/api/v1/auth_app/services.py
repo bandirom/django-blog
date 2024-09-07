@@ -1,3 +1,4 @@
+import logging
 from typing import TYPE_CHECKING
 from urllib.parse import quote, urlencode, urljoin
 
@@ -35,6 +36,8 @@ if TYPE_CHECKING:
     from main.models import UserType
 
 User: 'UserType' = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 
 class PasswordResetHandler:
@@ -212,42 +215,30 @@ class AuthAppService:
         return user
 
 
-def full_logout(request):
-    response = Response({"detail": _("Successfully logged out.")}, status=status.HTTP_200_OK)
-    auth_cookie_name = settings.REST_AUTH['JWT_AUTH_COOKIE']
-    refresh_cookie_name = settings.REST_AUTH['JWT_AUTH_REFRESH_COOKIE']
+class LogoutService:
 
-    response.delete_cookie(auth_cookie_name)
-    refresh_token = request.COOKIES.get(refresh_cookie_name)
-    if refresh_cookie_name:
-        response.delete_cookie(refresh_cookie_name)
-    try:
-        token = RefreshToken(refresh_token)
-        token.blacklist()
-    except KeyError:
-        response.data = {"detail": _("Refresh token was not included in request data.")}
-        response.status_code = status.HTTP_401_UNAUTHORIZED
-    except (TokenError, AttributeError, TypeError) as error:
-        if hasattr(error, 'args'):
-            if 'Token is blacklisted' in error.args or 'Token is invalid or expired' in error.args:
-                response.data = {"detail": _(error.args[0])}
-                response.status_code = status.HTTP_401_UNAUTHORIZED
-            else:
-                response.data = {"detail": _("An error has occurred.")}
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    def __init__(self, request):
+        self.request = request
+        self.access_cookie_name = settings.REST_AUTH['JWT_AUTH_COOKIE']
+        self.refresh_cookie_name = settings.REST_AUTH['JWT_AUTH_REFRESH_COOKIE']
 
-        else:
-            response.data = {"detail": _("An error has occurred.")}
-            response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    def _delete_cookies(self, response: Response):
+        response.delete_cookie(self.access_cookie_name)
+        response.delete_cookie(self.refresh_cookie_name)
 
-    else:
-        message = _(
-            "Neither cookies or blacklist are enabled, so the token "
-            "has not been deleted server side. Please make sure the token is deleted client side."
-        )
-        response.data = {"detail": message}
-        response.status_code = status.HTTP_200_OK
-    return response
+    def _blacklist_refresh_token(self, refresh_token: str):
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except TokenError as e:
+            logger.warning(f'Failed blacklist Token from {self.request.user}.\nException: {e}')
+
+    def logout(self):
+        response = Response({"detail": _("Successfully logged out.")}, status=status.HTTP_200_OK)
+        self._delete_cookies(response)
+        if refresh_token := self.request.COOKIES.get(self.refresh_cookie_name):
+            self._blacklist_refresh_token(refresh_token)
+        return response
 
 
 class OAuthLoginService:
