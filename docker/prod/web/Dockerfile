@@ -1,4 +1,4 @@
-FROM python:3.11.7-alpine as builder
+FROM python:3.11.7-alpine AS builder
 ARG WHEELS_PATH=/etc/wheels
 
 RUN apk add --update --no-cache --virtual .build-deps \
@@ -50,7 +50,9 @@ RUN chmod +x /*.sh && \
     mkdir -p media && \
     python manage.py collectstatic --no-input && \
     chown -R $USER:$USER $APP_HOME media && \
-    chown -R $USER:$USER /etc/nginx /var/lib/nginx/ /var/log /run/nginx/
+    chown -R $USER:$USER /etc/nginx /var/lib/nginx/ /var/log /run/nginx/ && \
+    touch /var/run/nginx.pid && \
+    chown -R $USER:$USER /var/run/nginx.pid
 
 ENTRYPOINT ["/entrypoint.sh"]
 
