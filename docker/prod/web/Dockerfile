@@ -1,4 +1,4 @@
-FROM python:3.11.7-alpine AS builder
+FROM python:3.12-alpine AS builder
 ARG WHEELS_PATH=/etc/wheels
 
 RUN apk add --update --no-cache --virtual .build-deps \
@@ -12,7 +12,7 @@ COPY ./web/src/requirements  ./src/requirements
 RUN pip wheel --wheel-dir=$WHEELS_PATH .[production]
 
 
-FROM python:3.11.7-alpine
+FROM python:3.12-alpine
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -38,7 +38,8 @@ WORKDIR $APP_HOME
 COPY --from=builder $WHEELS_PATH $WHEELS_PATH
 COPY ./web/setup.cfg ./web/pyproject.toml ./
 COPY ./web/src/requirements  ./src/requirements
-RUN pip install --no-build-isolation --no-index --find-links=$WHEELS_PATH --editable .[production] && \
+RUN pip install --upgrade pip setuptools && \
+    pip install --no-build-isolation --no-index --find-links=$WHEELS_PATH --editable .[production] && \
     rm -rf $WHEELS_PATH
 
 COPY --chown=$USER:$USER ./docker/prod/web/entrypoint.sh /

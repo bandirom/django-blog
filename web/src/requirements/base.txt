@@ -1,35 +1,46 @@
 ### Required dependencies ###
 
 django~=4.2
-psycopg[binary]~=3.1
-redis~=5.0
-djangorestframework~=3.14
-drf-spectacular~=0.27
-celery~=5.3
+psycopg[binary]~=3.2
+redis~=5.2
+djangorestframework~=3.15
+drf-spectacular~=0.28
+celery~=5.4
+python-slugify~=8.0
 
 ### Optional dependencies ###
 
 # Filtering
-django-filter~=23.5
+django-filter~=24.3
 
 # Cors headers
-django-cors-headers~=4.3
+django-cors-headers~=4.6
 
 # Ddos defender: required redis
 django-defender~=0.9
 
 # for auth system
-dj-rest-auth~=5.0
+dj-rest-auth~=7.0
 djangorestframework-simplejwt~=5.3
 
 # ImageField
-pillow~=10.1
+pillow~=11.0
 
 # Translation
-django-rosetta~=0.9
+django-rosetta~=0.10
 
 # Monitoring System
-sentry-sdk~=1.40
+sentry-sdk~=2.19
 
 # TextEditor
 django-summernote==0.8.20.0
+
+# Tags
+django-taggit~=4.0
+
+# Countries
+django-countries~=7.6
+
+# PhoneNumberField
+django-phonenumber-field~=8.0
+phonenumberslite~=8.13
