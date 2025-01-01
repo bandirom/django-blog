@@ -37,7 +37,7 @@ SUPERUSER_PASSWORD=secretp@ssword
 PROJECT_TITLE=MyProject
 ```
 
-#### Run the local develop server:
+#### Run local develop server:
 
 ```shell
 docker-compose up -d --build
