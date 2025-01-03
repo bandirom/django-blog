@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: bandirom/blog
   pullPolicy: Always
-  tag: "latest"
+  tag: "v1.1.1"
 
 imagePullSecrets: []
 nameOverride: ""
