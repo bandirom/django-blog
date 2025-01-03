@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  DOCKER_IMAGE_REPO: bandirom/django-blog
+  IMAGE_NAME: bandirom/django-blog
   TARGET_PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
