@@ -80,6 +80,9 @@ class SignUpHandler:
             gender=self.data.gender,
             is_active=False,
         )
+        return user
+
+    def send_confirmation_email(self, user: User):
         activate_url = self._get_activate_url(user)
         SignUpEmailService(user).send_email(activate_url=activate_url)
 
