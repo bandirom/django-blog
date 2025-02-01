@@ -21,8 +21,16 @@ class LikeQueryService:
         if not user.is_authenticated:
             return Value(LikeIconStatus.EMPTY, output_field=IntegerField())
         return Case(
-            When(votes__user=user, votes__vote=LikeStatus.LIKE, then=Value(LikeIconStatus.LIKED)),
-            When(votes__user=user, votes__vote=LikeStatus.DISLIKE, then=Value(LikeIconStatus.DISLIKED)),
+            When(
+                votes__user=user,
+                votes__vote=LikeStatus.LIKE,
+                then=Value(LikeIconStatus.LIKED),
+            ),
+            When(
+                votes__user=user,
+                votes__vote=LikeStatus.DISLIKE,
+                then=Value(LikeIconStatus.DISLIKED),
+            ),
             default=Value(LikeIconStatus.EMPTY),
             output_field=IntegerField(),
         )
