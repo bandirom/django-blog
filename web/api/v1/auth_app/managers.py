@@ -14,12 +14,12 @@ if TYPE_CHECKING:
     from main.models import UserType
 
 
-User: 'UserType' = get_user_model()
+User: "UserType" = get_user_model()
 
 
 class ConfirmationKeyManager:
     def __init__(self):
-        self.max_age = 60 * 60 * 24 * settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
+        self.max_age = settings.EMAIL_CONFIRMATION_EXPIRE_SECONDS
 
     @staticmethod
     def generate_key(user: User) -> str:
