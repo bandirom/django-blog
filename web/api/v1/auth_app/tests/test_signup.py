@@ -15,6 +15,7 @@ locmem_email_backend = override_settings(
     CELERY_TASK_ALWAYS_EAGER=False,
 )
 
+
 @locmem_email_backend
 def test_sign_up_success(client: Client, mailoutbox):
     data = {
