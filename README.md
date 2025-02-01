@@ -58,6 +58,11 @@ Get access to the container
 docker-compose exec web sh
 ```
 
+Run tests
+```shell
+docker-compose exec blog pytest
+```
+
 ##### For run mail smtp for local development you can use Mailpit service
 
 * Run Mailpit
