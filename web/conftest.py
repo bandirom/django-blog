@@ -1,12 +1,11 @@
 from base64 import b64decode
-from typing import NamedTuple
 
 import pytest
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.http import SimpleCookie
-from django.test import Client
+from django.test import Client, override_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.v1.auth_app.services import AuthToken
@@ -17,10 +16,13 @@ pytestmark = [pytest.mark.django_db]
 
 User: UserType = get_user_model()
 
-
 raw_image: str = (
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAA'
     'AA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII='
+)
+
+celery_runtime_tasks = override_settings(
+    CELERY_TASK_ALWAYS_EAGER=True,
 )
 
 
