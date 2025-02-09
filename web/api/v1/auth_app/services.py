@@ -29,6 +29,7 @@ from .managers import ConfirmationKeyManager, PasswordResetManager
 from .oauth.base.exceptions import OAuth2Error
 from .types import CreateUserData, PasswordResetConfirmData
 from main.decorators import except_shell
+from ..profile.services import UserQueryService
 
 if TYPE_CHECKING:
     from django.http import HttpResponse
@@ -52,7 +53,9 @@ class PasswordResetHandler:
         self.frontend_path = '/reset/confirm'
 
     def reset_password(self):
-        user = User.objects.get(email=self.email)
+        user = UserQueryService().get_user_by_email(self.email)
+        if not user:
+            return
         reset_url = self._get_reset_url(user)
         PasswordResetService(user).send_email(reset_url=reset_url)
 

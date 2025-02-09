@@ -1,10 +1,10 @@
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+
+from api.v1.auth_app.managers import PasswordResetManager
+from api.v1.auth_app.types import PasswordResetDTO
 
 if TYPE_CHECKING:
     from main.models import UserType
@@ -13,16 +13,10 @@ if TYPE_CHECKING:
 User: "UserType" = get_user_model()
 
 
-class UserTokenUid(NamedTuple):
-    uid: str
-    token: str
-
-
 @pytest.fixture
-def user_uid_and_token(user: User) -> UserTokenUid:
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = default_token_generator.make_token(user)
-    return UserTokenUid(uid=uid, token=token)
+def user_uid_and_token(user: User) -> PasswordResetDTO:
+    manager = PasswordResetManager()
+    return manager.generate(user)
 
 
 @pytest.fixture()
