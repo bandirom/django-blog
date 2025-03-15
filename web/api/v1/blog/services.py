@@ -10,10 +10,13 @@ from blog.choices import ArticleStatus
 from blog.models import Article, ArticleTag, Category, Comment
 
 from main.decorators import except_shell
-from main.models import UserType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from main.models import UserType
 
 
-class BlogQueryService:
+class ArticleQueryService:
     @staticmethod
     def get_queryset() -> QuerySet[Article]:
         return Article.objects.all()
@@ -38,7 +41,7 @@ class BlogQueryService:
         [max_length]
         )
 
-    def get_articles(self, user: UserType) -> QuerySet[Article]:
+    def get_articles(self, user: "UserType") -> QuerySet[Article]:
         max_length = 100
         return (
             self.get_active_articles()
@@ -61,7 +64,7 @@ class CommentQueryService:
     def get_queryset() -> QuerySet[Comment]:
         return Comment.objects.all()
 
-    def comments_by_article_slug(self, article_slug: str, user: UserType) -> QuerySet[Comment]:
+    def comments_by_article_slug(self, article_slug: str, user: "UserType") -> QuerySet[Comment]:
         return (
             self.get_queryset()
             .filter(article__slug=article_slug, parent__isnull=True)
