@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q, QuerySet
+from django.db.models.expressions import RawSQL
 from rest_framework.exceptions import ValidationError
 from slugify import slugify
 
@@ -20,12 +21,34 @@ class BlogQueryService:
     def get_active_articles(self) -> QuerySet[Article]:
         return self.get_queryset().filter(status=ArticleStatus.ACTIVE)
 
+    def _truncate_article_content(self, max_length: int) -> RawSQL:
+        """Remove html tags, extra spaces and truncate content"""
+        return RawSQL(
+        f"""
+            regexp_replace(
+                regexp_replace(
+                    substring(regexp_replace({Article._meta.db_table}.content, '<[^>]+>', '', 'g') from 1 for %s),
+                    ' [^ ]*$',
+                    '',
+                    'g'
+                ),
+                '\\s+', ' ', 'g'
+            )
+            """,
+        [max_length]
+        )
+
     def get_articles(self, user: UserType) -> QuerySet[Article]:
+        max_length = 100
         return (
             self.get_active_articles()
             .select_related('category', 'author')
             .prefetch_related('tags')
-            .annotate(comments_count=Count('comment_set'), like_status=LikeQueryService.like_annotate(user))
+            .annotate(
+                comments_count=Count('comment_set'),
+                like_status=LikeQueryService.like_annotate(user),
+                truncated_text=self._truncate_article_content(max_length)
+            )
         )
 
     @except_shell((Article.DoesNotExist,), raise_404=True)
@@ -62,7 +85,7 @@ class TagQueryService:
     def popular_tags(self) -> QuerySet[dict]:
         tags = (
             self.get_queryset()
-            .annotate(articles_num=Count('tagged_article', filter=Q(article_tags__status=ArticleStatus.ACTIVE)))
+            .annotate(articles_num=Count('articles', filter=Q(articles__status=ArticleStatus.ACTIVE)))
             .values('name', 'slug', 'articles_num')
             .filter(articles_num__gt=0)
             .order_by('-articles_num')[:8]

@@ -31,6 +31,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField()
     like_status = serializers.IntegerField()
     tags = TagListSerializer(many=True)
+    truncated_text = serializers.CharField()
 
     class Meta:
         model = Article
@@ -47,6 +48,7 @@ class ArticleSerializer(serializers.ModelSerializer):
             'comments_count',
             'image',
             'content',
+            'truncated_text',
             'like_status',
             'tags',
         )

@@ -57,8 +57,8 @@ class PasswordResetManager:
     @staticmethod
     def _get_user_by_uid(uid: str) -> Optional[User]:
         try:
-            uid = force_str(urlsafe_base64_decode(uid))
-            return User.objects.get(id=uid)
+            user_id = urlsafe_base64_decode(uid).decode()
+            return User.objects.get(id=user_id)
         except (User.DoesNotExist, ValueError):
             return None
 
