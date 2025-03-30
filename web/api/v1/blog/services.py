@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q, QuerySet
 from django.db.models.expressions import RawSQL
@@ -10,7 +12,6 @@ from blog.choices import ArticleStatus
 from blog.models import Article, ArticleTag, Category, Comment
 
 from main.decorators import except_shell
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main.models import UserType
@@ -27,7 +28,7 @@ class ArticleQueryService:
     def _truncate_article_content(self, max_length: int) -> RawSQL:
         """Remove html tags, extra spaces and truncate content"""
         return RawSQL(
-        f"""
+            f"""
             regexp_replace(
                 regexp_replace(
                     substring(regexp_replace({Article._meta.db_table}.content, '<[^>]+>', '', 'g') from 1 for %s),
@@ -38,7 +39,7 @@ class ArticleQueryService:
                 '\\s+', ' ', 'g'
             )
             """,
-        [max_length]
+            [max_length],
         )
 
     def get_articles(self, user: "UserType") -> QuerySet[Article]:
@@ -50,7 +51,7 @@ class ArticleQueryService:
             .annotate(
                 comments_count=Count('comment_set'),
                 like_status=LikeQueryService.like_annotate(user),
-                truncated_text=self._truncate_article_content(max_length)
+                truncated_text=self._truncate_article_content(max_length),
             )
         )
 

@@ -16,6 +16,11 @@ def github_link():
     return settings.GITHUB_URL
 
 
+@register.simple_tag
+def google_recaptcha_site_key() -> str:
+    return settings.GOOGLE_RECAPTCHA_SITE_KEY
+
+
 @register.filter(name='date_time')
 def date(value: str):
     """2021-04-11T18:02:37.066850Z"""

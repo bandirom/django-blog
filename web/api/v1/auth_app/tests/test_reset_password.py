@@ -1,6 +1,6 @@
+import pytest
 from django.test import Client
 from rest_framework import status
-import pytest
 from rest_framework.reverse import reverse_lazy
 
 from conftest import celery_runtime_tasks
@@ -16,11 +16,12 @@ class TestPasswordReset:
 
     @celery_runtime_tasks
     @pytest.mark.parametrize(
-        ['email', 'status_code', 'code', 'email_count'], (
+        ['email', 'status_code', 'code', 'email_count'],
+        (
             ('harley.quinn@email.com', 200, None, 1),
             ('wrong_email', 400, 'invalid', 0),
             ('wrong_email@email.com', 200, None, 0),
-        )
+        ),
     )
     def test_password_reset(
         self,

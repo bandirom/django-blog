@@ -4,6 +4,8 @@
 {% block head %}
 <meta name="google-signin-client_id" content="522247087269-kj18n97p7j7o52csf5gnfs01kt5ko9nl.apps.googleusercontent.com.apps.googleusercontent.com">
 <link href="{% static 'auth_app/css/login.css' %}" rel="stylesheet">
+
+{% include 'includes/recaptcha.html' %}
 {% endblock head %}
 
 {% block container %}

@@ -3,14 +3,24 @@ $(function () {
   $('#openForgotPasswdModal').click(openForgotPasswordModal);
 });
 
-function login(e) {
+async function login(e) {
   let form = $(this);
   e.preventDefault();
+
+  const token = await grecaptcha.enterprise.execute(
+    '6Le3PQQrAAAAAN1YtIbmkpds6f5XUXsHH7dmsbLk',
+    { action: 'LOGIN' }
+  );
+  const data = {
+    g_recaptcha_response: token,
+    email: form.find("input[name=email]").val(),
+    password: form.find("input[name=password]").val(),
+  }
   $.ajax({
     url: form.attr("action"),
     type: "POST",
     dataType: 'json',
-    data: form.serialize(),
+    data,
     success: function (data) {
       location.reload();
     },
