@@ -14,12 +14,12 @@ if TYPE_CHECKING:
     from main.models import UserType
 
 
-User: 'UserType' = get_user_model()
+User: "UserType" = get_user_model()
 
 
 class ConfirmationKeyManager:
     def __init__(self):
-        self.max_age = 60 * 60 * 24 * settings.EMAIL_CONFIRMATION_EXPIRE_DAYS
+        self.max_age = settings.EMAIL_CONFIRMATION_EXPIRE_SECONDS
 
     @staticmethod
     def generate_key(user: User) -> str:
@@ -57,8 +57,8 @@ class PasswordResetManager:
     @staticmethod
     def _get_user_by_uid(uid: str) -> Optional[User]:
         try:
-            uid = force_str(urlsafe_base64_decode(uid))
-            return User.objects.get(id=uid)
+            user_id = urlsafe_base64_decode(uid).decode()
+            return User.objects.get(id=user_id)
         except (User.DoesNotExist, ValueError):
             return None
 

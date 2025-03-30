@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q, QuerySet
+from django.db.models.expressions import RawSQL
 from rest_framework.exceptions import ValidationError
 from slugify import slugify
 
@@ -9,10 +10,13 @@ from blog.choices import ArticleStatus
 from blog.models import Article, ArticleTag, Category, Comment
 
 from main.decorators import except_shell
-from main.models import UserType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from main.models import UserType
 
 
-class BlogQueryService:
+class ArticleQueryService:
     @staticmethod
     def get_queryset() -> QuerySet[Article]:
         return Article.objects.all()
@@ -20,12 +24,34 @@ class BlogQueryService:
     def get_active_articles(self) -> QuerySet[Article]:
         return self.get_queryset().filter(status=ArticleStatus.ACTIVE)
 
-    def get_articles(self, user: UserType) -> QuerySet[Article]:
+    def _truncate_article_content(self, max_length: int) -> RawSQL:
+        """Remove html tags, extra spaces and truncate content"""
+        return RawSQL(
+        f"""
+            regexp_replace(
+                regexp_replace(
+                    substring(regexp_replace({Article._meta.db_table}.content, '<[^>]+>', '', 'g') from 1 for %s),
+                    ' [^ ]*$',
+                    '',
+                    'g'
+                ),
+                '\\s+', ' ', 'g'
+            )
+            """,
+        [max_length]
+        )
+
+    def get_articles(self, user: "UserType") -> QuerySet[Article]:
+        max_length = 100
         return (
             self.get_active_articles()
             .select_related('category', 'author')
             .prefetch_related('tags')
-            .annotate(comments_count=Count('comment_set'), like_status=LikeQueryService.like_annotate(user))
+            .annotate(
+                comments_count=Count('comment_set'),
+                like_status=LikeQueryService.like_annotate(user),
+                truncated_text=self._truncate_article_content(max_length)
+            )
         )
 
     @except_shell((Article.DoesNotExist,), raise_404=True)
@@ -38,7 +64,7 @@ class CommentQueryService:
     def get_queryset() -> QuerySet[Comment]:
         return Comment.objects.all()
 
-    def comments_by_article_slug(self, article_slug: str, user: UserType) -> QuerySet[Comment]:
+    def comments_by_article_slug(self, article_slug: str, user: "UserType") -> QuerySet[Comment]:
         return (
             self.get_queryset()
             .filter(article__slug=article_slug, parent__isnull=True)
@@ -62,7 +88,7 @@ class TagQueryService:
     def popular_tags(self) -> QuerySet[dict]:
         tags = (
             self.get_queryset()
-            .annotate(articles_num=Count('tagged_article', filter=Q(article_tags__status=ArticleStatus.ACTIVE)))
+            .annotate(articles_num=Count('articles', filter=Q(articles__status=ArticleStatus.ACTIVE)))
             .values('name', 'slug', 'articles_num')
             .filter(articles_num__gt=0)
             .order_by('-articles_num')[:8]

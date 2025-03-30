@@ -1,23 +1,26 @@
-from typing import NamedTuple
+from typing import TYPE_CHECKING
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
 
-pytestmark = [pytest.mark.django_db]
+from api.v1.auth_app.managers import PasswordResetManager
+from api.v1.auth_app.types import PasswordResetDTO
 
-User = get_user_model()
+if TYPE_CHECKING:
+    from main.models import UserType
 
 
-class UserTokenUid(NamedTuple):
-    uid: str
-    token: str
+User: "UserType" = get_user_model()
 
 
 @pytest.fixture
-def user_uid_and_token(user: User) -> UserTokenUid:
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = default_token_generator.make_token(user)
-    return UserTokenUid(uid=uid, token=token)
+def user_uid_and_token(user: User) -> PasswordResetDTO:
+    manager = PasswordResetManager()
+    return manager.generate(user)
+
+
+@pytest.fixture()
+def inactive_user(user) -> User:
+    user.is_active = False
+    user.save(update_fields=["is_active"])
+    return user

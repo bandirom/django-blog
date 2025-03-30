@@ -56,3 +56,7 @@ class UserQueryService:
 
     def get_user_following(self, user: User) -> 'QuerySet[User]':
         return user.following.all().annotate(follow=self.exist_annotation(user))
+
+    @except_shell(User.DoesNotExist)
+    def get_user_by_email(self, email: str, is_active: Optional[bool] = None) -> Optional[User]:
+        return self.get_queryset(is_active=is_active).get(email=email)

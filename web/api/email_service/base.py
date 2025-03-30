@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from main.models import UserType
 
 
-User: 'UserType' = get_user_model()
+User: "UserType" = get_user_model()
 
 
 class EmailSendData(TypedDict):
@@ -24,7 +24,12 @@ class EmailSendData(TypedDict):
 
 
 class BaseEmailService(ABC):
-    def __init__(self, user: Optional[User] = None, language: Optional[str] = None, from_email: Optional[str] = None):
+    def __init__(
+        self,
+        user: Optional[User] = None,
+        language: Optional[str] = None,
+        from_email: Optional[str] = None,
+    ):
         self._user = user
         self._locale: str = language or get_language()
         self.from_email = from_email

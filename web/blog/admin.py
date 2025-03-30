@@ -17,7 +17,7 @@ class CommentsInline(admin.TabularInline):
 @admin.register(ArticleTag)
 class ArticleTagAdmin(admin.ModelAdmin):
     list_display = ('name',)
-    fields = ('name',)
+    fields = ('name', 'slug')
 
 
 @admin.register(Article)
@@ -25,7 +25,7 @@ class ArticleAdmin(SummernoteModelAdmin):
     form = ArticleForm
     list_display = ('title', 'category', 'status', 'author', 'tag_list_str')
     summernote_fields = ('content',)
-    fields = ('category', 'title', 'status', 'author', 'image', 'content', 'created', 'updated', 'tags')
+    fields = ('category', 'title', 'slug', 'status', 'author', 'image', 'content', 'created', 'updated', 'tags')
     readonly_fields = ('created', 'updated')
     list_select_related = ('category', 'author')
     list_filter = ('status',)

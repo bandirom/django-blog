@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from . import serializers
 from .managers import PasswordResetManager
-from .services import AuthAppService, LoginService, PasswordResetHandler, SignUpHandler, LogoutService
+from .services import AuthAppService, LoginService, LogoutService, PasswordResetHandler, SignUpHandler
 
 
 class SignUpView(GenericAPIView):
@@ -19,7 +19,8 @@ class SignUpView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         service = SignUpHandler(serializer.validated_data)
-        service.create_user()
+        user = service.create_user()
+        service.send_confirmation_email(user)
         return Response(
             {'detail': _('Confirmation email has been sent')},
             status=status.HTTP_201_CREATED,

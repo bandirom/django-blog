@@ -1,13 +1,14 @@
 from base64 import b64decode
-from typing import NamedTuple
 
 import pytest
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.http import SimpleCookie
-from django.test import Client
+from django.test import Client, override_settings
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from api.v1.auth_app.services import AuthToken
 
 from main.models import UserType
 
@@ -15,15 +16,13 @@ pytestmark = [pytest.mark.django_db]
 
 User: UserType = get_user_model()
 
-
-class UserToken(NamedTuple):
-    access_token: str
-    refresh_token: str
-
-
 raw_image: str = (
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAA'
     'AA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII='
+)
+
+celery_runtime_tasks = override_settings(
+    CELERY_TASK_ALWAYS_EAGER=True,
 )
 
 
@@ -46,17 +45,17 @@ def user() -> User:
 
 
 @pytest.fixture()
-def user_tokens(user) -> UserToken:
+def user_tokens(user) -> AuthToken:
     refresh: RefreshToken = RefreshToken().for_user(user)
-    return UserToken(access_token=refresh.access_token, refresh_token=str(refresh))
+    return AuthToken(access_token=str(refresh.access_token), refresh_token=str(refresh))
 
 
 @pytest.fixture()
-def jwt_cookies(user_tokens: UserToken) -> SimpleCookie:
+def jwt_cookies(user_tokens: AuthToken) -> SimpleCookie:
     return SimpleCookie(
         {
-            settings.REST_AUTH['JWT_AUTH_COOKIE']: user_tokens.access_token,
-            settings.REST_AUTH['JWT_AUTH_REFRESH_COOKIE']: user_tokens.refresh_token,
+            settings.REST_AUTH["JWT_AUTH_COOKIE"]: user_tokens.access_token,
+            settings.REST_AUTH["JWT_AUTH_REFRESH_COOKIE"]: user_tokens.refresh_token,
         }
     )
 

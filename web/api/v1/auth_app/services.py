@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 from urllib.parse import quote, urlencode, urljoin
 
 import requests
@@ -29,15 +29,21 @@ from .managers import ConfirmationKeyManager, PasswordResetManager
 from .oauth.base.exceptions import OAuth2Error
 from .types import CreateUserData, PasswordResetConfirmData
 from main.decorators import except_shell
+from ..profile.services import UserQueryService
 
 if TYPE_CHECKING:
     from django.http import HttpResponse
 
     from main.models import UserType
 
-User: 'UserType' = get_user_model()
+User: "UserType" = get_user_model()
 
 logger = logging.getLogger(__name__)
+
+
+class AuthToken(NamedTuple):
+    access_token: str
+    refresh_token: str
 
 
 class PasswordResetHandler:
@@ -47,7 +53,9 @@ class PasswordResetHandler:
         self.frontend_path = '/reset/confirm'
 
     def reset_password(self):
-        user = User.objects.get(email=self.email)
+        user = UserQueryService().get_user_by_email(self.email)
+        if not user:
+            return
         reset_url = self._get_reset_url(user)
         PasswordResetService(user).send_email(reset_url=reset_url)
 
@@ -75,6 +83,9 @@ class SignUpHandler:
             gender=self.data.gender,
             is_active=False,
         )
+        return user
+
+    def send_confirmation_email(self, user: User):
         activate_url = self._get_activate_url(user)
         SignUpEmailService(user).send_email(activate_url=activate_url)
 
@@ -123,9 +134,12 @@ class LoginService:
             raise ValidationError(msg)
         return user
 
-    def __user_tokens(self, user: User) -> tuple[str, str]:
+    def __user_tokens(self, user: User) -> AuthToken:
         refresh: RefreshToken = RefreshToken().for_user(user)
-        return refresh.access_token, str(refresh)
+        return AuthToken(
+            access_token=str(refresh.access_token),
+            refresh_token=str(refresh),
+        )
 
     def get_response(self, user: User):
         access_token, refresh_token = self.__user_tokens(user)
@@ -207,9 +221,9 @@ class AuthAppService:
     def verify_email_confirm(key: str) -> User:
         user = ConfirmationKeyManager().get_user_from_key(key)
         if not user:
-            raise ValidationError({'key': _('Invalid or expired confirmation key')})
+            raise ValidationError({'key': _('Invalid or expired confirmation key')}, 'invalid')
         if user.is_active:
-            raise ValidationError({'key': _('User already verified')})
+            raise ValidationError({'key': _('User already verified')}, 'user_already_active')
         user.is_active = True
         user.save(update_fields=['is_active'])
         return user
