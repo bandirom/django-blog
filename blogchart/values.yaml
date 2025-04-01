@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: bandirom/django-blog
   pullPolicy: Always
-  tag: "blog"
+  tag: "1.2.0"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -24,15 +24,15 @@ securityContext:
   runAsUser: 1000
   runAsGroup: 1000
   allowPrivilegeEscalation: false
-  # capabilities:
-  #   drop:
-  #   - ALL
+  capabilities:
+    drop:
+      - ALL
   # readOnlyRootFilesystem: true
 
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8000
 
 ingress:
   enabled: true
