@@ -1,3 +1,6 @@
+global:
+  defaultStorageClass: "nfs-client"
+
 replicaCount: 1
 
 image:

@@ -1,7 +1,14 @@
+
+```shell
 helm upgrade --install blogchart .
+```
+
 helm upgrade --install blogchart . --set postgresql.auth.postgresPassword=qwerty123
 
+```shell
 helm uninstall blogchart
+```
+
 kubectl get pods
 
 kubectl logs -f blogchart-0 blogchart-celery
