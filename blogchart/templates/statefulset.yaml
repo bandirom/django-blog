@@ -62,6 +62,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-postgresql
                   key: postgres-password
+            {{- with .Values.envs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -79,10 +82,16 @@ spec:
           volumeMounts:
             - name: {{ (printf "%s-media-storage" .Release.Name) }}
               mountPath: "/web/media"
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       volumes:
         - name: {{ (printf "%s-media-storage" .Release.Name) }}
           persistentVolumeClaim:
             claimName: {{ include "blogchart.fullname" . }}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

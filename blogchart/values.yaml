@@ -6,14 +6,14 @@ replicaCount: 1
 image:
   repository: bandirom/django-blog
   pullPolicy: Always
-  tag: "1.2.0"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  create: false
+  create: true
   automount: true
   annotations: {}
   name: ""
@@ -81,16 +81,17 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+#volumes:
+#  - name: secrets-store-inline
+#    csi:
+#      driver: secrets-store.csi.k8s.io
+#      readOnly: true
+#      volumeAttributes:
+#        secretProviderClass: "vault-application"
+#
+#volumeMounts:
+#  - name: secrets-store-inline
+#    mountPath: "/mnt/secrets-store"
 
 nodeSelector: {}
 
@@ -99,7 +100,7 @@ tolerations: []
 affinity: {}
 
 persistentVolumeClaim:
-  storageClassName: ""
+  storageClassName: "nfs-client"
   storageSize: 3Gi
 
 postgresql:
@@ -138,3 +139,15 @@ celery:
     - "worker"
     - "-l"
     - "info"
+
+envs:
+  - name: TEST_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: vso-handled
+        key: password
+  - name: NEW_KEY
+    valueFrom:
+      secretKeyRef:
+        name: vso-handled
+        key: newKey
