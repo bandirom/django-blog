@@ -5,6 +5,12 @@ metadata:
 data:
   REDIS_URL: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
   REDIS_PORT: {{ .Values.redis.port | quote }}
-  SECRET_KEY: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}
+  SQL_ENGINE: {{ .Values.project.sqlEngine | quote }}
   HEALTH_CHECK_URL: {{ .Values.project.healthCheckUrl }}
   PROJECT_TITLE: {{ .Values.project.microserviceName }}
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: {{ .Values.postgresql.auth.username | quote }}
+  POSTGRES_DB: {{ .Values.postgresql.auth.database | quote }}
+  POSTGRES_HOST: {{ default (printf "%s-postgresql" .Release.Name) .Values.postgresql.host | quote }}
+  CELERY_BROKER_URL: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
+  CELERY_RESULT_BACKEND: {{ default (printf "redis://%s-redis-master:%s" .Release.Name  .Values.redis.port) .Values.redis.host | quote }}
