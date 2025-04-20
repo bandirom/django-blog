@@ -8,4 +8,3 @@ data:
   SECRET_KEY: {{ required "Django secret key is required!" .Values.project.secretKey | quote }}
   HEALTH_CHECK_URL: {{ .Values.project.healthCheckUrl }}
   PROJECT_TITLE: {{ .Values.project.microserviceName }}
-

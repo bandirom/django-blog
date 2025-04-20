@@ -105,14 +105,16 @@ persistentVolumeClaim:
 
 postgresql:
   enabled: true
+  architecture: standalone
   auth:
     username: "blog-user"
-    password: "blog-password"
+    password: "xFNYNrP7BV70B6XSfVx6Gts1Qk9jSNl2"
     database: "blog-db"
-    enablePostgresUser: true
-    postgresPassword: "postgres-password"
-  secret: false
-  host: false
+    enablePostgresUser: false
+  primary:
+    persistence:
+      storageClass: "nfs-client"
+      size: 5Gi
 
 
 redis:
