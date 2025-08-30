@@ -1,31 +1,52 @@
 ## Django Blog project
 
+---
 
-#### Project features:
-* Docker/Docker-compose environment
-* Environment variables
-* Separated settings for Dev and Prod django version
-* Docker configuration for nginx for 80 and/or 443 ports (dev/stage/prod) (Let's Encrypt certbot)
-* Celery worker
-* Redis service for caching using socket. Also message broker for queue
-* RabbitMQ configuration
-* ASGI support
-* Linters integration (flake8, black, isort)
-* Swagger in Django Admin Panel
-* Ready for deploy by one click
-* Separated configuration for dev and prod (requirements and settings)
-* CI/CD: GitHub Actions
-* Redefined default User model (main.models.py)
-* Mailpit, Jaeger, RabbitMQ integrations
-* Multi-stage build for prod versions
-* PostgreSql Backup
+# Django project template in docker
 
-### How to use:
 
-#### Clone the repo or click "Use this template" button:
+### 1. Project Structure
 
-    git clone https://github.com/bandirom/django-blog.git
-    
+```text
+django-template/
+├── .github/ # GitHub actions for CI/CD
+├── docker/ # Docker configs for dev & prod
+│ ├── dev/
+│ ├── prod/
+├── web/ # Django app source
+│ ├── src/
+│ ├── manage.py
+│ ├── pyproject.toml # Poetry config
+├── docker-compose.yml # Dev docker-compose file
+├── prod.yml # Prod docker-compose file
+```
+
+
+### ✅ **2. Project features**
+| Feature                           | Status |
+|-----------------------------------|--------|
+| Dockerized Environment            | ✅      |
+| Celery & Redis                    | ✅      |
+| PostgreSQL + Backup               | ✅      |
+| ASGI (Uvicorn) Support            | ✅      |
+| Swagger (DRF-Spectacular)         | ✅      |
+| CI/CD (GitHub Actions)            | ✅      |
+| Multi-stage Docker build for prod | ✅      |
+| RabbitMQ Support                  | ✅      |
+| Mailpit for Dev SMTP              | ✅      |
+| Linters (black, ruff)             | ✅      |
+| Postgres backup                   | ✅      |
+
+
+
+### ✅ **3. Quick Start (Dev)**
+
+#### Click "Use this template" button or clone the repository:
+
+```shell
+git clone https://github.com/bandirom/django-blog.git
+```
+
 
 #### Before running add your superuser email/password and project name in docker/prod/env/.data.env file
 
@@ -63,7 +84,7 @@ docker-compose exec web sh
 docker run -p 1025:1025 -p 8025:8025 -d -it --rm axllent/mailpit
 ```
 
-<b>Don't forget to set SMTP mail backend in settings</b>
+**Don't forget to set SMTP mail backend in settings**
 
 ```dotenv
 # docker/dev/env/.email.env
@@ -84,22 +105,8 @@ If your server under LoadBalancer or nginx with SSL/TLS certificate you can run 
 docker-compose -f prod.yml up -d --build
 ```
 
-#### For set https connection you should have a domain name
-**In prod.certbot.yml:**
+or build image directly
 
-Change the envs:
-    CERTBOT_EMAIL: your real email
-    ENVSUBST_VARS: list of variables which set in nginx.conf files
-    APP: value of the variable from list ENVSUBST_VARS
-    
-To set https for 2 and more nginx servers:
-    
-```dotenv
-ENVSUBST_VARS: API
-API: api.your-domain.com
-```
-
-Run command:
 ```shell
-docker-compose -f prod.yml -f prod.certbot.yml up -d --build
+docker build -t django-project -f docker/prod/web/Dockerfile .
 ```
