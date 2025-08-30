@@ -1,20 +1,25 @@
+global:
+  defaultStorageClass: "nfs-client"
+
 replicaCount: 1
 
 image:
   repository: bandirom/django-blog
   pullPolicy: Always
-  tag: "blog"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  create: false
+  create: true
+  automount: true
   annotations: {}
   name: ""
 
 podAnnotations: {}
+podLabels: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -24,15 +29,15 @@ securityContext:
   runAsUser: 1000
   runAsGroup: 1000
   allowPrivilegeEscalation: false
-  # capabilities:
-  #   drop:
-  #   - ALL
+  capabilities:
+    drop:
+      - ALL
   # readOnlyRootFilesystem: true
 
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8000
 
 ingress:
   enabled: true
@@ -47,6 +52,27 @@ ingress:
   tls: []
 
 resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 60
+  timeoutSeconds: 5
+  httpGet:
+    path: /application/health/
+    port: http
+readinessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 60
+  timeoutSeconds: 5
+  httpGet:
+    path: /application/health/
+    port: http
 
 autoscaling:
   enabled: false
@@ -55,6 +81,18 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+#volumes:
+#  - name: secrets-store-inline
+#    csi:
+#      driver: secrets-store.csi.k8s.io
+#      readOnly: true
+#      volumeAttributes:
+#        secretProviderClass: "vault-application"
+#
+#volumeMounts:
+#  - name: secrets-store-inline
+#    mountPath: "/mnt/secrets-store"
+
 nodeSelector: {}
 
 tolerations: []
@@ -62,19 +100,21 @@ tolerations: []
 affinity: {}
 
 persistentVolumeClaim:
-  storageClassName: ""
+  storageClassName: "nfs-client"
   storageSize: 3Gi
 
 postgresql:
   enabled: true
+  architecture: standalone
   auth:
     username: "blog-user"
-    password: "blog-password"
+    password: "xFNYNrP7BV70B6XSfVx6Gts1Qk9jSNl2"
     database: "blog-db"
-    enablePostgresUser: true
-    postgresPassword: "postgres-password"
-  secret: false
-  host: false
+    enablePostgresUser: false
+  primary:
+    persistence:
+      storageClass: "nfs-client"
+      size: 5Gi
 
 
 redis:
@@ -101,3 +141,15 @@ celery:
     - "worker"
     - "-l"
     - "info"
+
+envs:
+  - name: TEST_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: vso-handled
+        key: password
+  - name: NEW_KEY
+    valueFrom:
+      secretKeyRef:
+        name: vso-handled
+        key: newKey

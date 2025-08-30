@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "blogchart.fullname" . }}
+  name: {{ include "blogchart.fullname" . }}-mediafiles
   annotations:
     helm.sh/resource-policy: "keep"
   labels:

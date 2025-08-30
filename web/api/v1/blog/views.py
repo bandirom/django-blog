@@ -4,7 +4,13 @@ from rest_framework.response import Response
 
 from . import serializers
 from .filters import ArticleFilter
-from .services import ArticleQueryService, CategoryQueryService, CommentQueryService, CreateArticleService, TagQueryService
+from .services import (
+    ArticleQueryService,
+    CategoryQueryService,
+    CommentQueryService,
+    CreateArticleService,
+    TagQueryService,
+)
 
 
 class ArticleListView(ListAPIView):

@@ -14,10 +14,12 @@ services:
     environment:
       <<: *variables
     env_file:
-      - docker/dev/env/.env
-      - docker/dev/env/.db.env
-      - docker/dev/env/.email.env
-      - docker/prod/env/.data.env
+      - path: docker/dev/env/.env
+      - path: docker/dev/env/.db.env
+      - path: docker/dev/env/.email.env
+      - path: docker/prod/env/.data.env
+      - path: .secrets.env
+        required: false
     depends_on: [db, redis]
     restart: unless-stopped
     networks:

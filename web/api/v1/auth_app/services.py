@@ -25,11 +25,11 @@ from api.v1.auth_app.oauth.google.provider import GoogleTokenData, GoogleUserInf
 from api.v1.auth_app.utils import LoginResponseSerializer, get_client_ip
 from auth_app.models import SocialAccount
 
+from ..profile.services import UserQueryService
 from .managers import ConfirmationKeyManager, PasswordResetManager
 from .oauth.base.exceptions import OAuth2Error
 from .types import CreateUserData, PasswordResetConfirmData
 from main.decorators import except_shell
-from ..profile.services import UserQueryService
 
 if TYPE_CHECKING:
     from django.http import HttpResponse
