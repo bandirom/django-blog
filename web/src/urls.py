@@ -12,7 +12,6 @@ urlpatterns = [
     path('', include('auth_app.urls')),
     path('', include('blog.urls')),
     path('', include('contact_us.urls')),
-    path(f'{admin_url}/defender/', include('defender.urls')),
     path(f'{admin_url}/', admin.site.urls),
     path('api/', include('rest_framework.urls')),
     path('rosetta/', include('rosetta.urls')),
