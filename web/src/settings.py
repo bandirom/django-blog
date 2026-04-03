@@ -2,9 +2,15 @@ import os
 from pathlib import Path
 
 from kombu import Exchange, Queue
+
 from .additional_settings import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+FRONTEND_URL = 'http://localhost:8008'
+
+if os.environ.get('FRONTEND_URL'):
+    FRONTEND_URL = os.environ.get('FRONTEND_URL')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-b2sh!qk&=%azim-=s&=d1(-1upbq7H&-^-=tmPeHPLKXD')
 
@@ -104,7 +110,9 @@ LOGOUT_URL = 'rest_framework:logout'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -248,7 +256,11 @@ if (SENTRY_DSN := os.environ.get('SENTRY_DSN')) and ENABLE_SENTRY:
         send_default_pii=True,
     )
 
-
+# EMAIL_HOST = "smtp.yandex.ru"
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = "stskr@yandex.ru"
+# EMAIL_HOST_PASSWORD = 'ylvptepfjmagehwf'
+# EMAIL_USE_SSL = True
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 1025))
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -258,6 +270,9 @@ EMAIL_TIMEOUT = int(os.environ.get('EMAIL_TIMEOUT', 15))
 EMAIL_USE_SSL = int(os.environ.get('EMAIL_USE_SSL', 0))
 EMAIL_USE_TLS = int(os.environ.get('EMAIL_USE_TLS', 0))
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_ADMIN = EMAIL_HOST_USER
+print(f"SMTP Server: {EMAIL_HOST=} : {EMAIL_PORT=}")
 
 X_FRAME_OPTIONS = 'DENY'
 # Only via HTTPS

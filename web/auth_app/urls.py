@@ -11,8 +11,11 @@ urlpatterns = [
     path('register/', TemplateAPIView.as_view(template_name='auth_app/sign_up.html'), name='sign_up'),
     path(
         'password-recovery/',
-        TemplateAPIView.as_view(template_name='auth_app/reset_password_sent.html'),
-        name='reset_email_sent',
+        TemplateAPIView.as_view(template_name='auth_app/password_reset_done.html'),
+        name='reset-email-sent',
     ),
-    path('verify-email/', TemplateView.as_view(), name='account_verification'),
+    path('password/reset/sent/', TemplateView.as_view(template_name='auth_app/reset_email_sent.html'), name='reset-email-sent'),
+    path('password/reset/done/', TemplateView.as_view(template_name='auth_app/password_reset_done.html'), name='password-reset-done'),
+    path('auth/confirm/', TemplateAPIView.as_view(template_name='auth_app/email_confirm.html'), name='email_confirm')
+
 ]
