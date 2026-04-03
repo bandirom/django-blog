@@ -1,0 +1,28 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% trans "Email" %}{% endblock title %}</title>
+  {% block head %}{% endblock head %}
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; 
+                      border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          
+          {% block header %}{% endblock header %}
+          
+          {% block content %}{% endblock content %}
+          
+          {% block footer %}{% endblock footer %}
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

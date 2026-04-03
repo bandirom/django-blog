@@ -1,0 +1,8 @@
+{% extends 'auth_app/base.html' %}
+{% load static i18n %}
+
+
+
+{% block jquery %}
+$.getScript('{% static 'auth_app/js/email-confirm.js' %}');
+{% endblock %}
