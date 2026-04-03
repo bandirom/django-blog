@@ -1,0 +1,43 @@
+{% extends 'auth_app/base.html' %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'auth_app/css/login.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block container %}
+<div class="row" style="margin-top: 50px;">
+  <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-body text-center">
+        <div class="alert alert-success" style="margin-bottom: 0;">
+          <h3><i class="glyphicon glyphicon-envelope"></i> Email Sent!</h3>
+          <p style="font-size: 16px; margin-top: 20px;">
+            We've sent you an email with instructions to reset your password.
+            Please check your inbox and follow the link provided.
+          </p>
+          <p style="margin-top: 20px;">
+            <strong>Note:</strong> If you don't see the email in your inbox, 
+            please check your spam folder.
+          </p>
+          <hr>
+          <div class="row">
+            <div class="col-xs-12">
+              <a href="{% url 'auth_app:login' %}" class="btn btn-primary btn-lg btn-block">
+                Return to Sign In
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock container %}
+
+{% block jquery %}
+  // Optional: Auto-redirect after 5 seconds
+  setTimeout(function() {
+    window.location.href = "{% url 'auth_app:login' %}";
+  }, 5000);
+{% endblock %}
