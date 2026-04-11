@@ -1,5 +1,6 @@
-## Django Blog project
-
+![GitHub](https://img.shields.io/github/license/bandirom/DjangoTemplateWithDocker?style=plastic)
+![Codecov](https://img.shields.io/codecov/c/gh/bandirom/DjangoTemplateWithDocker?style=plastic)
+[![Release CI/CD](https://github.com/bandirom/django-template/actions/workflows/release.yml/badge.svg)](https://github.com/bandirom/django-template/actions/workflows/release.yml)
 ---
 
 # Django project template in docker
@@ -109,4 +110,16 @@ or build image directly
 
 ```shell
 docker build -t django-project -f docker/prod/web/Dockerfile .
+```
+
+### Linter
+
+* Run `black` linter
+```shell
+black .
+```
+
+* Run `ruff` linter
+```shell
+ruff check . --fix
 ```
