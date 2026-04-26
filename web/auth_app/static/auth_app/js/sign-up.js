@@ -1,9 +1,9 @@
-console.log('sing-up')
+console.log('sign-up')
 $(function () {
-  $('#signUpForm').submit(singUp);
+  $('#signUpForm').submit(signUp);
 });
 
-function singUp(e) {
+function signUp(e) {
   let form = $(this);
   e.preventDefault();
   console.log('here')
