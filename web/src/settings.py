@@ -7,17 +7,14 @@ from .additional_settings import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-FRONTEND_URL = 'http://localhost:8008'
-
-if os.environ.get('FRONTEND_URL'):
-    FRONTEND_URL = os.environ.get('FRONTEND_URL')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:8008')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-b2sh!qk&=%azim-=s&=d1(-1upbq7H&-^-=tmPeHPLKXD')
 
 DEBUG = int(os.environ.get('DEBUG', 0))
 
 ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8008']
 
 if DEBUG:
     ALLOWED_HOSTS: list = ['*']

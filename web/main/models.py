@@ -32,6 +32,7 @@ class User(AbstractUser):
     def full_name(self) -> str:
         return super().get_full_name()
 
+### TODO: заменить на класс
     def set_confirmation_key(self):
         """Устанавливает ключ подтверждения"""
         self.confirmation_key = signing.dumps(self.pk)

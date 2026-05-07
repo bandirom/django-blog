@@ -1,4 +1,5 @@
 import hashlib
+import json
 import logging
 
 from dj_rest_auth import views as auth_views
@@ -59,24 +60,6 @@ class PasswordResetView(GenericAPIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        # Создаем уникальный ключ для запроса
-        import json
-        content = json.dumps(request.data, sort_keys=True)
-        request_hash = hashlib.md5(f"{request.method}_{request.path}_{content}".encode()).hexdigest()
-
-        cache_key = f"password_reset_{request_hash}"
-
-        # Проверяем, не обрабатывали ли уже этот запрос
-        if cache.get(cache_key):
-            print(f"⚠️ Duplicate request ignored for {request.data.get('email')}")
-            return Response(
-                {'detail': _('Password reset e-mail has been sent.')},
-                status=status.HTTP_200_OK,
-            )
-
-        # Сохраняем в кэш на 3 секунды
-        cache.set(cache_key, True, 3)
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

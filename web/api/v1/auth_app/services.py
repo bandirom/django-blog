@@ -33,26 +33,18 @@ class CreateUserData(NamedTuple):
 
 
 class ConfirmationEmailHandler(BaseEmailHandler):
-    FRONTEND_URL = getattr(settings, 'FRONTEND_URL', 'http://localhost:8008')
-    FRONTEND_PATH = 'auth/confirm'
+    FRONTEND_URL = settings.FRONTEND_URL
+    FRONTEND_PATH = '/auth/confirm'
     TEMPLATE_NAME = 'emails/verify_email.html'
 
     def _get_activate_url(self) -> str:
         """Формирует полный URL для подтверждения"""
-        if settings.DEBUG:
-            # Используем localhost для разработки
-            base_url = "http://localhost:8008"
-        else:
-            base_url = self.FRONTEND_URL.rstrip('/')
-
-        path = self.FRONTEND_PATH.lstrip('/')
-
         query_params = urlencode({
             'key': self.user.confirmation_key,
             'email': self.user.email,
         })
 
-        full_url = f"{base_url}/{path}?{query_params}"
+        full_url = f"{self.FRONTEND_URL}/{self.FRONTEND_PATH}?{query_params}"
         return full_url
 
     def email_kwargs(self, **kwargs) -> dict:
@@ -64,7 +56,6 @@ class ConfirmationEmailHandler(BaseEmailHandler):
             'context': {
                 'user': self.user.full_name,
                 'activate_url': activate_url,
-                'message': f"Please click the link to confirm your registration: {activate_url}",
                 'expiry_hours': 24
             },
         }
@@ -76,13 +67,9 @@ class PasswordResetEmailHandler:
     def __init__(self, user, token):
         self.user = user
         self.token = token
-        self._cached_url = None
 
     def _get_password_reset_url(self) -> str:
         """Формирует полный URL для подтверждения"""
-        if self._cached_url:
-            return self._cached_url
-
         if settings.DEBUG:
             # Используем localhost для разработки
             base_url = "http://localhost:8008"
@@ -147,10 +134,6 @@ class AuthAppService:
         return None
 
     def send_confirmation_email(self, user: User):
-        # Сохраняем confirmation_key в модели пользователя
-        user.confirmation_key = signing.dumps(user.id)
-        user.save(update_fields=['confirmation_key'])
-
         handler = ConfirmationEmailHandler(user=user)
 
         handler.send_email(
