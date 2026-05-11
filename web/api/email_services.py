@@ -6,17 +6,13 @@ from django.utils.translation import get_language
 
 from main.tasks import send_information_email
 
-if TYPE_CHECKING:
-    from main.models import UserType
-
-
-User: 'UserType' = get_user_model()
+User = get_user_model()
 
 
 class BaseEmailHandler(ABC):
     TEMPLATE_NAME: str = NotImplemented
 
-    def __init__(self, user: Optional[User] = None, language: Optional[str] = None):
+    def __init__(self, user: User | None = None, language: str | None = None):
         self.user = user
         self._locale: str = language or get_language()
 

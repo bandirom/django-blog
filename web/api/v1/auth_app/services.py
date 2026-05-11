@@ -1,27 +1,30 @@
+import base64
 import re
-from typing import TYPE_CHECKING, NamedTuple
-from urllib.parse import urlencode
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any, NamedTuple, Optional, TypeVar
+from urllib.parse import quote, urlencode, urljoin
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
 from django.core import signing
 from django.core.mail import send_mail
 from django.db import transaction
 from django.urls import reverse
+from django.utils.encoding import force_bytes
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.email_services import BaseEmailHandler
 from main.decorators import except_shell
 
-if TYPE_CHECKING:
-    from main.models import UserType
+from .user_services import UserQueryService
 
-
-User: 'UserType' = get_user_model()
+User  = get_user_model()
 
 
 class CreateUserData(NamedTuple):
@@ -56,43 +59,88 @@ class ConfirmationEmailHandler(BaseEmailHandler):
             'context': {
                 'user': self.user.full_name,
                 'activate_url': activate_url,
-                'expiry_hours': 24
+                'expiry_hours': getattr(settings, 'CONFIRM_EMAIL_EXPIRY_HOURS', 24)
             },
         }
 
 
-class PasswordResetEmailHandler:
-    FRONTEND_URL = getattr(settings, 'FRONTEND_URL', 'http://localhost:8008')
+@dataclass
+class PasswordResetDTO:
+    uid: bytes
+    token: str
 
-    def __init__(self, user, token):
-        self.user = user
-        self.token = token
+    def __post_init__(self):
+        """Опциональная валидация полей"""
+        if not isinstance(self.uid, bytes):
+            raise TypeError("uid must be bytes")
+        if not isinstance(self.token, str):
+            raise TypeError("token must be a string")
 
-    def _get_password_reset_url(self) -> str:
-        """Формирует полный URL для подтверждения"""
-        if settings.DEBUG:
-            # Используем localhost для разработки
-            base_url = "http://localhost:8008"
-        else:
-            base_url = self.FRONTEND_URL.rstrip('/')
-
-        reset_url = reverse('api:v1:auth_app:password-reset-confirm', kwargs={
+    def to_dict(self) -> dict:
+        """Преобразование в словарь (uid декодируется в строку для JSON)"""
+        return {
+            'uid': self.uid.decode('utf-8'),
             'token': self.token
-        })
+        }
 
-        full_url = f"{base_url}{reset_url}"
-        return full_url
+    @classmethod
+    def from_dict(cls, data: dict) -> 'PasswordResetDTO':
+        """Создание DTO из словаря (строка uid кодируется в bytes)"""
+        uid_str = data.get('uid', '')
+        return cls(
+            uid=uid_str.encode('utf-8') if isinstance(uid_str, str) else uid_str,
+            token=data.get('token', '')
+        )
 
-    def send_email(self, subject=None, message=None, recipient_list=None):
-        full_reset_url = self._get_password_reset_url()
+    def get_uid_str(self) -> str:
+        """Получить uid как строку для удобства"""
+        return self.uid.decode('utf-8')
 
-        subject = subject or "Password Reset Request"
-        message = message or f"""
+
+class PasswordResetManager:
+    def __init__(self):
+        self.token_generator = default_token_generator
+
+    def generate(self, user: User) -> PasswordResetDTO:
+        uid = base64.urlsafe_b64encode(force_bytes(user.pk))
+        token = self.token_generator.make_token(user)
+        return PasswordResetDTO(uid=uid, token=token)
+
+    def validate(self, uid: str, token: str, raise_exception: bool = True) -> User | None:
+        errors = []
+        user = self._get_user_by_uid(uid)
+        if not user:
+            errors.append({'uid': ['Invalid value']})
+        if user and not self._validate_token(user, token):
+            errors.append({'token': ['Invalid value']})
+        if errors and raise_exception:
+            raise ValidationError(errors)
+        return user
+
+    @staticmethod
+    def _get_user_by_uid(uid: str) -> User | None:
+        try:
+            user_id = base64.urlsafe_b64decode(uid).decode()
+            return User.objects.get(id=user_id)
+        except (User.DoesNotExist, ValueError):
+            return None
+
+    def _validate_token(self, user: User, token: str) -> bool:
+        return self.token_generator.check_token(user, token)
+
+
+class PasswordResetService:
+    def __init__(self, user):
+        self.user = user
+
+    def send_email(self, reset_url: str):
+        subject = "Password Reset Request"
+        message = f"""
         Hello {self.user.first_name or self.user.email},
 
         You requested a password reset. Click the link below to reset your password:
 
-        {full_reset_url}
+        {reset_url}
 
         If you didn't request this, please ignore this email.
 
@@ -103,9 +151,30 @@ class PasswordResetEmailHandler:
             subject=subject,
             message=message,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=recipient_list or [self.user.email],
+            recipient_list=[self.user.email],
             fail_silently=False,
         )
+
+
+class PasswordResetHandler:
+    def __init__(self, email: str):
+        self.email = email
+        self.frontend_url = settings.FRONTEND_URL
+        self.frontend_path = '/password/reset/confirm'
+
+    def reset_password(self):
+        user = UserQueryService().get_user_by_email(self.email)
+        if not user:
+            return
+        reset_url = self._get_reset_url(user)
+        PasswordResetService(user).send_email(reset_url=reset_url)
+
+    def _get_reset_url(self, user) -> str:
+        values = PasswordResetManager().generate(user)
+        url = urljoin(self.frontend_url, f"{self.frontend_path}/{values.token}/")
+        reset_url = f'{url}?uid={values.uid}'
+        return quote(reset_url, safe=':/?&=')
+
 
 class AuthAppService:
     @staticmethod
@@ -150,15 +219,9 @@ class AuthAppService:
             # Не раскрываем, существует ли пользователь (безопасность)
             return None
 
-        token = user.generate_password_reset_token()
-
         # Отправляем email
-        handler = PasswordResetEmailHandler(user=user, token=token)
-        handler.send_email(
-            subject=None,
-            message=None,
-            recipient_list=[user.email]
-        )
+        handler = PasswordResetHandler(email=user.email)
+        handler.reset_password()
         return None
 
 def full_logout(request):
